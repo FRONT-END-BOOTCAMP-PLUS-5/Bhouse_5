@@ -1,4 +1,4 @@
-import requester from "@/utils/requester";
+import requester from "@utils/requester";
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 
 import { setLoading } from "./loadingSlice";
