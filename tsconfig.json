@@ -20,8 +20,9 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/app/*"],
-      "@utils/*": ["./src/utils/*"]
+      "@/*": ["./app/*"],
+      "@utils/*": ["./utils/*"],
+      "@bUtils/*": ["./app/(backend)/utils/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
