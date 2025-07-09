@@ -1,4 +1,4 @@
-import { Ad } from "../../../../domain/entities/Ad";
+import { Ad } from "../entities/Ad";
 
 export type AdWithoutUserId = Omit<Ad, 'userId'>;
 export interface AdRepository {

@@ -1,6 +1,6 @@
 import { supabase } from 'backend/utils/supabaseClient';
 import { Ad } from '../../domain/entities/Ad';
-import { AdRepository } from '../../application/admin/ads/repositories/AdRepository';
+import { AdRepository } from '../../domain/repositories/AdRepository';
 
 function toSnakeCaseFields(data: any): any {
   const mapped: any = {};

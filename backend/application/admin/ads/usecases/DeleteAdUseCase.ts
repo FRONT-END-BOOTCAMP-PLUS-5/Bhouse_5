@@ -1,4 +1,4 @@
-import { AdRepository } from "../repositories/AdRepository";
+import { AdRepository } from "../../../../domain/repositories/AdRepository";
 
 export class DeleteAdUseCase {
   constructor(private readonly adRepo: AdRepository) {}
