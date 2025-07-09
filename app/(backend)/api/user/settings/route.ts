@@ -1,6 +1,6 @@
 // app/api/user/settings/route.ts
 import { NextResponse } from 'next/server';
-import { supabase } from '@bUtils/supabaseClient'; // 사용자 지정 Supabase 클라이언트 임포트
+import { supabase } from 'backend/utils/supabaseClient'; // 사용자 지정 Supabase 클라이언트 임포트
 
 // 유저 알림 설정을 조회하는 GET 요청 핸들러
 export async function GET(request: Request) {

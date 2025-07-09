@@ -1,6 +1,6 @@
 // app/api/user/keywords/route.ts
 import { NextResponse } from 'next/server';
-import { supabase } from '@bUtils/supabaseClient'; // 사용자 지정 Supabase 클라이언트 임포트
+import { supabase } from 'backend/utils/supabaseClient'; // 사용자 지정 Supabase 클라이언트 임포트
 
 
 export async function POST(request: Request) {

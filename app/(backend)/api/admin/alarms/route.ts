@@ -1,6 +1,6 @@
 // app/api/admin/alarms/route.ts
 import { NextResponse } from 'next/server';
-import { supabase } from '@bUtils/supabaseClient';
+import { supabase } from 'backend/utils/supabaseClient';
 
 export async function POST(request: Request) {
   // FIXME: 이 부분에 관리자 인증/인가 로직을 추가해야 합니다.

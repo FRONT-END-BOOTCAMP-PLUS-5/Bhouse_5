@@ -1,6 +1,6 @@
 // app/api/admin/boardgames/register/route.ts
 import { NextResponse } from 'next/server';
-import { supabase } from '@bUtils/supabaseClient'; // 사용자 지정 Supabase 클라이언트 임포트
+import { supabase } from 'backend/utils/supabaseClient'; // 사용자 지정 Supabase 클라이언트 임포트
 
 export async function POST(request: Request) {
   //FIXME : 이 부분에 관리자 인증/인가 로직을 추가해야 합니다.

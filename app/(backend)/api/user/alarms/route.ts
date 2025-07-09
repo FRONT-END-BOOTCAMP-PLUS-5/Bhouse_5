@@ -1,6 +1,6 @@
 // app/user/alarms/route.ts
 import { NextResponse } from 'next/server';
-import { supabase } from '@bUtils/supabaseClient';
+import { supabase } from 'backend/utils/supabaseClient';
 
 // type은 'KEYWORD', 'ADMIN', 'REPLY', 'ALL' 중 하나로 설정, 수파베이스에 등록된 대로
 // http://localhost:3000/api/user/alarms?uuid=0307eb5e-6f8e-4165-a2ec-4f9e2fb5d196&type=KEYWORD

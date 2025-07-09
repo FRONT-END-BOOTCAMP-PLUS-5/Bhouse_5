@@ -1,6 +1,6 @@
 // app/api/boardgames/route.ts
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@bUtils/supabaseClient'
+import { supabase } from 'backend/utils/supabaseClient'
 
 
 // /boardgames API
