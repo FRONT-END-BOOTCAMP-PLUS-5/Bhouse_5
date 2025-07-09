@@ -1,5 +1,5 @@
 import { Ad } from "../../../../domain/model/Ad";
 
 export interface UpdateAdUseCasePort {
-  execute(ad: Ad): Promise<void>;
+  execute(id: number, updateData: Partial<Ad>): Promise<void>;
 }

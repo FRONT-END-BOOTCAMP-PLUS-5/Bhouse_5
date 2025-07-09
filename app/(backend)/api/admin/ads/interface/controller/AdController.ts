@@ -1,26 +1,9 @@
+import { Ad } from '../../domain/model/Ad';
 import { GetAdUseCasePort } from '../../application/in/port/in/GetAdUseCasePort';
 import { GetAdListUseCasePort } from '../../application/in/port/in/GetAdListUseCasePort';
 import { CreateAdUseCasePort } from '../../application/in/port/in/CreateAdUseCasePort';
-
-import { Ad } from '../../domain/model/Ad';
 import { UpdateAdUseCasePort } from '../../application/in/port/in/UpdateAdUseCasePort';
 import { DeleteAdUseCasePort } from '../../application/in/port/in/DeleteAdUseCasePort';
-
-// DTO interfaces for request data
-interface CreateAdRequest {
-  id: number;
-  title: string;
-  imgUrl: string;
-  redirectUrl: string;
-  isActive: boolean;
-}
-
-interface UpdateAdRequest {
-  title: string;
-  imgUrl: string;
-  redirectUrl: string;
-  isActive: boolean;
-}
 
 export class AdController {
   constructor(
@@ -29,7 +12,7 @@ export class AdController {
     private readonly createAdUseCase: CreateAdUseCasePort,
     private readonly updateAdUseCase: UpdateAdUseCasePort,
     private readonly deleteAdUseCase: DeleteAdUseCasePort
-  ) {}
+  ) { }
 
   async getAd(id: number) {
     return await this.getAdUseCase.execute(id);
@@ -39,16 +22,12 @@ export class AdController {
     return await this.getAdListUseCase.execute();
   }
 
-  async createAd(data: CreateAdRequest) {
-    const { id, title, imgUrl, redirectUrl, isActive } = data;
-    const ad = new Ad(id, title, imgUrl, redirectUrl, isActive);
-    await this.createAdUseCase.execute(ad);
+  async createAd(data: Ad) {
+    await this.createAdUseCase.execute(data);
   }
 
-  async updateAd(id: number, data: UpdateAdRequest) {
-    const { title, imgUrl, redirectUrl, isActive } = data;
-    const ad = new Ad(id, title, imgUrl, redirectUrl, isActive);
-    await this.updateAdUseCase.execute(ad);
+  async updateAd(id: number, data: Partial<Ad>) {
+    await this.updateAdUseCase.execute(id, data);
   }
 
   async deleteAd(id: number) {

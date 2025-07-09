@@ -27,3 +27,11 @@ export async function POST(req: NextRequest) {
   await controller.createAd(body);
   return NextResponse.json({ message: 'Ad created' }, { status: 201 });
 }
+
+// export async function POST(req: NextRequest) {
+//   const body = await req.json();
+//   const userId = extractUserIdFromToken(req); // 예: decode JWT from cookie
+//   const ad = new Ad(undefined, userId, body.title, body.imgUrl, body.redirectUrl, body.isActive);
+//   await controller.createAd(ad);
+//   return NextResponse.json({ message: 'Ad created' }, { status: 201 });
+// }

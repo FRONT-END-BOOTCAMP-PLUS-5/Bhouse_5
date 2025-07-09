@@ -4,7 +4,10 @@ import { UpdateAdUseCasePort } from "../port/in/UpdateAdUseCasePort";
 
 export class UpdateAdUseCase implements UpdateAdUseCasePort {
   constructor(private readonly adRepo: AdRepository) {}
-  async execute(ad: Ad): Promise<void> {
-    await this.adRepo.update(ad);
+
+  async execute(id: number, updateData: Partial<Ad>): Promise<void> {
+    const safeUpdateData = { ...updateData };
+    delete safeUpdateData.userId;
+    await this.adRepo.update(id, safeUpdateData);
   }
 }

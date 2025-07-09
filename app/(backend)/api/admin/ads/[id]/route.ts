@@ -22,8 +22,11 @@ export async function GET(_: NextRequest, context: { params: { id: string } }) {
     : NextResponse.json({ message: 'Ad not found' }, { status: 404 });
 }
 
-export async function PUT(req: NextRequest, context: { params: { id: string } }) {
-  const id = parseInt(context.params.id);
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const id = parseInt(params.id);
   const body = await req.json();
   await controller.updateAd(id, body);
   return NextResponse.json({ message: 'Ad updated' }, { status: 200 });
@@ -32,5 +35,5 @@ export async function PUT(req: NextRequest, context: { params: { id: string } })
 export async function DELETE(_: NextRequest, context: { params: { id: string } }) {
   const id = parseInt(context.params.id);
   await controller.deleteAd(id);
-  return NextResponse.json(null, { status: 204 });
+  return new Response(null, { status: 204 }); 
 }
