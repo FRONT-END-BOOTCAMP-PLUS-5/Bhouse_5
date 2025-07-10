@@ -1,4 +1,4 @@
-import { IPostRepository } from '@/backend/domain/repositories/IPostRepository'
+import { IPostRepository } from '@domain/repositories/IPostRepository'
 
 export class UpdatePostUseCase {
   constructor(private postRepo: IPostRepository) {}
