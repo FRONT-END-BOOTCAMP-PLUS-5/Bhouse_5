@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseClient } from '@bUtils/supabaseClient';
-
-//TODO: patch, delete 만들기
+import { supabase } from '@bUtils/supabaseClient';
 
 
-//게시글 작성 API
+
 export async function POST(req: NextRequest) {
   const body = await req.json()
   const { title, content, category_name, town } = body
@@ -27,14 +25,14 @@ export async function POST(req: NextRequest) {
   const {
     data: { user },
     error: userError
-  } = await supabaseClient.auth.getUser(token)
+  } = await supabase.auth.getUser(token)
 
   if (userError || !user) {
     return NextResponse.json({ message: '사용자 인증 실패', error: userError }, { status: 401 })
   }
 
   // category_name → category_id 조회
-  const { data: categoryData, error: categoryError } = await supabaseClient
+  const { data: categoryData, error: categoryError } = await supabase
     .from('community_categories')
     .select('id')
     .eq('name', category_name)
@@ -48,7 +46,7 @@ export async function POST(req: NextRequest) {
   }
 
   // 게시글 저장
-  const { data: insertedPost, error: insertError } = await supabaseClient
+  const { data: insertedPost, error: insertError } = await supabase
     .from('community_posts')
     .insert([
       {
@@ -71,6 +69,8 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json(insertedPost)
 }
+
+
 
 
 //// 게시글 목록 조회 API
@@ -97,7 +97,7 @@ export async function POST(req: NextRequest) {
 //   //     },
 export async function GET(_req: NextRequest) {
   // 1. 게시글 목록 조회 (user_id 포함)
-  const { data: posts, error: postsError } = await supabaseClient
+  const { data: posts, error: postsError } = await supabase
     .from('community_posts')
     .select('post_id, user_id, title, content, created_at, town, hits')
     .order('created_at', { ascending: false })
@@ -109,7 +109,7 @@ export async function GET(_req: NextRequest) {
   // 2. user_id → 프로필 정보 가져오기
   const userIds = [...new Set(posts.map((post) => post.user_id))] // 중복 제거
 
-  const { data: profiles, error: profilesError } = await supabaseClient
+  const { data: profiles, error: profilesError } = await supabase
     .from('users') // 또는 users 테이블
     .select('user_id, nickname, profile_img_url')
     .in('user_id', userIds)
@@ -144,83 +144,22 @@ export async function GET(_req: NextRequest) {
 }
 
 
-// 게시글 삭제 API
+// 게시글 삭제 API -> post_id를 통해 게시글을 삭제합니다.
 export async function DELETE(req: NextRequest) {
-  const { searchParams } = new URL(req.url)
-  const postId = searchParams.get('post_id')
+  const { post_id } = await req.json()
 
-  if (!postId) {
+  if (!post_id) {
     return NextResponse.json({ message: 'post_id는 필수입니다.' }, { status: 400 })
   }
 
-  // 게시글 삭제
-  const { error: deleteError } = await supabaseClient
+  const { error } = await supabase
     .from('community_posts')
     .delete()
-    .eq('post_id', postId)
-
-  if (deleteError) {
-    return NextResponse.json({ message: '게시글 삭제 실패', error: deleteError }, { status: 500 })
-  }
-
-  return NextResponse.json({ message: '게시글이 성공적으로 삭제되었습니다.' })
-}
-
-// 게시글 수정 API
-// {
-//   "post_id": 123,
-//   "title": "수정된 제목",
-//   "content": "수정된 내용입니다."
-// }
-// post_id,title,content를 가져와서, 글을 수정합니다.
-export async function PATCH(req: NextRequest) {
-  const { post_id, title, content } = await req.json()
-  const token = req.headers.get('Authorization')?.replace('Bearer ', '')
-
-  if (!token) {
-    return NextResponse.json({ message: '토큰이 필요합니다.' }, { status: 401 })
-  }
-
-  if (!post_id || !title || !content) {
-    return NextResponse.json({ message: 'post_id, title, content는 필수입니다.' }, { status: 400 })
-  }
-
-  // 🔐 사용자 인증
-  const {
-    data: { user },
-    error: userError
-  } = await supabaseClient.auth.getUser(token)
-
-  if (userError || !user) {
-    return NextResponse.json({ message: '유저 인증 실패', error: userError }, { status: 401 })
-  }
-
-  // 📝 글 업데이트
-  const { data, error: updateError } = await supabaseClient
-    .from('community_posts')
-    .update({
-      title,
-      content,
-      updated_at: new Date().toISOString(),
-      updated_by: user.id
-    })
     .eq('post_id', post_id)
-    .select()
-    .single()
 
-  if (updateError) {
-    return NextResponse.json({ message: '글 수정 실패', error: updateError }, { status: 500 })
+  if (error) {
+    return NextResponse.json({ message: '게시글 삭제 실패', error }, { status: 500 })
   }
 
-  return NextResponse.json({ message: '수정 완료', updated_post: data })
-}
-
-import { IPostRepository } from '@/backend/domain/repositories/IPostRepository'
-
-export class UpdatePostUseCase {
-  constructor(private postRepo: IPostRepository) {}
-
-  async execute(postId: number, title: string, content: string, userId: string) {
-    return await this.postRepo.updatePost(postId, title, content, userId)
-  }
+  return NextResponse.json({ message: '게시글이 삭제되었습니다.', post_id })
 }
