@@ -58,6 +58,51 @@ export interface AdTable {
 	type: string; // varchar(20)
 }
 
+
+export interface BoardgameTable {
+  boardgame_id: number; // bigint
+  name: string; // character varying(100)
+  description: string | null; // text
+  min_players: number | null; // integer
+  max_players: number | null; // integer
+  created_by: string; // uuid
+  created_at: string; // timestamp without time zone (ISO string으로 처리)
+  updated_at: string; // timestamp with time zone (ISO string으로 처리)
+  updated_by: string; // uuid
+  min_playtime: number | null; // integer
+  max_playtime: number | null; // integer
+  difficulty: number | null; // real (TypeScript에서는 number)
+  genre_id: number; // bigint
+  img_url: string | null; // text
+  // 관계 (필요시 추가)
+  creator?: UserTable; // created_by와 연결된 User
+  updater?: UserTable; // updated_by와 연결된 User
+  genre?: BoardgameGenreTable; // genre_id와 연결된 BoardgameGenre
+}
+
+/**
+ * `boardgame_genres` 테이블 스키마 타입 정의
+ */
+export interface BoardgameGenreTable {
+  id: number; // bigint
+  name: string | null; // text
+  // 관계 (필요시 추가)
+  boardgames?: BoardgameTable[]; // 해당 장르에 속하는 보드게임들
+}
+
+export interface UserCommunityAlarmKeywordTable {
+  keyword_id: number; // bigint
+  created_at: string; // timestamp with time zone (ISO string으로 처리)
+  user_id: string; // uuid
+  keyword: string | null; // character varying null (스키마에 따라 null 허용)
+}
+
+export interface UserSettingTable {
+  keyword_alarm: boolean;
+  reply_alarm: boolean;
+  user_id: string; // uuid (Primary Key)
+}
+
 export interface UserTownTable {
 	id: number;
 	user_id: string;
