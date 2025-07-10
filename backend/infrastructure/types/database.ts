@@ -88,3 +88,10 @@ export interface BoardgameGenreTable {
   // 관계 (필요시 추가)
   boardgames?: BoardgameTable[]; // 해당 장르에 속하는 보드게임들
 }
+
+export interface UserCommunityAlarmKeywordTable {
+  keyword_id: number; // bigint
+  created_at: string; // timestamp with time zone (ISO string으로 처리)
+  user_id: string; // uuid
+  keyword: string | null; // character varying null (스키마에 따라 null 허용)
+}
