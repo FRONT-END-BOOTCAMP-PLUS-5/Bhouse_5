@@ -1,4 +1,4 @@
-export default class Ad {
+export class Ad {
   constructor(
     public readonly id: number | undefined, // optional
     public readonly userId: string,

@@ -3,16 +3,6 @@
  * 모든 테이블의 컬럼과 관계를 중앙화하여 관리
  */
 
-// // menu_images 테이블
-// export interface MenuImageTable {
-// 	id: number; // int8
-// 	name: string; // varchar
-// 	is_default: boolean; // bool
-// 	menu_id: number; // int8 (FK: menus.id)
-// 	// 관계
-// 	menu?: MenuTable;
-// }
-
 export interface RoleTable {
 	role_id: number; // bigint
 	name: string; // varchar(50)
@@ -45,7 +35,7 @@ export interface UserRoleTable {
 	role?: RoleTable;
 }
 
-export type AlarmTypeEnum = '...' // 실제 enum 값에 맞게 수정 필요
+export type AlarmTypeEnum = 'KEYWORD' | 'REPLY' | 'ADMIN'
 
 export interface AlarmTable {
 	alarm_id: number; // bigint
@@ -56,4 +46,14 @@ export interface AlarmTable {
 	alarm_type: AlarmTypeEnum; // enum
 	// 관계
 	user?: UserTable;
+}
+
+export interface AdTable {
+	id: number; // int4
+	user_id: string;
+	title: string; // varchar(100)
+	img_url: string; // varchar(255)
+	redirect_url: string; // varchar(255)
+	is_active: boolean; // bool
+	type: string; // varchar(20)
 }
