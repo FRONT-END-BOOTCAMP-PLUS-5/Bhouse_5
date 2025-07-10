@@ -8,7 +8,7 @@ import { AlarmType } from '@domain/entities/Alarm'
  */
 export interface AlarmResponseDto {
   id: number // 알림 ID
-  Type: AlarmType // 알림 타입
+  type: AlarmType // 알림 타입
   is_read: boolean // 읽음 여부
   created_at: string // 생성 시간 (ISO 8601 문자열)
   message?: string // 'reply' 타입이 아닐 경우 사용
