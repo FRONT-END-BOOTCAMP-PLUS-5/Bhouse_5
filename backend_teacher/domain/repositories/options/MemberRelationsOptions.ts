@@ -1,5 +1,5 @@
 export interface MemberRelationsOptions {
-	includeMenus?: boolean;
-	includeRoles?: boolean;
-	includeMemberRoles?: boolean;
+  includeMenus?: boolean
+  includeRoles?: boolean
+  includeMemberRoles?: boolean
 }

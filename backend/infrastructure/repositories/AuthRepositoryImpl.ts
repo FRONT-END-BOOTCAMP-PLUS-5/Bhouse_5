@@ -69,7 +69,7 @@ export class AuthRepositoryImpl implements AuthRepository {
     )
   }
 
-  async signin(user: User): Promise<void> {
+  async signin(): Promise<void> {
     // TODO: 로그인 로직 구현
     throw new Error('Method not implemented.')
   }
@@ -84,7 +84,7 @@ export class AuthRepositoryImpl implements AuthRepository {
     throw new Error('Method not implemented.')
   }
 
-  async passwordReset(user: User): Promise<void> {
+  async passwordReset(): Promise<void> {
     // TODO: 비밀번호 재설정 로직 구현
     throw new Error('Method not implemented.')
   }

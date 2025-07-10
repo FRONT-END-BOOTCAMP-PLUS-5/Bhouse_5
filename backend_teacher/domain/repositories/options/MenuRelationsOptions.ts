@@ -1,4 +1,4 @@
 export interface MenuRelationsOptions {
-	includeImages?: boolean;
-	includeMember?: boolean;
+  includeImages?: boolean
+  includeMember?: boolean
 }

@@ -1,4 +1,4 @@
 export interface MemberRoleRelationsOptions {
-	includeMember?: boolean;
-	includeRole?: boolean;
+  includeMember?: boolean
+  includeRole?: boolean
 }

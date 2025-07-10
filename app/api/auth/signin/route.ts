@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 
 // TODO: 로그인 기능 구현 태스크 (Route 우선 방식)
 //
@@ -61,7 +61,7 @@ import { NextRequest, NextResponse } from 'next/server'
 //    - 필수값 누락
 //    - 서버 오류
 
-export async function POST(req: NextRequest) {
+export async function POST() {
   // TODO: 1단계 - Route에서 직접 로그인 로직 구현
   return NextResponse.json({ message: '로그인 기능 구현 예정', status: 501 })
 }

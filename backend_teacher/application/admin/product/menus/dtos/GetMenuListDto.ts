@@ -1,10 +1,10 @@
-import { MenuDto } from "./GetMenuDto";
+import { MenuDto } from './GetMenuDto'
 
 export class GetMenuListDto {
-	constructor(
-		public menus: MenuDto[],
+  constructor(
+    public menus: MenuDto[],
 
-		public currentPage: number,
-		public endPage: number
-	) {}
+    public currentPage: number,
+    public endPage: number,
+  ) {}
 }

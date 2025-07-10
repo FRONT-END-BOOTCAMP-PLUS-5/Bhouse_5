@@ -20,6 +20,7 @@ export async function GET(_: NextRequest, { params }: { params: { id: string } }
     if (!ad) return NextResponse.json({ message: 'Not found' }, { status: 404 })
     return NextResponse.json(ad)
   } catch (e) {
+    console.error('GET error:', e)
     return NextResponse.json({ message: 'Server error' }, { status: 500 })
   }
 }
@@ -33,6 +34,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     await updateAdUseCase.execute(id, body)
     return NextResponse.json({ message: 'Ad updated' })
   } catch (e) {
+    console.error('PATCH error:', e)
     return NextResponse.json({ message: 'Update failed' }, { status: 500 })
   }
 }
@@ -45,6 +47,7 @@ export async function DELETE(_: NextRequest, { params }: { params: { id: string 
     await deleteAdUseCase.execute(id)
     return new Response(null, { status: 204 }) // JSON이 아닌 Response 사용!
   } catch (e) {
+    console.error('DELETE error:', e)
     return NextResponse.json({ message: 'Delete failed' }, { status: 500 })
   }
 }

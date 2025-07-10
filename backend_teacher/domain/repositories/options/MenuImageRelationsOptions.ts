@@ -1,3 +1,3 @@
 export interface MenuImageRelationsOptions {
-	includeMenu?: boolean;
+  includeMenu?: boolean
 }

@@ -1,5 +1,5 @@
-import { GetMenuImageDto } from "./GetMenuImageDto";
+import { GetMenuImageDto } from './GetMenuImageDto'
 
 export interface GetMenuImageListDto {
-	images: GetMenuImageDto[];
+  images: GetMenuImageDto[]
 }

@@ -1,3 +1,3 @@
 export interface CategoryRelationsOptions {
-	includeMenus?: boolean;
+  includeMenus?: boolean
 }
