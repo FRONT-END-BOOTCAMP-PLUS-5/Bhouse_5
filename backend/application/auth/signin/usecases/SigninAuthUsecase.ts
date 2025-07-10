@@ -9,18 +9,21 @@ import User from '@be/domain/entities/User'
 export class SigninAuthUsecase {
   constructor(private readonly authRepository: AuthRepository) {}
 
-  async execute(dto: SigninAuthDto): Promise<SigninAuthResponseDto> {
-    // 1. 입력값 검증
-    if (!dto.email || !dto.password) {
-      return {
-        message: '이메일과 비밀번호를 모두 입력해주세요.',
-        status: 400,
-        error: 'MISSING_REQUIRED_FIELDS',
-      }
+  async execute(authHeader: string | null): Promise<SigninAuthResponseDto> {
+    // 1. Basic Auth 헤더 검증 및 파싱
+    const parsedCredentials = this.parseBasicAuth(authHeader)
+    if (parsedCredentials.error) {
+      return parsedCredentials.error
     }
 
-    // 2. 유저 조회
-    const user = await this.authRepository.findByEmailOrUsername(dto.email, '')
+    const { email, password } = parsedCredentials.data!
+
+    // 2. 입력값 검증
+    const validationError = this.validateInput(email, password)
+    if (validationError) return validationError
+
+    // 3. 유저 조회 (email 또는 username으로)
+    const user = await this.authRepository.findByEmailOrUsername(email, email)
     if (!user) {
       return {
         message: '존재하지 않는 사용자입니다.',
@@ -29,22 +32,73 @@ export class SigninAuthUsecase {
       }
     }
 
-    // 3. 비밀번호 검증
-    const passwordValidation = await this.validatePassword(dto.password, user.password)
+    // 4. 비밀번호 검증
+    const passwordValidation = await this.validatePassword(password, user.password)
     if (passwordValidation) return passwordValidation
 
-    // 4. JWT 토큰 생성 및 응답
+    // 5. JWT 토큰 생성 및 응답
     return this.createSuccessResponse(user)
   }
 
-  private validateInput(dto: SigninAuthDto): SigninAuthResponseDto | null {
-    if (!dto.email || !dto.password) {
+  private parseBasicAuth(authHeader: string | null): {
+    data?: { email: string; password: string }
+    error?: SigninAuthResponseDto
+  } {
+    if (!authHeader || !authHeader.startsWith('Basic ')) {
+      return {
+        error: {
+          message: 'Authorization header is missing or not Basic.',
+          status: 401,
+          error: 'UNAUTHORIZED',
+        },
+      }
+    }
+
+    try {
+      const base64Credentials = authHeader.split(' ')[1]
+      const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii')
+      const [email, password] = credentials.split(':')
+
+      if (!email || !password) {
+        return {
+          error: {
+            message: 'Invalid Basic Auth format.',
+            status: 400,
+            error: 'INVALID_AUTH_FORMAT',
+          },
+        }
+      }
+
+      return { data: { email, password } }
+    } catch (error) {
+      return {
+        error: {
+          message: 'Invalid Basic Auth encoding.',
+          status: 400,
+          error: 'INVALID_AUTH_ENCODING',
+        },
+      }
+    }
+  }
+
+  private validateInput(email: string, password: string): SigninAuthResponseDto | null {
+    if (!email || !password) {
       return {
         message: '이메일과 비밀번호를 모두 입력해주세요.',
         status: 400,
         error: 'MISSING_REQUIRED_FIELDS',
       }
     }
+
+    // Basic Auth 형식 검증 (email:password)
+    if (email.includes(':')) {
+      return {
+        message: '잘못된 인증 형식입니다.',
+        status: 400,
+        error: 'INVALID_AUTH_FORMAT',
+      }
+    }
+
     return null
   }
 
@@ -61,7 +115,9 @@ export class SigninAuthUsecase {
   }
 
   private createSuccessResponse(user: User): SigninAuthResponseDto {
-    const jwtSecret = process.env.JWT_SECRET
+    const jwtSecret = process.env.ACCESS_TOKEN_SECRET
+    const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET
+
     if (!jwtSecret) {
       return {
         message: '서버 설정 오류가 발생했습니다.',
@@ -70,27 +126,43 @@ export class SigninAuthUsecase {
       }
     }
 
-    const tokenPayload = {
+    if (!refreshTokenSecret) {
+      return {
+        message: '서버 설정 오류가 발생했습니다.',
+        status: 500,
+        error: 'JWT_REFRESH_SECRET_NOT_SET',
+      }
+    }
+
+    const now = Math.floor(Date.now() / 1000)
+
+    // Access Token (1시간) - roles는 단일 roleId
+    const accessTokenPayload = {
       userId: user.id,
       email: user.email,
       username: user.username,
-      roles: user.userRole || [],
-      iat: Math.floor(Date.now() / 1000),
-      exp: Math.floor(Date.now() / 1000) + 24 * 60 * 60,
+      roles: user.userRole ? [user.userRole.roleId] : [],
+      type: 'access',
+      iat: now,
+      exp: now + 1 * 60 * 60, // 1시간
     }
 
-    const token = jwt.sign(tokenPayload, jwtSecret)
+    // Refresh Token (2일)
+    const refreshTokenPayload = {
+      userId: user.id,
+      type: 'refresh',
+      iat: now,
+      exp: now + 2 * 24 * 60 * 60, // 2일
+    }
+
+    const accessToken = jwt.sign(accessTokenPayload, jwtSecret)
+    const refreshToken = jwt.sign(refreshTokenPayload, refreshTokenSecret)
 
     return {
       message: '로그인이 성공했습니다.',
       status: 200,
-      user: {
-        user_id: user.id,
-        email: user.email,
-        username: user.username,
-        roles: user.userRole || [],
-      },
-      token,
+      accessToken,
+      refreshToken,
     }
   }
 }

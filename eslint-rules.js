@@ -63,6 +63,9 @@ export const customRules = {
   // 사용하지 않는 import 금지 채원 : 좋아요 동규 : 좋아요
   '@typescript-eslint/no-unused-vars': 'warn',
 
+  // any 타입 사용 허용
+  '@typescript-eslint/no-explicit-any': 'off',
+
   // 중복된 import 금지 채원 : 이건 에러렌즈가 찾아주던대여? 동규: 굿
   'no-duplicate-imports': 'error',
 

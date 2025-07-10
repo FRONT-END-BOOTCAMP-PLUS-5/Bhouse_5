@@ -10,6 +10,7 @@ export interface SigninAuthResponseDto {
       roleId: number
     }
   }
-  token?: string
+  accessToken?: string
+  refreshToken?: string
   error?: string
 }
