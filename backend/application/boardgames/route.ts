@@ -1,6 +1,6 @@
 // app/api/boardgames/route.ts
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@bUtils/supabaseClient'
+import { supabaseClient } from '@bUtils/supabaseClient'
 
 
 // /boardgames API
@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
   const minPlayers = searchParams.get('minPlayers')
   const maxPlayers = searchParams.get('maxPlayers')
 
-  let query = supabase.from('boardgames').select('*')
+  let query = supabaseClient.from('boardgames').select('*')
 
   if (name) {
     query = query.ilike('name', `%${name}%`)
@@ -50,3 +50,4 @@ export async function GET(req: NextRequest) {
 
   return NextResponse.json(data)
 }
+

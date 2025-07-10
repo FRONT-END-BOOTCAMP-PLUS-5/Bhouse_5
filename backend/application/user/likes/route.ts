@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@bUtils/supabaseClient'
+import { supabaseClient } from '@bUtils/supabaseClient'
+
+//TODO: post , delete 만들기 
 
 export async function GET(req: NextRequest) {
   const authHeader = req.headers.get('Authorization')
@@ -13,14 +15,14 @@ export async function GET(req: NextRequest) {
   const {
     data: { user },
     error: userError
-  } = await supabase.auth.getUser(token)
+  } = await supabaseClient.auth.getUser(token)
 
   if (userError || !user) {
     return NextResponse.json({ message: '유저 인증 실패', error: userError }, { status: 401 })
   }
 
   // 2. 유저의 찜한 boardgame_id 목록 가져오기
-  const { data: likes, error: likeError } = await supabase
+  const { data: likes, error: likeError } = await supabaseClient
     .from('user_likes') // 또는 'wishlist' 등 찜 테이블 이름
     .select('boardgame_id')
     .eq('user_id', user.id)
@@ -36,7 +38,7 @@ export async function GET(req: NextRequest) {
   }
 
   // 3. boardgames 테이블에서 상세 정보 조회
-  const { data: boardgames, error: gameError } = await supabase
+  const { data: boardgames, error: gameError } = await supabaseClient
     .from('boardgames')
     .select('id, name, image_url, difficulty, min_players, max_players')
     .in('id', boardgameIds)
@@ -47,3 +49,4 @@ export async function GET(req: NextRequest) {
 
   return NextResponse.json({ data: boardgames })
 }
+

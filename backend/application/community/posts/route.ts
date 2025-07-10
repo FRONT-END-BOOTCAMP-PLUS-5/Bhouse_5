@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@bUtils/supabaseClient';
+import { supabaseClient } from '@bUtils/supabaseClient';
+
+//TODO: patch, delete 만들기
 
 export async function POST(req: NextRequest) {
   const body = await req.json()
@@ -23,14 +25,14 @@ export async function POST(req: NextRequest) {
   const {
     data: { user },
     error: userError
-  } = await supabase.auth.getUser(token)
+  } = await supabaseClient.auth.getUser(token)
 
   if (userError || !user) {
     return NextResponse.json({ message: '사용자 인증 실패', error: userError }, { status: 401 })
   }
 
   // category_name → category_id 조회
-  const { data: categoryData, error: categoryError } = await supabase
+  const { data: categoryData, error: categoryError } = await supabaseClient
     .from('community_categories')
     .select('id')
     .eq('name', category_name)
@@ -44,7 +46,7 @@ export async function POST(req: NextRequest) {
   }
 
   // 게시글 저장
-  const { data: insertedPost, error: insertError } = await supabase
+  const { data: insertedPost, error: insertError } = await supabaseClient
     .from('community_posts')
     .insert([
       {
@@ -93,7 +95,7 @@ export async function POST(req: NextRequest) {
 //   //     },
 export async function GET(_req: NextRequest) {
   // 1. 게시글 목록 조회 (user_id 포함)
-  const { data: posts, error: postsError } = await supabase
+  const { data: posts, error: postsError } = await supabaseClient
     .from('community_posts')
     .select('post_id, user_id, title, content, created_at, town, hits')
     .order('created_at', { ascending: false })
@@ -105,7 +107,7 @@ export async function GET(_req: NextRequest) {
   // 2. user_id → 프로필 정보 가져오기
   const userIds = [...new Set(posts.map((post) => post.user_id))] // 중복 제거
 
-  const { data: profiles, error: profilesError } = await supabase
+  const { data: profiles, error: profilesError } = await supabaseClient
     .from('users') // 또는 users 테이블
     .select('user_id, nickname, profile_img_url')
     .in('user_id', userIds)
@@ -139,3 +141,23 @@ export async function GET(_req: NextRequest) {
   })
 }
 
+export async function DELETE(req: NextRequest) {
+  const { searchParams } = new URL(req.url)
+  const postId = searchParams.get('post_id')
+
+  if (!postId) {
+    return NextResponse.json({ message: 'post_id는 필수입니다.' }, { status: 400 })
+  }
+
+  // 게시글 삭제
+  const { error: deleteError } = await supabaseClient
+    .from('community_posts')
+    .delete()
+    .eq('post_id', postId)
+
+  if (deleteError) {
+    return NextResponse.json({ message: '게시글 삭제 실패', error: deleteError }, { status: 500 })
+  }
+
+  return NextResponse.json({ message: '게시글이 성공적으로 삭제되었습니다.' })
+}
