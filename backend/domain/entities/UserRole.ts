@@ -1,9 +1,11 @@
-import { Roles } from './Roles'
 import { User } from './User'
+import { Role } from './Role'
 
 export class UserRole {
   constructor(
-    public user_id: User,
-    public role_id: Roles,
+    public userId: string, // uuid
+    public roleId: number, // bigint
+    public user?: User, // N:1
+    public role?: Role, // N:1
   ) {}
 }

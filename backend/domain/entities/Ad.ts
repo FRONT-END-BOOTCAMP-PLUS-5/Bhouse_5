@@ -1,4 +1,4 @@
-export class Ad {
+export default class Ad {
   constructor(
     public readonly id: number | undefined, // optional
     public readonly userId: string,
@@ -6,6 +6,6 @@ export class Ad {
     public imgUrl: string,
     public redirectUrl: string,
     public isActive: boolean,
-    public type: string
+    public type: string,
   ) {}
 }

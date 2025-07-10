@@ -1,15 +1,21 @@
-export class User {
+import UserRole from './UserRole'
+import Alarm from './Alarm'
+
+export default class User {
   constructor(
-    public user_id: string,
+    public id: string,
     public username: string,
-    public email: string,
     public password: string,
-    public nickname?: string,
+    public email: string,
+    public nickname: string,
+    public createdAt: Date,
+    public updatedAt: Date | null,
+    public image: string | null,
+    //관계
+    public userRole: UserRole,
+    public userAlarms?: Alarm[], // 1:N
     public phone?: string,
-    public profile_img_url?: string,
     public provider?: string,
-    public provider_id?: string,
-    public created_at?: string,
-    public updated_at?: string,
+    public providerId?: string,
   ) {}
 }
