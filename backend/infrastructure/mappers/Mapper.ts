@@ -7,7 +7,7 @@ import {
 	UserTable,
 } from "../types/database";
 import { Ad } from "@be/domain/entities/Ad";
-import { Alarm, AlarmType } from "@be/domain/entities/Alarms";
+import { Alarm, AlarmType } from "@be/domain/entities/Alarm";
 import { User } from "@be/domain/entities/User";
 import { Role } from "@be/domain/entities/Role";
 

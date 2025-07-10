@@ -1,5 +1,5 @@
-import { UserRole } from './UserRole';
-import { Alarm } from './Alarms';
+import { UserRole } from "./UserRole";
+import { Alarm } from './Alarm';
 
 export class User {
     constructor(

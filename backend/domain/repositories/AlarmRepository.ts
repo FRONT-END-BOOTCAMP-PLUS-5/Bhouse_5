@@ -1,4 +1,4 @@
-import { Alarm, AlarmType } from "../entities/Alarms";
+import { Alarm, AlarmType } from "../entities/Alarm";
 import { AlarmRelationOptions } from "./options/AlarmRelationOptions";
 
 export default interface AlarmRepository {
