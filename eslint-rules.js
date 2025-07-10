@@ -4,9 +4,6 @@ export const customRules = {
 
   // ===== 코드 품질 관련 규칙 =====
 
-  // 함수의 최대 라인 수 제한 채원 : 좋아요
-  'max-lines-per-function': ['warn', 50],
-
   // 파일의 최대 라인 수 제한
   'max-lines': ['warn', 300],
 
@@ -52,11 +49,11 @@ export const customRules = {
 
   // ===== 주석 관련 규칙 =====
 
-  // TODO, FIXME 주석에 이슈 번호나 담당자 추가 권장 이것도여 채원채원
+  // 주석 관련 규칙: TODO, FIXME 주석에 이슈 번호나 담당자 추가 권장
   'no-warning-comments': [
     'warn',
     {
-      terms: ['todo', 'fixme'],
+      terms: ['todo', 'fixme', 'hack', 'xxx'],
       location: 'anywhere',
     },
   ],

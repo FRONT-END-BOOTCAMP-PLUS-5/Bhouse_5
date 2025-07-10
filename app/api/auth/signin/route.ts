@@ -1,8 +1,10 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
+import { SigninAuthUsecase } from '@be/application/auth/signin/usecases/SigninAuthUsecase'
+import { AuthRepositoryImpl } from '@be/infrastructure/repositories/AuthRepositoryImpl'
 
-// TODO: 로그인 기능 구현 태스크 (Route 우선 방식)
+// TODO(@채영): 로그인 기능 구현 태스크 (Route 우선 방식)
 //
-// 1단계: Route에서 직접 로그인 로직 구현
+// 1단계: Route에서 직접 로그인 로직 구현 ✅
 //    - POST /api/auth/signin route.ts에서 직접 구현
 //      - 요청 데이터 파싱 (username 또는 email, password)
 //      - 필수값 검증
@@ -61,7 +63,108 @@ import { NextResponse } from 'next/server'
 //    - 필수값 누락
 //    - 서버 오류
 
-export async function POST() {
-  // TODO: 1단계 - Route에서 직접 로그인 로직 구현
-  return NextResponse.json({ message: '로그인 기능 구현 예정', status: 501 })
+// export async function POST(request: NextRequest) {
+//   try {
+//     // 1. 요청 데이터 파싱
+//     const body = await request.json()
+//     const { email, password } = body
+
+//     // 2. 필수값 검증
+//     if (!email || !password) {
+//       return NextResponse.json(
+//         {
+//           message: '이메일과 비밀번호를 모두 입력해주세요.',
+//           status: 400,
+//           error: 'MISSING_REQUIRED_FIELDS',
+//         },
+//         { status: 400 },
+//       )
+//     }
+
+//     // 3. Supabase로 사용자 조회 (email로)
+//     const { data: user, error: userError } = await supabaseClient
+//       .from('users') // 테이블명: users
+//       .select('*')
+//       .eq('email', email)
+//       .single()
+
+//     if (userError || !user) {
+//       return NextResponse.json(
+//         {
+//           message: '존재하지 않는 사용자입니다.',
+//           status: 401,
+//           error: 'USER_NOT_FOUND',
+//         },
+//         { status: 401 },
+//       )
+//     }
+
+//     // 4. bcrypt로 비밀번호 검증
+//     const isPasswordValid = await bcrypt.compare(password, user.password)
+
+//     if (!isPasswordValid) {
+//       return NextResponse.json(
+//         {
+//           message: '비밀번호가 일치하지 않습니다.',
+//           status: 401,
+//           error: 'INVALID_PASSWORD',
+//         },
+//         { status: 401 },
+//       )
+//     }
+
+//     // 5. JWT 토큰 생성
+//     const jwtSecret = process.env.JWT_SECRET
+//     if (!jwtSecret) {
+//       console.error('JWT_SECRET 환경변수가 설정되지 않았습니다.')
+//       return NextResponse.json(
+//         {
+//           message: '서버 설정 오류가 발생했습니다.',
+//           status: 500,
+//           error: 'JWT_SECRET_NOT_SET',
+//         },
+//         { status: 500 },
+//       )
+//     }
+
+//     const tokenPayload = {
+//       user_id: user.id,
+//       email: user.email,
+//       roles: user.roles || [],
+//       nickname: user.nickname,
+//       iat: Math.floor(Date.now() / 1000),
+//       exp: Math.floor(Date.now() / 1000) + 24 * 60 * 60, // 24시간
+//     }
+
+//     const token = jwt.sign(tokenPayload, jwtSecret)
+
+//     // 6. 로그인 성공 응답
+//     return NextResponse.json({
+//       message: '로그인이 성공했습니다.',
+//       status: 200,
+//       user: {
+//         id: user.id,
+//         email: user.email,
+//         roles: user.roles || [],
+//       },
+//       token: token,
+//     })
+//   } catch (error) {
+//     console.error('로그인 처리 중 오류 발생:', error)
+//     return NextResponse.json(
+//       {
+//         message: '서버 오류가 발생했습니다.',
+//         status: 500,
+//         error: 'INTERNAL_SERVER_ERROR',
+//       },
+//       { status: 500 },
+//     )
+//   }
+// }
+
+export async function POST(request: NextRequest) {
+  const body = await request.json()
+  const usecase = new SigninAuthUsecase(new AuthRepositoryImpl())
+  const result = await usecase.execute(body)
+  return NextResponse.json(result, { status: result.status })
 }
