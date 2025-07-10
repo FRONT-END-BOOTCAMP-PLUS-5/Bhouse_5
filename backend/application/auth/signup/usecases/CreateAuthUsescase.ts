@@ -1,7 +1,8 @@
-import { User } from '@be/domain/entities/User'
 import { AuthRepository } from '@be/domain/repositories/AuthRepository'
 import { CreateAuthDto, CreateAuthResponseDto } from '../dtos/CreateAuthDto'
 import bcrypt from 'bcrypt'
+import User from '@be/domain/entities/User'
+import UserRole from '@be/domain/entities/UserRole'
 
 export class CreateAuthUsecase {
   constructor(private readonly authRepository: AuthRepository) {}
@@ -36,15 +37,17 @@ export class CreateAuthUsecase {
       const user = new User(
         '', // user_id는 DB에서 자동 생성
         dto.username,
-        dto.email,
         hashedPassword,
-        dto.nickname,
+        dto.email,
+        dto.nickname || '',
+        new Date(),
+        new Date(),
+        dto.profile_img_url || null,
+        new UserRole('', dto.roles), // 임시 UserRole - 나중에 실제 데이터로 교체
+        undefined, // userAlarms
         dto.phone,
-        dto.profile_img_url,
         dto.provider,
         dto.provider_id,
-        new Date().toISOString(),
-        new Date().toISOString(),
       )
 
       // 회원가입 실행

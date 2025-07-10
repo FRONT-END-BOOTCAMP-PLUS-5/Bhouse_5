@@ -1,5 +1,5 @@
+import { Alarm } from './Alarms'
 import UserRole from './UserRole'
-import Alarm from './Alarm'
 
 export default class User {
   constructor(

@@ -1,5 +1,6 @@
+import User from '@be/domain/entities/User'
+import UserRole from '@be/domain/entities/UserRole'
 import { AuthRepository } from '@be/domain/repositories/AuthRepository'
-import { User } from '@be/domain/entities/User'
 import { createClient } from '@supabase/supabase-js'
 
 export class AuthRepositoryImpl implements AuthRepository {
@@ -16,11 +17,11 @@ export class AuthRepositoryImpl implements AuthRepository {
           password: user.password,
           nickname: user.nickname,
           phone: user.phone,
-          profile_img_url: user.profile_img_url,
+          profile_img_url: user.image,
           provider: user.provider,
-          provider_id: user.provider_id,
-          created_at: user.created_at,
-          updated_at: user.updated_at,
+          provider_id: user.providerId,
+          created_at: user.createdAt,
+          updated_at: user.updatedAt,
         },
       ])
       .select('user_id')
@@ -57,15 +58,17 @@ export class AuthRepositoryImpl implements AuthRepository {
     return new User(
       data.user_id,
       data.username,
-      data.email,
       data.password,
+      data.email,
       data.nickname,
-      data.phone,
-      data.profile_img_url,
-      data.provider,
-      data.provider_id,
       data.created_at,
       data.updated_at,
+      data.profile_img_url,
+      new UserRole(data.user_id, 1), // 임시 UserRole - 나중에 실제 데이터로 교체
+      undefined, // userAlarms - 나중에 별도로 로드
+      data.phone,
+      data.provider,
+      data.provider_id,
     )
   }
 

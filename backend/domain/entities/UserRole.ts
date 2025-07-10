@@ -1,7 +1,7 @@
-import { User } from './User'
-import { Role } from './Role'
+import Role from './Role'
+import User from './User'
 
-export class UserRole {
+export default class UserRole {
   constructor(
     public userId: string, // uuid
     public roleId: number, // bigint

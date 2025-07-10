@@ -2,7 +2,7 @@ import UserRole from './UserRole'
 
 export default class Role {
   constructor(
-    public roleId: string,
+    public roleId: number,
     public name: string,
     public userRoles?: UserRole[], // 1:N
   ) {}
