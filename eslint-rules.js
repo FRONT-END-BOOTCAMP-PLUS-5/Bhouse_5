@@ -3,10 +3,6 @@ export const customRules = {
   // 기본 규칙들
 
   // ===== 코드 품질 관련 규칙 =====
-
-  // 함수의 최대 라인 수 제한 채원 : 좋아요
-  'max-lines-per-function': ['warn', 50],
-
   // 파일의 최대 라인 수 제한
   'max-lines': ['warn', 300],
 
@@ -65,6 +61,9 @@ export const customRules = {
 
   // 사용하지 않는 import 금지 채원 : 좋아요 동규 : 좋아요
   '@typescript-eslint/no-unused-vars': 'warn',
+
+  // any 타입 사용 허용
+  '@typescript-eslint/no-explicit-any': 'off',
 
   // 중복된 import 금지 채원 : 이건 에러렌즈가 찾아주던대여? 동규: 굿
   'no-duplicate-imports': 'error',
