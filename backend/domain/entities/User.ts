@@ -1,22 +1,21 @@
-import { UserRole } from './UserRole';
-import { Alarm } from './Alarms';
+import { Alarm } from './Alarms'
+import { UserRole } from './UserRole'
 
 export class User {
   constructor(
     public id: string,
     public username: string,
-    public nickname : string,
     public password: string,
     public email: string,
+    public nickname: string,
     public createdAt: Date,
-    public deletedAt: Date | null,
-    public image: string | null,
     public updatedAt: Date | null,
-    public phone?: string | null,
-    public provider?: string,
-    public providerId?: string | null,
+    public image: string | null,
     //관계
-    public userRole?: UserRole,
-    public userAlarms?: Alarm[], // 1:N,
+    public userRole: UserRole,
+    public userAlarms?: Alarm[], // 1:N
+    public phone?: string,
+    public provider?: string,
+    public providerId?: string,
   ) {}
 }
