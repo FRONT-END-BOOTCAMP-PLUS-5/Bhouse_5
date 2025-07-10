@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { UserTownRepositoryImpl } from "@be/infrastructure/repositories/UserTownRepositoryImpl";
-import { VerifyUserTownUseCase } from "@be/application/user/certify-town/VerifyUSerTownUseCase";
-import { DeleteUserTownUseCase } from "@be/application/user/certify-town/DeleteUserTownUseCase";
+import { VerifyUserTownUseCase } from "@be/application/user/certify-town/usecases/VerifyUSerTownUseCase";
+import { DeleteUserTownUseCase } from "@be/application/user/certify-town/usecases/DeleteUserTownUseCase";
 import { supabaseClient } from "@bUtils/supabaseClient";
-import { GetUserTownListUseCase } from "@be/application/user/certify-town/GetUserTownListUseCase";
+import { GetUserTownListUseCase } from "@be/application/user/certify-town/usecases/GetUserTownListUseCase";
 
 const repo = new UserTownRepositoryImpl();
 const verifyUseCase = new VerifyUserTownUseCase(repo);

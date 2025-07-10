@@ -5,11 +5,13 @@ import {
 	RoleTable,
 	UserRoleTable,
 	UserTable,
+	StoreTable,
 } from "../types/database";
 import { Ad } from "@be/domain/entities/Ad";
 import { Alarm, AlarmType } from "@be/domain/entities/Alarms";
 import { User } from "@be/domain/entities/User";
 import { Role } from "@be/domain/entities/Role";
+import { Store } from "@be/domain/entities/Store";
 
 export class Mapper {
 	static toAd(source: AdTable): Ad {
@@ -70,5 +72,33 @@ export class Mapper {
 			source.user_id,
 			source.role_id,
 		);
+	}
+
+	static toStore(source: StoreTable): Store {
+		return new Store(
+			source.store_id,
+			source.name,
+			source.address,
+			source.phone,
+			source.description,
+			source.image_place_url,
+			source.image_menu_url,
+			source.created_by,
+			source.open_time,
+		);
+	}
+
+	static toStoreTable(store: Store): StoreTable {
+		return {
+			store_id: store.storeId,
+			name: store.name,
+			address: store.address,
+			phone: store.phone,
+			description: store.description,
+			image_place_url: store.imagePlaceUrl,
+			image_menu_url: store.imageMenuUrl,
+			created_by: store.createdBy,
+			open_time: store.openTime,
+		};
 	}
 }

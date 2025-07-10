@@ -57,3 +57,24 @@ export interface AdTable {
 	is_active: boolean; // bool
 	type: string; // varchar(20)
 }
+
+export interface UserTownTable {
+	id: number;
+	user_id: string;
+	town_name: string;
+	latitude: number | null;
+	longitude: number | null;
+	created_at: Date; // 또는 Date (string인 경우 new Date()로 변환)
+}
+
+export interface StoreTable {
+	store_id: number | undefined;
+	name: string;
+	address: string;
+	phone: string;
+	description: string;
+	image_place_url: string;
+	image_menu_url: string;
+	created_by: string;
+	open_time: string;
+}

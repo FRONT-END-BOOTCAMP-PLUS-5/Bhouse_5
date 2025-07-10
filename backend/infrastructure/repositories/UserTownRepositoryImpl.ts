@@ -1,6 +1,7 @@
 import { UserTownRepository } from "@be/domain/repositories/UserTownRepository";
 import { UserTown } from "@be/domain/entities/UserTown";
 import { supabaseClient } from "@bUtils/supabaseClient";
+import { UserTownTable } from "../types/database";
 
 const supabase = supabaseClient;
 
@@ -43,7 +44,7 @@ export class UserTownRepositoryImpl implements UserTownRepository {
     if (error || !data) throw new Error(error?.message || "동네 조회 실패");
 
     return data.map(
-      (t: any) =>
+      (t: UserTownTable) =>
         new UserTown(t.id, t.user_id, t.town_name, t.latitude, t.longitude, t.created_at)
     );
   }
