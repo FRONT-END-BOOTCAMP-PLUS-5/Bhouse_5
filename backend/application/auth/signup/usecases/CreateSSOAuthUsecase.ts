@@ -1,8 +1,8 @@
 import { AuthRepository } from "@be/domain/repositories/AuthRepository";
 import { CreateSSOAuthDto } from "../dtos/CreateSSOAuthDto";
 import { CreateAuthResponseDto } from "../dtos/CreateAuthDto";
-import User from "@be/domain/entities/User";
-import UserRole from "@be/domain/entities/UserRole";
+import { User } from "@be/domain/entities/User";
+import { UserRole } from "@be/domain/entities/UserRole";
 
 export class CreateSSOAuthUsecase {
   constructor(private readonly authRepo: AuthRepository) {}

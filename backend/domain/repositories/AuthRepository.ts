@@ -1,4 +1,4 @@
-import User from '../entities/User'
+import { User } from "../entities/User";
 
 export interface AuthRepository {
   signup(user: User, roles: number): Promise<void>
