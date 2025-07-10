@@ -95,3 +95,9 @@ export interface UserCommunityAlarmKeywordTable {
   user_id: string; // uuid
   keyword: string | null; // character varying null (스키마에 따라 null 허용)
 }
+
+export interface UserSettingTable {
+  keyword_alarm: boolean;
+  reply_alarm: boolean;
+  user_id: string; // uuid (Primary Key)
+}
