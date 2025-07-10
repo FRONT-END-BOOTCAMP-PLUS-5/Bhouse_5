@@ -3,15 +3,6 @@ import { Ad } from '../../domain/entities/Ad';
 import { AdRepository } from '../../domain/repositories/AdRepository';
 import { Mapper } from '../mappers/Mapper';
 
-function toSnakeCaseFields(data: any): any {
-  const mapped: any = {};
-  if (data.title !== undefined) mapped.title = data.title;
-  if (data.imgUrl !== undefined) mapped.img_url = data.imgUrl;
-  if (data.redirectUrl !== undefined) mapped.redirect_url = data.redirectUrl;
-  if (data.isActive !== undefined) mapped.is_active = data.isActive;
-  return mapped;
-}
-
 export class AdRepositoryImpl implements AdRepository {
   async findAll(): Promise<Ad[]> {
     const { data, error } = await supabaseClient.from('ad_management').select('id, title, img_url, redirect_url, is_active, type');

@@ -1,6 +1,6 @@
-import UserRole from "./UserRole";
+import { UserRole } from "./UserRole";
 
-export default class Role {
+export class Role {
     constructor(
         public roleId: string,
         public name: string,
