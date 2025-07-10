@@ -3,6 +3,16 @@ import { Ad } from '../../domain/entities/Ad';
 import { AdRepository } from '../../domain/repositories/AdRepository';
 import { Mapper } from '../mappers/Mapper';
 
+async function getCurrentUserId(): Promise<string> {
+  const {
+    data: { user },
+    error,
+  } = await supabaseClient.auth.getUser();
+
+  if (error || !user) throw new Error("인증된 사용자 정보가 없습니다.");
+  return user.id;
+}
+
 export class AdRepositoryImpl implements AdRepository {
   async findAll(): Promise<Ad[]> {
     const { data, error } = await supabaseClient.from('ad_management').select('id, title, img_url, redirect_url, is_active, type');
@@ -20,9 +30,9 @@ export class AdRepositoryImpl implements AdRepository {
     return data ? new Ad(data.id, '', data.title, data.img_url, data.redirect_url, data.is_active, data.type) : null;
   }
 
-
   async create(ad: Ad): Promise<void> {
-    const adTable = Mapper.toAdTable(ad);
+    const userId = await getCurrentUserId();
+    const adTable = Mapper.toAdTable({ ...ad, userId }); // userId 덮어쓰기
     const { error } = await supabaseClient.from("ad_management").insert(adTable);
     if (error) throw error;
   }
