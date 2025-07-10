@@ -42,8 +42,13 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { townName } = await req.json();
-    const result = await verifyUseCase.execute(user.id, townName);
+    const { townName, latitude, longitude } = await req.json();
+
+    if (!townName || latitude == null || longitude == null) {
+      return NextResponse.json({ message: "필수 필드가 누락되었습니다." }, { status: 400 });
+    }
+
+    const result = await verifyUseCase.execute(user.id, townName, latitude, longitude);
     return NextResponse.json(result);
   } catch (e: any) {
     console.error("POST user town error:", e);
