@@ -1,11 +1,13 @@
 export class Post {
   constructor(
-    public post_id: number, // required
-    public user_id: string, // required
-    public title: string, // required
-    public content: string, // required
-    public created_at: Date, // required
-    public town?: string, // optional
-    public hits?: number, // optional
+    public post_id: number,
+    public user_id: string,
+    public title: string,
+    public content: string,
+    public created_at: Date,
+    public town?: string,
+    public hits?: number,
+    public nickname?: string,
+    public profile_img_url?: string | null
   ) {}
 }

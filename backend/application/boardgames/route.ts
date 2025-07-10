@@ -1,4 +1,4 @@
-// app/api/boardgames/route.ts
+w// app/api/boardgames/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseClient } from '@bUtils/supabaseClient'
 

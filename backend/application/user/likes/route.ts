@@ -1,52 +1,61 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseClient } from '@bUtils/supabaseClient'
+import { LikeRepositoryImpl } from '@infrastructure/repositories/LikeRepositoryImpl'
+import { AddLikeUseCase } from '@be/application/user/likes/usecases/AddLikeUseCase'
+import { RemoveLikeUseCase } from '@be/application/user/likes/usecases/RemoveLikeUseCase'
+import { GetLikedBoardgamesUseCase } from '@be/application/user/likes/usecases/GetLikedBoardgamesUseCase'
 
-//TODO: post , delete 만들기 
+const likeRepository = new LikeRepositoryImpl()
 
 export async function GET(req: NextRequest) {
-  const authHeader = req.headers.get('Authorization')
-  const token = authHeader?.replace('Bearer ', '')
+  const token = req.headers.get('Authorization')?.replace('Bearer ', '')
+  if (!token) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
 
-  if (!token) {
-    return NextResponse.json({ message: '로그인 토큰이 필요합니다.' }, { status: 401 })
-  }
-
-  // 1. 토큰으로 유저 정보 조회
   const {
     data: { user },
-    error: userError
+    error
   } = await supabaseClient.auth.getUser(token)
 
-  if (userError || !user) {
-    return NextResponse.json({ message: '유저 인증 실패', error: userError }, { status: 401 })
-  }
+  if (!user || error) return NextResponse.json({ message: 'Auth error' }, { status: 401 })
 
-  // 2. 유저의 찜한 boardgame_id 목록 가져오기
-  const { data: likes, error: likeError } = await supabaseClient
-    .from('user_likes') // 또는 'wishlist' 등 찜 테이블 이름
-    .select('boardgame_id')
-    .eq('user_id', user.id)
+  const usecase = new GetLikedBoardgamesUseCase(likeRepository)
+  const data = await usecase.execute(user.id)
 
-  if (likeError) {
-    return NextResponse.json({ message: '찜 목록 조회 실패', error: likeError }, { status: 500 })
-  }
-
-  const boardgameIds = likes.map((like) => like.boardgame_id)
-
-  if (boardgameIds.length === 0) {
-    return NextResponse.json({ data: [] })
-  }
-
-  // 3. boardgames 테이블에서 상세 정보 조회
-  const { data: boardgames, error: gameError } = await supabaseClient
-    .from('boardgames')
-    .select('id, name, image_url, difficulty, min_players, max_players')
-    .in('id', boardgameIds)
-
-  if (gameError) {
-    return NextResponse.json({ message: '보드게임 정보 조회 실패', error: gameError }, { status: 500 })
-  }
-
-  return NextResponse.json({ data: boardgames })
+  return NextResponse.json({ data })
 }
 
+export async function POST(req: NextRequest) {
+  const token = req.headers.get('Authorization')?.replace('Bearer ', '')
+  if (!token) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
+
+  const {
+    data: { user },
+    error
+  } = await supabaseClient.auth.getUser(token)
+
+  if (!user || error) return NextResponse.json({ message: 'Auth error' }, { status: 401 })
+
+  const { boardgameId } = await req.json()
+  const usecase = new AddLikeUseCase(likeRepository)
+  await usecase.execute(user.id, boardgameId)
+
+  return NextResponse.json({ message: '찜 완료' })
+}
+
+export async function DELETE(req: NextRequest) {
+  const token = req.headers.get('Authorization')?.replace('Bearer ', '')
+  if (!token) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
+
+  const {
+    data: { user },
+    error
+  } = await supabaseClient.auth.getUser(token)
+
+  if (!user || error) return NextResponse.json({ message: 'Auth error' }, { status: 401 })
+
+  const { boardgameId } = await req.json()
+  const usecase = new RemoveLikeUseCase(likeRepository)
+  await usecase.execute(user.id, boardgameId)
+
+  return NextResponse.json({ message: '찜 해제 완료' })
+}
