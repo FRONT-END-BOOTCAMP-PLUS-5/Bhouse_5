@@ -1,9 +1,9 @@
-import { IPostRepository } from '@be/domain/repositories/PostRepository'
+import { supabaseClient } from '@bUtils/supabaseClient'
 
 export class DeletePostUseCase {
-  constructor(private postRepo: IPostRepository) {}
+  async execute(postId: number): Promise<void> {
+    const { error } = await supabaseClient.from('community_posts').delete().eq('post_id', postId)
 
-  async execute(postId: number, userId: string) {
-    return await this.postRepo.deletePost(postId, userId)
+    if (error) throw new Error(error.message)
   }
 }

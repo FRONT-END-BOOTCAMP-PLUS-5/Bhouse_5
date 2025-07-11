@@ -2,8 +2,13 @@ import { NextRequest, NextResponse } from 'next/server'
 import { CreatePostUseCase } from '@be/application/community/posts/usecases/CreatePostUseCase'
 import { DeletePostUseCase } from '@be/application/community/posts/usecases/DeletePostUseCase'
 import { PostRepositoryImpl } from '@infrastructure/repositories/PostRepositoryImpl'
+import { GetPostByIdUseCase } from '@application/community/posts/usecases/GetPostByIdUseCase'
+import { GetPostListUseCase } from '@application/community/posts/usecases/GetPostListUseCase'
+
 import { supabaseClient } from '@bUtils/supabaseClient'
-import { GetPostListUseCase } from '../../../../backend/application/community/posts/usecases/GetPostListUseCase'
+const postRepo = new PostRepositoryImpl()
+const getPostByIdUsecase = new GetPostByIdUseCase()
+const getPostListUsecase = new GetPostListUseCase(postRepo)
 
 //게시글 작성 API
 export async function POST(req: NextRequest) {
@@ -53,14 +58,31 @@ export async function POST(req: NextRequest) {
 //   //       }
 //   //     },
 
-export async function GET() {
-  const useCase = new GetPostListUseCase()
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url)
+  const postIdParam = searchParams.get('post_id')
 
+  if (postIdParam) {
+    const postId = Number(postIdParam)
+    if (isNaN(postId)) {
+      return NextResponse.json({ message: 'Invalid post_id' }, { status: 400 })
+    }
+
+    try {
+      const post = await getPostByIdUsecase.execute(postId)
+      if (!post) return NextResponse.json({ message: 'Post not found' }, { status: 404 })
+      return NextResponse.json(post)
+    } catch (err) {
+      return NextResponse.json({ message: '글 조회 실패', error: err }, { status: 500 })
+    }
+  }
+
+  // post_id 없으면 전체 목록 조회로 처리
   try {
-    const result = await useCase.execute()
+    const result = await getPostListUsecase.execute()
     return NextResponse.json(result)
   } catch (err) {
-    return NextResponse.json({ message: '글 조회 실패', error: err }, { status: 500 })
+    return NextResponse.json({ message: '글 목록 조회 실패', error: err }, { status: 500 })
   }
 }
 

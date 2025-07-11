@@ -1,9 +1,17 @@
-import { IPostRepository } from '@be/domain/repositories/PostRepository'
+import { supabaseClient } from '@bUtils/supabaseClient'
 
 export class UpdatePostUseCase {
-  constructor(private postRepo: IPostRepository) {}
+  async execute(postId: number, updates: { title: string; content: string; updated_by: string }): Promise<void> {
+    const { error } = await supabaseClient
+      .from('community_posts')
+      .update({
+        title: updates.title,
+        content: updates.content,
+        updated_by: updates.updated_by,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('post_id', postId)
 
-  async execute(postId: number, title: string, content: string, userId: string) {
-    return await this.postRepo.updatePost(postId, title, content, userId)
+    if (error) throw new Error(error.message)
   }
 }
