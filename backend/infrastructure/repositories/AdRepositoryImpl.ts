@@ -1,19 +1,11 @@
-import { supabase } from '@be/utils/supabaseClient'
-import { Ad } from '@be/domain/entities/Ad'
-import { AdRepository } from '@be/domain/repositories/AdRepository'
-
-function toSnakeCaseFields(data: any): any {
-  const mapped: any = {}
-  if (data.title !== undefined) mapped.title = data.title
-  if (data.imgUrl !== undefined) mapped.img_url = data.imgUrl
-  if (data.redirectUrl !== undefined) mapped.redirect_url = data.redirectUrl
-  if (data.isActive !== undefined) mapped.is_active = data.isActive
-  return mapped
-}
+import { supabaseClient } from '@bUtils/supabaseClient'
+import { Ad } from '../../domain/entities/Ad'
+import { AdRepository } from '../../domain/repositories/AdRepository'
+import { Mapper } from '../mappers/Mapper'
 
 export class AdRepositoryImpl implements AdRepository {
   async findAll(): Promise<Ad[]> {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('ad_management')
       .select('id, title, img_url, redirect_url, is_active, type')
     if (error) throw error
@@ -21,7 +13,7 @@ export class AdRepositoryImpl implements AdRepository {
   }
 
   async findById(id: number): Promise<Ad | null> {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('ad_management')
       .select('id, title, img_url, redirect_url, is_active, type')
       .eq('id', id)
@@ -31,28 +23,23 @@ export class AdRepositoryImpl implements AdRepository {
   }
 
   async create(ad: Ad): Promise<void> {
-    const { error } = await supabase.from('ad_management').insert({
-      user_id: ad.userId,
-      title: ad.title,
-      img_url: ad.imgUrl,
-      redirect_url: ad.redirectUrl,
-      is_active: ad.isActive,
-      type: ad.type,
-    })
+    const adTable = Mapper.toAdTable(ad)
+    const { error } = await supabaseClient.from('ad_management').insert(adTable)
     if (error) throw error
   }
 
-  async update(id: number, updateData: any): Promise<void> {
-    const safeUpdateData = { ...updateData }
-    delete safeUpdateData.userId
-    const mapped = toSnakeCaseFields(safeUpdateData)
-
-    const { error } = await supabase.from('ad_management').update(mapped).eq('id', id)
-    if (error) throw error
-  }
+  //FIXME : 여기 카맬케이스로 변경해주세요 다영님
+  // async update(id: number, updateData: Partial<Ad>): Promise<void> {
+  //   const partial = Mapper.toAdTable({ ...updateData, id } as Ad) // 임시로 Ad 형변환
+  //   // user_id는 수정하지 않도록 제거 - destructuring을 사용하여 안전하게 제거
+  //   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  //   const { user_id, ...updateFields } = partial
+  //   const { error } = await supabaseClient.from('ad_management').update(updateFields).eq('id', id)
+  //   if (error) throw error
+  // }
 
   async delete(id: number): Promise<void> {
-    const { error } = await supabase.from('ad_management').delete().eq('id', id)
+    const { error } = await supabaseClient.from('ad_management').delete().eq('id', id)
     if (error) throw error
   }
 }

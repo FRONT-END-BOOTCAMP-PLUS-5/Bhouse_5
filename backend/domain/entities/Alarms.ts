@@ -1,4 +1,4 @@
-import User from './User'
+import { User } from './User'
 
 export enum AlarmType {
   //FIXME : Enum타입 정의 어디에서 해야 할지?

@@ -54,6 +54,7 @@ export const customRules = {
     'warn',
     {
       terms: ['todo', 'fixme', 'hack', 'xxx'],
+
       location: 'anywhere',
     },
   ],
