@@ -40,24 +40,4 @@ export class BoardgameRepositoryImpl implements BoardgameRepository {
         ),
     )
   }
-
-  // backend/infrastructure/repositories/BoardgameRepositoryImpl.ts
-  async getStoresByBoardgameId(
-    boardgameId: number,
-  ): Promise<{ storeId: string; storeName: string; address: string }[]> {
-    const { data, error } = await supabaseClient
-      .from('store_own_boardgames')
-      .select('store_id, store_places(name, address)')
-      .eq('boardgame_id', boardgameId)
-
-    if (error) throw error
-
-    return data
-      .filter((entry) => Array.isArray(entry.store_places) && entry.store_places.length > 0)
-      .map((entry) => ({
-        storeId: entry.store_id,
-        storeName: entry.store_places[0].name,
-        address: entry.store_places[0].address,
-      }))
-  }
 }

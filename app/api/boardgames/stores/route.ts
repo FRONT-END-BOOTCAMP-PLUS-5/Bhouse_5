@@ -1,18 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { BoardgameRepositoryImpl } from '@infrastructure/repositories/BoardgameRepositoryImpl'
-import { GetBoardgameStoresUseCase } from '@application/boardgames/usecases/GetBoardgameStoresUseCase'
+import { GetPostListUseCase } from '@application/community/posts/usecases/GetPostListUseCase'
+import { PostRepositoryImpl } from '@infrastructure/repositories/PostRepositoryImpl'
 
-const repo = new BoardgameRepositoryImpl()
-const usecase = new GetBoardgameStoresUseCase(repo)
+const usecase = new GetPostListUseCase(new PostRepositoryImpl())
 
 export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url)
-  const boardgameId = searchParams.get('boardgameId')
-
-  if (!boardgameId) {
-    return NextResponse.json({ error: 'boardgameId is required' }, { status: 400 })
+  console.log(req)
+  try {
+    const result = await usecase.execute()
+    return NextResponse.json(result)
+  } catch (error) {
+    return NextResponse.json({ message: '불러오기 실패', error }, { status: 500 })
   }
-
-  const result = await usecase.execute(Number(boardgameId))
-  return NextResponse.json(result)
 }

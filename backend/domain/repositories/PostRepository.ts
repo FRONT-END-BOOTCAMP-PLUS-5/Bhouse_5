@@ -6,11 +6,11 @@ import { Post } from '../entities/Post'
 // The methods also include parameters for post ID, user ID, title, content, and optional
 // parameters like town, which can be used to filter or categorize posts.
 //// Example usage:
-// const postRepo: IPostRepository = new PostRepositoryImpl();  
+// const postRepo: IPostRepository = new PostRepositoryImpl();
 
-export interface IPostRepository {
-  updatePost(postId: number, title: string, content: string, userId: string): Promise<Post>
-  deletePost(postId: number, userId: string): Promise<void>
-  getPostById(postId: number): Promise<Post | null>
-  postPost(userId: string, title: string, content: string, town?: string): Promise<Post>
+export interface PostRepository {
+  // updatePost(postId: number, title: string, content: string, userId: string): Promise<Post>
+  // deletePost(postId: number, userId: string): Promise<void>
+  getPostList(): Promise<{ data: Post[]; total: number }>
+  // postPost(userId: string, title: string, content: string, town?: string): Promise<Post>
 }
