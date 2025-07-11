@@ -12,27 +12,27 @@ export const customRules = {
 
   // ===== 네이밍 컨벤션 ===== 채원 : 이거 다 넣져?
 
-  // 변수, 함수, 클래스 네이밍 컨벤션 통합
-  '@typescript-eslint/naming-convention': [
-    'error',
-    // 변수명은 camelCase, UPPER_CASE, PascalCase 허용
-    {
-      selector: 'variable',
-      format: ['camelCase', 'UPPER_CASE', 'PascalCase'],
-      leadingUnderscore: 'forbid',
-      trailingUnderscore: 'forbid',
-    },
-    // 함수명은 camelCase, PascalCase 허용
-    {
-      selector: 'function',
-      format: ['camelCase', 'PascalCase'],
-    },
-    // 클래스명은 PascalCase 강제
-    {
-      selector: 'class',
-      format: ['PascalCase'],
-    },
-  ],
+  // // 변수, 함수, 클래스 네이밍 컨벤션 통합
+  // '@typescript-eslint/naming-convention': [
+  //   'error',
+  //   // 변수명은 camelCase, UPPER_CASE, PascalCase 허용
+  //   {
+  //     selector: 'variable',
+  //     format: ['camelCase', 'UPPER_CASE', 'PascalCase'],
+  //     leadingUnderscore: 'forbid',
+  //     trailingUnderscore: 'forbid',
+  //   },
+  //   // 함수명은 camelCase, PascalCase 허용
+  //   {
+  //     selector: 'function',
+  //     format: ['camelCase', 'PascalCase'],
+  //   },
+  //   // 클래스명은 PascalCase 강제
+  //   {
+  //     selector: 'class',
+  //     format: ['PascalCase'],
+  //   },
+  // ],
 
   // ===== 성능 관련 규칙 =====
 
@@ -63,6 +63,9 @@ export const customRules = {
 
   // 사용하지 않는 import 금지 채원 : 좋아요 동규 : 좋아요
   '@typescript-eslint/no-unused-vars': 'warn',
+
+  // any 타입 사용 허용
+  '@typescript-eslint/no-explicit-any': 'off',
 
   // any 타입 사용 허용
   '@typescript-eslint/no-explicit-any': 'off',
