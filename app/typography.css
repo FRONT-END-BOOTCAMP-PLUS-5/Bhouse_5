@@ -39,3 +39,11 @@
   font-style: normal;
   font-display: swap;
 }
+
+@font-face {
+  font-family: 'MBC1961OTFM';
+  src: url('@fonts/MBC1961OTFM.otf') format('opentype');
+  font-weight: 800; /* ExtraBold */
+  font-style: normal;
+  font-display: swap;
+}

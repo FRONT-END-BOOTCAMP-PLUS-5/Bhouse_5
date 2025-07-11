@@ -6,7 +6,7 @@
   min-height: 100svh;
   padding: 80px;
   gap: 64px;
-  background-color: var(--primary-blue);
+  background-color: var(--secondary-blue-100);
 }
 
 /* 테블릿 */
@@ -23,7 +23,7 @@
   }
 }
 
-
+/* TODO:(@채원) 모바일 텍스트 크기 스타일 변동 적용 */
 .boldText {
   font-family: 'NanumSquare', sans-serif;
   font-weight: 700; /* Bold */
@@ -51,6 +51,38 @@
   color: var(--primary-black);
   margin-bottom: 20px;
 }
+
+.body16 {
+  font-size: 16px;
+  font-weight: 400; /* Regular */
+  line-height: 1.5; /* 가독성을 위해 line-height 추가 */
+}
+
+.body16-bold {
+  font-size: 16px;
+  font-weight: 700; /* Bold */
+  line-height: 1.5;
+}
+
+.header20 {
+  font-size: 20px;
+  font-weight: 700; /* Bold */
+  line-height: 1.3;
+}
+
+.header48 {
+  font-size: 48px;
+  font-weight: 700; /* Bold */
+  line-height: 1.2;
+}
+
+.title48 {
+  font-family: 'MBC1961OTFM', sans-serif; 
+  font-size: 48px;
+  font-weight: 700; /* Bold */
+  line-height: 1.2;
+}
+
 
 .button {
   background-color: var(--secondary-blue-600);
