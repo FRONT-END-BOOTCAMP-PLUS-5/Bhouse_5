@@ -1,7 +1,7 @@
 // backend/domain/entities/Boardgame.ts
 
-import { User } from "./User";
-import { BoardgameGenre } from "./BoardgameGenre";
+import { User } from './User'
+import { BoardgameGenre } from './BoardgameGenre'
 
 /**
  * 보드게임 엔티티입니다.
@@ -26,7 +26,7 @@ export class Boardgame {
     // 관계
     public creator?: User, // N:1 관계
     public updater?: User, // N:1 관계
-    public genre?: BoardgameGenre // N:1 관계
+    public genre?: BoardgameGenre, // N:1 관계
   ) {}
 
   // 엔티티 관련 비즈니스 로직 메서드 추가 가능 (예: validateFields, updateDifficulty 등)

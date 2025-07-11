@@ -1,6 +1,6 @@
 // backend/domain/repositories/UserSettingRepository.ts
 
-import { UserSetting } from "../entities/UserSetting";
+import { UserSetting } from '../entities/UserSetting'
 
 /**
  * 사용자 알림 설정 데이터 접근을 위한 레포지토리 인터페이스입니다.
@@ -12,7 +12,7 @@ export default interface UserSettingRepository {
    * @param userId 사용자 ID (UUID)
    * @returns UserSetting 엔티티 또는 null (설정이 없는 경우)
    */
-  findByUserId(userId: string): Promise<UserSetting | null>;
+  findByUserId(userId: string): Promise<UserSetting | null>
 
   /**
    * 사용자 알림 설정을 저장하거나 업데이트합니다.
@@ -20,12 +20,12 @@ export default interface UserSettingRepository {
    * @param userSetting 저장/업데이트할 UserSetting 엔티티
    * @returns 저장/업데이트된 UserSetting 엔티티
    */
-  save(userSetting: UserSetting): Promise<UserSetting>;
+  save(userSetting: UserSetting): Promise<UserSetting>
 
   /**
    * 사용자 알림 설정을 업데이트합니다.
    * @param userSetting 업데이트할 UserSetting 엔티티 (userId는 필수)
    * @returns 업데이트된 UserSetting 엔티티
    */
-  update(userSetting: UserSetting): Promise<UserSetting>;
+  update(userSetting: UserSetting): Promise<UserSetting>
 }

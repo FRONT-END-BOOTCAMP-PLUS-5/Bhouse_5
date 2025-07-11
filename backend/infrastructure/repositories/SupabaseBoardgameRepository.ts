@@ -1,27 +1,27 @@
 // backend/infrastructure/repositories/SupabaseBoardgameRepository.ts
 
-import { supabaseClient } from "../../utils/supabaseClient"; // 미리 정의된 Supabase 클라이언트 임포트
-import BoardgameRepository from "@domain/repositories/BoardgameRepository";
-import { Boardgame } from "@domain/entities/Boardgame";
-import { BoardgameRelationsOptions } from "@domain/repositories/options/BoardgameRelationsOptions";
-import { BoardgameGenre } from "@domain/entities/BoardgameGenre"; // 필요한 경우 임포트
+import { supabaseClient } from '../../utils/supabaseClient' // 미리 정의된 Supabase 클라이언트 임포트
+import BoardgameRepository from '@domain/repositories/BoardgameRepository'
+import { Boardgame } from '@domain/entities/Boardgame'
+import { BoardgameRelationsOptions } from '@domain/repositories/options/BoardgameRelationsOptions'
+import { BoardgameGenre } from '@domain/entities/BoardgameGenre' // 필요한 경우 임포트
 
 // Supabase의 boardgames 테이블에서 가져올 데이터의 타입 정의 (DB 스키마와 매핑)
 interface BoardgameTable {
-  boardgame_id: number;
-  name: string;
-  description: string | null;
-  min_players: number | null;
-  max_players: number | null;
-  created_by: string;
-  created_at: string; // Supabase에서 가져올 때는 ISO 문자열
-  updated_at: string; // Supabase에서 가져올 때는 ISO 문자열
-  updated_by: string;
-  min_playtime: number | null;
-  max_playtime: number | null;
-  difficulty: number | null;
-  genre_id: number;
-  img_url: string | null;
+  boardgame_id: number
+  name: string
+  description: string | null
+  min_players: number | null
+  max_players: number | null
+  created_by: string
+  created_at: string // Supabase에서 가져올 때는 ISO 문자열
+  updated_at: string // Supabase에서 가져올 때는 ISO 문자열
+  updated_by: string
+  min_playtime: number | null
+  max_playtime: number | null
+  difficulty: number | null
+  genre_id: number
+  img_url: string | null
   // 관계 테이블의 필드도 필요시 여기에 추가 (예: genre_name 등)
 }
 
@@ -49,8 +49,8 @@ class BoardgameMapper {
       data.img_url,
       new Date(data.created_at),
       new Date(data.updated_at),
-      data.updated_by
-    );
+      data.updated_by,
+    )
   }
 
   /**
@@ -58,9 +58,7 @@ class BoardgameMapper {
    * @param boardgame Boardgame 엔티티
    * @returns Supabase에 저장할 보드게임 테이블 데이터
    */
-  static toBoardgameTable(
-    boardgame: Boardgame
-  ): Omit<BoardgameTable, "boardgame_id" | "created_at"> {
+  static toBoardgameTable(boardgame: Boardgame): Omit<BoardgameTable, 'boardgame_id' | 'created_at'> {
     return {
       name: boardgame.name,
       description: boardgame.description,
@@ -74,7 +72,7 @@ class BoardgameMapper {
       difficulty: boardgame.difficulty,
       genre_id: boardgame.genreId,
       img_url: boardgame.imgUrl,
-    };
+    }
   }
 }
 
@@ -88,41 +86,38 @@ export class SupabaseBoardgameRepository implements BoardgameRepository {
 
   async save(boardgame: Boardgame): Promise<Boardgame> {
     const { data, error } = await supabaseClient
-      .from("boardgames")
+      .from('boardgames')
       .insert([BoardgameMapper.toBoardgameTable(boardgame)])
       .select() // 삽입된 레코드를 반환받기 위해 .select() 사용
-      .single(); // 단일 레코드 삽입이므로 .single() 사용
+      .single() // 단일 레코드 삽입이므로 .single() 사용
 
-    if (error) throw new Error(`Failed to save boardgame: ${error.message}`);
-    return BoardgameMapper.toBoardgame(data);
+    if (error) throw new Error(`Failed to save boardgame: ${error.message}`)
+    return BoardgameMapper.toBoardgame(data)
   }
 
-  async findById(
-    boardgameId: number,
-    relations?: BoardgameRelationsOptions
-  ): Promise<Boardgame | null> {
-    let query = supabaseClient
-      .from("boardgames")
-      .select("*") // 관계 포함 로직에 따라 변경될 수 있음
-      .eq("boardgame_id", boardgameId)
-      .single();
+  async findById(boardgameId: number, relations?: BoardgameRelationsOptions): Promise<Boardgame | null> {
+    const query = supabaseClient
+      .from('boardgames')
+      .select('*') // 관계 포함 로직에 따라 변경될 수 있음
+      .eq('boardgame_id', boardgameId)
+      .single()
 
     // TODO: relations 옵션에 따른 JOIN 쿼리 로직 구현 (예: .select('*, users!created_by(*), boardgame_genres(*)') )
 
-    const { data, error } = await query;
+    const { data, error } = await query
     if (error) {
-      if (error.code === 'PGRST116') return null; // No rows found
-      throw new Error(`Failed to fetch boardgame by ID: ${error.message}`);
+      if (error.code === 'PGRST116') return null // No rows found
+      throw new Error(`Failed to fetch boardgame by ID: ${error.message}`)
     }
-    return data ? BoardgameMapper.toBoardgame(data) : null;
+    return data ? BoardgameMapper.toBoardgame(data) : null
   }
 
   async findAll(relations?: BoardgameRelationsOptions): Promise<Boardgame[]> {
-    let query = supabaseClient.from("boardgames").select("*");
+    const query = supabaseClient.from('boardgames').select('*')
     // TODO: relations 옵션에 따른 JOIN 쿼리 로직 구현
 
-    const { data, error } = await query;
-    if (error) throw new Error(`Failed to fetch all boardgames: ${error.message}`);
-    return (data ?? []).map((item: BoardgameTable) => BoardgameMapper.toBoardgame(item));
+    const { data, error } = await query
+    if (error) throw new Error(`Failed to fetch all boardgames: ${error.message}`)
+    return (data ?? []).map((item: BoardgameTable) => BoardgameMapper.toBoardgame(item))
   }
 }
