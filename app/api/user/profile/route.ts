@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { verifyToken } from '../../../../backend/utils/auth'
-import { supabaseClient } from '../../../../backend/utils/supabaseClient'
+import { verifyToken } from '@be/utils/auth'
+import { supabaseClient } from '@be/utils/supabaseClient'
 
 interface UserProfile {
   user_id: string
