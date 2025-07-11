@@ -1,6 +1,5 @@
 // backend/application/auth/signin/usecases/SigninAuthUsecase.ts
 import { AuthRepository } from '@be/domain/repositories/AuthRepository'
-import { SigninAuthDto } from '../dtos/SigninAuthDto'
 import { SigninAuthResponseDto } from '../dtos/SigninAuthResponseDto'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
@@ -136,14 +135,11 @@ export class SigninAuthUsecase {
 
     const now = Math.floor(Date.now() / 1000)
 
-    // Access Token (1시간) - roles는 단일 roleId
+    // Access Token (1시간) - 토큰 검증 함수와 호환되도록 수정
     const accessTokenPayload = {
       userId: user.id,
       email: user.email,
-      username: user.username,
-      roles: user.userRole ? [user.userRole.roleId] : [],
-      type: 'access',
-      iat: now,
+      roleId: user.userRole ? user.userRole.roleId.toString() : '1', // roleId로 변경
       exp: now + 1 * 60 * 60, // 1시간
     }
 

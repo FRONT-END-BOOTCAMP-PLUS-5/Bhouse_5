@@ -4,7 +4,7 @@ import { AuthRepository } from '@be/domain/repositories/AuthRepository'
 import { supabaseClient } from '@bUtils/supabaseClient'
 
 export class AuthRepositoryImpl implements AuthRepository {
-  async signup(user: User, roles: number): Promise<void> {
+  async signup(user: User, roleId: number): Promise<void> {
     // 1. users 테이블에 insert
     const { data, error } = await supabaseClient
       .from('users')
@@ -31,7 +31,7 @@ export class AuthRepositoryImpl implements AuthRepository {
     const userId = data[0].user_id
 
     // 2. user_roles 테이블에 insert
-    const { error: roleError } = await supabaseClient.from('user_roles').insert([{ user_id: userId, role_id: roles }])
+    const { error: roleError } = await supabaseClient.from('user_roles').insert([{ user_id: userId, role_id: roleId }])
 
     if (roleError) {
       throw new Error(`권한 등록 실패: ${roleError.message}`)

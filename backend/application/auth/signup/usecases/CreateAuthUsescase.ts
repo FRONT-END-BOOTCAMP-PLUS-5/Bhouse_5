@@ -19,7 +19,7 @@ export class CreateAuthUsecase {
 
       // 회원가입 실행
       const user = await this.createUser(dto)
-      await this.authRepository.signup(user, dto.roles)
+      await this.authRepository.signup(user, dto.roleId)
 
       return { message: '회원가입 성공', status: 201 }
     } catch (error) {
@@ -41,8 +41,12 @@ export class CreateAuthUsecase {
     if (!dto.password) {
       return { message: '필수값 누락: password', status: 400 }
     }
-    if (!dto.roles || ![1, 2, 3].includes(dto.roles)) {
-      return { message: '필수값 누락 또는 잘못된 값: roles', status: 400 }
+    // roleId가 없으면 기본값 2 (일반 사용자)로 설정
+    if (!dto.roleId) {
+      dto.roleId = 2
+    }
+    if (![1, 2, 3].includes(dto.roleId)) {
+      return { message: '잘못된 roleId 값입니다. (1, 2, 3 중 하나여야 합니다)', status: 400 }
     }
     return null
   }
@@ -68,7 +72,7 @@ export class CreateAuthUsecase {
       new Date(),
       new Date(),
       dto.profile_img_url || null,
-      new UserRole('', dto.roles), // 임시 UserRole - 나중에 실제 데이터로 교체
+      new UserRole('', dto.roleId), // 임시 UserRole - 나중에 실제 데이터로 교체
       undefined, // userAlarms
       dto.phone,
       dto.provider,

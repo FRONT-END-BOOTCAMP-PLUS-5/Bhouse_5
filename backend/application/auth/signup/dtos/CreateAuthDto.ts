@@ -7,7 +7,7 @@ export interface CreateAuthDto {
   profile_img_url?: string
   provider?: string
   provider_id?: string
-  roles: number
+  roleId: number
 }
 
 export interface CreateAuthResponseDto {

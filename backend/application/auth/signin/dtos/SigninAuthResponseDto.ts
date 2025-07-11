@@ -5,10 +5,7 @@ export interface SigninAuthResponseDto {
     user_id: string
     email: string
     username: string
-    roles?: {
-      userId: string
-      roleId: number
-    }
+    roleId?: string
   }
   accessToken?: string
   refreshToken?: string
