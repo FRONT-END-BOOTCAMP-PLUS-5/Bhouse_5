@@ -3,7 +3,7 @@ import { AuthRepository } from '@be/domain/repositories/AuthRepository'
 import { SigninAuthResponseDto } from '../dtos/SigninAuthResponseDto'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import User from '@be/domain/entities/User'
+import { User } from '@be/domain/entities/User'
 
 export class SigninAuthUsecase {
   constructor(private readonly authRepository: AuthRepository) {}
@@ -139,7 +139,7 @@ export class SigninAuthUsecase {
     const accessTokenPayload = {
       userId: user.id,
       email: user.email,
-      roleId: user.userRole ? user.userRole.roleId.toString() : '1', // roleId로 변경
+      roleId: user.userRole ? user.userRole.roleId.toString() : '2', // roleId로 변경
       exp: now + 1 * 60 * 60, // 1시간
     }
 

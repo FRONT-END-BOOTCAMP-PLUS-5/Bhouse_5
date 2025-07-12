@@ -1,4 +1,4 @@
-import User from '@be/domain/entities/User'
+import { User } from '@be/domain/entities/User'
 import UserRole from '@be/domain/entities/UserRole'
 import { AuthRepository } from '@be/domain/repositories/AuthRepository'
 import { supabaseClient } from '@bUtils/supabaseClient'
@@ -60,10 +60,10 @@ export class AuthRepositoryImpl implements AuthRepository {
       data.email,
       data.nickname,
       data.created_at,
-      data.updated_at,
+      data.deleted_at,
       data.profile_img_url,
-      new UserRole(data.user_id, 1), // 임시 UserRole - 나중에 실제 데이터로 교체
-      undefined, // userAlarms - 나중에 별도로 로드
+      data.updated_at,
+      new UserRole(data.user_id, 2), // 임시 UserRole - 나중에 실제 데이터로 교체
       data.phone,
       data.provider,
       data.provider_id,

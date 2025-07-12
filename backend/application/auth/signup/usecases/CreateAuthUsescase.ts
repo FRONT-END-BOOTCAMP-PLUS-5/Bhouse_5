@@ -1,8 +1,8 @@
 import { AuthRepository } from '@be/domain/repositories/AuthRepository'
 import { CreateAuthDto, CreateAuthResponseDto } from '../dtos/CreateAuthDto'
 import bcrypt from 'bcrypt'
-import User from '@be/domain/entities/User'
 import UserRole from '@be/domain/entities/UserRole'
+import { User } from '@be/domain/entities/User'
 
 export class CreateAuthUsecase {
   constructor(private readonly authRepository: AuthRepository) {}
@@ -70,10 +70,10 @@ export class CreateAuthUsecase {
       dto.email,
       dto.nickname || '',
       new Date(),
-      new Date(),
+      null, // deletedAt
       dto.profile_img_url || null,
+      new Date(), // updatedAt
       new UserRole('', dto.roleId), // 임시 UserRole - 나중에 실제 데이터로 교체
-      undefined, // userAlarms
       dto.phone,
       dto.provider,
       dto.provider_id,
