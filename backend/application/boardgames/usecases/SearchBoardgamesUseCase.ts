@@ -1,15 +1,21 @@
-import { BoardGame } from '@be/domain/entities/boardgame'
+// backend/application/boardgames/usecases/SearchBoardgamesUseCase.ts
+
 import { BoardgameRepository } from '@domain/repositories/BoardgameRepository'
+import { SearchBoardgamesDto } from '../dtos/SearchBoardgamesDto'
+import { BoardGameResponseDto } from '../dtos/BoardGameResponseDto'
 
 export class SearchBoardgamesUseCase {
   constructor(private readonly repo: BoardgameRepository) {}
 
-  async execute(params: {
-    name?: string
-    genre?: string
-    minPlayers?: number
-    maxPlayers?: number
-  }): Promise<BoardGame[]> {
-    return this.repo.searchBoardgames(params)
+  async execute(params: SearchBoardgamesDto): Promise<BoardGameResponseDto[]> {
+    const boardgames = await this.repo.searchBoardgames(params)
+
+    return boardgames.map((game) => ({
+      id: game.boardgameId,
+      name: game.name,
+      min_players: game.minPlayers,
+      max_players: game.maxPlayers,
+      img_url: game.imgUrl,
+    }))
   }
 }

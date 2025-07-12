@@ -1,15 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { GetPostListUseCase } from '@application/community/posts/usecases/GetPostListUseCase'
-import { PostRepositoryImpl } from '@infrastructure/repositories/PostRepositoryImpl'
+import { GetBoardgameStoresUseCase } from '@application/boardgames/stores/usecases/GetBoardgameStoresUseCase'
+import { StoreRepositoryImpl } from '@infrastructure/repositories/StoreRepositoryImpl'
 
-const usecase = new GetPostListUseCase(new PostRepositoryImpl())
+const usecase = new GetBoardgameStoresUseCase(new StoreRepositoryImpl())
 
 export async function GET(req: NextRequest) {
-  console.log(req)
+  const { searchParams } = new URL(req.url)
+  const boardgameIdParam = searchParams.get('boardgame_id')
+  const boardgameId = Number(boardgameIdParam)
+
+  if (!boardgameIdParam || isNaN(boardgameId)) {
+    return NextResponse.json({ message: 'Invalid boardgame ID' }, { status: 400 })
+  }
+
   try {
-    const result = await usecase.execute()
-    return NextResponse.json(result)
+    const stores = await usecase.execute(boardgameId)
+    return NextResponse.json(stores)
   } catch (error) {
-    return NextResponse.json({ message: '불러오기 실패', error }, { status: 500 })
+    console.error('[GetBoardgameStoresRoute Error]', error)
+    return NextResponse.json({ message: 'Failed to fetch stores', error }, { status: 500 })
   }
 }

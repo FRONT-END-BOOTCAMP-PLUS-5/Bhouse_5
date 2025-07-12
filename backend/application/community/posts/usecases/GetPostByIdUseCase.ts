@@ -8,18 +8,18 @@ export class GetPostByIdUseCase {
       .from('community_posts')
       .select(
         `
-        post_id,
-        user_id,
-        title,
-        content,
-        created_at,
-        town,
-        hits,
-        profiles (
-          nickname,
-          profile_img_url
-        )
-      `,
+          post_id,
+          user_id,
+          title,
+          content,
+          created_at,
+          town,
+          hits,
+          users (
+            nickname,
+            profile_img_url
+          )
+        `,
       )
       .eq('post_id', postId)
       .maybeSingle()
@@ -39,8 +39,8 @@ export class GetPostByIdUseCase {
       new Date(data.created_at),
       data.town,
       data.hits,
-      data.profiles[0]?.nickname,
-      data.profiles[0]?.profile_img_url,
+      data.users[0]?.nickname,
+      data.users[0]?.profile_img_url,
     )
   }
 }

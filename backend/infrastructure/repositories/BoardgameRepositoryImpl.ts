@@ -1,10 +1,32 @@
-import { BoardgameRepository } from '@domain/repositories/BoardgameRepository'
 import { supabaseClient } from '@bUtils/supabaseClient'
-import { BoardGame } from '@be/domain/entities/boardgame'
+import { BoardgameRepository } from '@domain/repositories/BoardgameRepository'
+import { BoardGame } from '@be/domain/entities/Boardgame'
 
 //TODO: supabase에서 store_own_boardgames 테이블 더미데이터 넣기
 
 export class BoardgameRepositoryImpl implements BoardgameRepository {
+  async findBoardgameById(id: number): Promise<BoardGame | null> {
+    const { data, error } = await supabaseClient.from('boardgames').select('*').eq('boardgame_id', id).single()
+
+    if (error || !data) return null
+
+    return new BoardGame(
+      data.boardgame_id,
+      data.difficulty,
+      data.name,
+      data.img_url,
+      data.min_players,
+      data.max_players,
+      data.min_playtime,
+      data.max_playtime,
+      data.year_published ?? 0,
+      data.genre_id,
+      data.description,
+      data.created_at,
+      data.updated_at,
+    )
+  }
+
   async searchBoardgames(params: {
     name?: string
     genre?: string

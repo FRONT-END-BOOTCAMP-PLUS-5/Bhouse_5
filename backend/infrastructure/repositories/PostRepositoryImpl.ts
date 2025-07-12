@@ -21,7 +21,7 @@ export class PostRepositoryImpl implements PostRepository {
         created_at,
         town,
         hits,
-        profiles (
+        users (
           nickname,
           profile_img_url
         )
@@ -39,8 +39,8 @@ export class PostRepositoryImpl implements PostRepository {
       new Date(data.created_at),
       data.town,
       data.hits,
-      data.profiles[0]?.nickname,
-      data.profiles[0]?.profile_img_url,
+      data.users[0]?.nickname,
+      data.users[0]?.profile_img_url,
     )
   }
 
@@ -69,7 +69,7 @@ export class PostRepositoryImpl implements PostRepository {
         created_at,
         town,
         hits,
-        profiles (
+        users (
           nickname,
           profile_img_url
         )
@@ -87,8 +87,8 @@ export class PostRepositoryImpl implements PostRepository {
       new Date(data.created_at),
       data.town,
       data.hits,
-      data.profiles[0]?.nickname,
-      data.profiles[0]?.profile_img_url,
+      data.users[0]?.nickname,
+      data.users[0]?.profile_img_url,
     )
   }
 
@@ -102,7 +102,7 @@ export class PostRepositoryImpl implements PostRepository {
         created_at,
         town,
         hits,
-        profiles (
+        users (
           nickname,
           profile_img_url
         )
@@ -122,8 +122,8 @@ export class PostRepositoryImpl implements PostRepository {
           new Date(item.created_at),
           item.town,
           item.hits,
-          item.profiles[0]?.nickname,
-          item.profiles[0]?.profile_img_url,
+          item.users[0]?.nickname,
+          item.users[0]?.profile_img_url,
         ),
     )
 
@@ -142,7 +142,7 @@ export class PostRepositoryImpl implements PostRepository {
         created_at,
         town,
         hits,
-        profiles (
+        users (
           nickname,
           profile_img_url
         )
@@ -162,8 +162,8 @@ export class PostRepositoryImpl implements PostRepository {
       new Date(data.created_at),
       data.town,
       data.hits,
-      data.profiles[0]?.nickname,
-      data.profiles[0]?.profile_img_url,
+      data.users[0]?.nickname,
+      data.users[0]?.profile_img_url,
     )
   }
 }
