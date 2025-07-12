@@ -15,7 +15,7 @@ export class AuthRepositoryImpl implements AuthRepository {
           password: user.password,
           nickname: user.nickname,
           phone: user.phone,
-          profile_img_url: user.image,
+          profile_img_url: user.profileImgUrl,
           provider: user.provider,
           provider_id: user.providerId,
           created_at: user.createdAt,
@@ -60,13 +60,46 @@ export class AuthRepositoryImpl implements AuthRepository {
       data.email,
       data.nickname,
       data.created_at,
+      data.updated_at,
       data.deleted_at,
       data.profile_img_url,
-      data.updated_at,
-      new UserRole(data.user_id, 2), // 임시 UserRole - 나중에 실제 데이터로 교체
       data.phone,
       data.provider,
       data.provider_id,
+      data.user_role,
+    )
+  }
+
+  async findByUsernameAndPhone(username: string, phone: string): Promise<User | null> {
+    const { data, error } = await supabaseClient
+      .from('users')
+      .select('*')
+      .eq('username', username)
+      .eq('phone', phone)
+      .maybeSingle()
+
+    if (error) {
+      throw new Error(`사용자 조회 실패: ${error.message}`)
+    }
+
+    if (!data) {
+      return null
+    }
+
+    return new User(
+      data.user_id,
+      data.username,
+      data.password,
+      data.email,
+      data.nickname,
+      data.created_at,
+      data.updated_at,
+      data.deleted_at,
+      data.profile_img_url,
+      data.phone,
+      data.provider,
+      data.provider_id,
+      undefined,
     )
   }
 
