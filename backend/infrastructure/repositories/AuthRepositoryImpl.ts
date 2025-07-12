@@ -38,7 +38,7 @@ export class AuthRepositoryImpl implements AuthRepository {
     }
   }
 
-  async findByEmailOrUsername(email: string, username: string): Promise<User | null> {
+  async findUser(email: string, username: string): Promise<User | null> {
     const { data, error } = await supabaseClient
       .from('users')
       .select('*')
@@ -70,11 +70,45 @@ export class AuthRepositoryImpl implements AuthRepository {
     )
   }
 
-  async findByUsernameAndPhone(username: string, phone: string): Promise<User | null> {
+  async emailFind(username: string, phone: string): Promise<User | null> {
     const { data, error } = await supabaseClient
       .from('users')
       .select('*')
       .eq('username', username)
+      .eq('phone', phone)
+      .maybeSingle()
+
+    if (error) {
+      throw new Error(`사용자 조회 실패: ${error.message}`)
+    }
+
+    if (!data) {
+      return null
+    }
+
+    return new User(
+      data.user_id,
+      data.username,
+      data.password,
+      data.email,
+      data.nickname,
+      data.created_at,
+      data.updated_at,
+      data.deleted_at,
+      data.profile_img_url,
+      data.phone,
+      data.provider,
+      data.provider_id,
+      undefined,
+    )
+  }
+
+  async passwordFind(username: string, email: string, phone: string): Promise<User | null> {
+    const { data, error } = await supabaseClient
+      .from('users')
+      .select('*')
+      .eq('username', username)
+      .eq('email', email)
       .eq('phone', phone)
       .maybeSingle()
 
@@ -115,20 +149,8 @@ export class AuthRepositoryImpl implements AuthRepository {
     throw new Error('Method not implemented.')
   }
 
-  async passwordFind(): Promise<User> {
-    // TODO(@채영): 비밀번호 찾기 로직 구현
-    await Promise.resolve() // 임시 await 추가
-    throw new Error('Method not implemented.')
-  }
-
   async passwordReset(): Promise<void> {
     // TODO(@채영): 비밀번호 재설정 로직 구현
-    await Promise.resolve() // 임시 await 추가
-    throw new Error('Method not implemented.')
-  }
-
-  async emailFind(): Promise<User> {
-    // TODO(@채영): 이메일 찾기 로직 구현
     await Promise.resolve() // 임시 await 추가
     throw new Error('Method not implemented.')
   }

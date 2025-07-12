@@ -22,7 +22,7 @@ export class SigninAuthUsecase {
     if (validationError) return validationError
 
     // 3. 유저 조회 (email 또는 username으로)
-    const user = await this.authRepository.findByEmailOrUsername(email, email)
+    const user = await this.authRepository.findUser(email, email)
     if (!user) {
       return {
         message: '존재하지 않는 사용자입니다.',
@@ -139,7 +139,7 @@ export class SigninAuthUsecase {
     const accessTokenPayload = {
       userId: user.id,
       email: user.email,
-      roleId: user.userRole ? user.userRole.roleId.toString() : '2', // roleId로 변경
+      roleId: user.userRole ? user.userRole.roles.role_id.toString() : '2', // roleId로 변경
       exp: now + 1 * 60 * 60, // 1시간
     }
 

@@ -11,7 +11,7 @@ export class EmailVerifyUseCase {
       if (validationResult) return validationResult
 
       // 이메일 중복 체크
-      const existingUser = await this.authRepository.findByEmailOrUsername(dto.email, dto.email)
+      const existingUser = await this.authRepository.findUser(dto.email, dto.email)
 
       if (existingUser) {
         return {

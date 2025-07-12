@@ -11,7 +11,7 @@ export class EmailFindUseCase {
 
     try {
       // 2. username과 phone으로 사용자 조회
-      const user = await this.authRepository.findByUsernameAndPhone(requestDto.username, requestDto.phone)
+      const user = await this.authRepository.emailFind(requestDto.username, requestDto.phone)
 
       if (!user) {
         return {

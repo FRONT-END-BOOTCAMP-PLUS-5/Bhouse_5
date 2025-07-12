@@ -3,6 +3,7 @@ import { CreateAuthDto, CreateAuthResponseDto } from '../dtos/CreateAuthDto'
 import bcrypt from 'bcrypt'
 import UserRole from '@be/domain/entities/UserRole'
 import { User } from '@be/domain/entities/User'
+import { Role } from '@be/domain/entities/Role'
 
 export class CreateAuthUsecase {
   constructor(private readonly authRepository: AuthRepository) {}
@@ -52,7 +53,7 @@ export class CreateAuthUsecase {
   }
 
   private async checkDuplicateUser(dto: CreateAuthDto): Promise<CreateAuthResponseDto | null> {
-    const existingUser = await this.authRepository.findByEmailOrUsername(dto.email, dto.username)
+    const existingUser = await this.authRepository.findUser(dto.email, dto.username)
     if (existingUser) {
       return { message: '이미 존재하는 이메일 또는 아이디입니다.', status: 409 }
     }
@@ -70,13 +71,13 @@ export class CreateAuthUsecase {
       dto.email,
       dto.nickname || '',
       new Date(),
+      new Date(), // updatedAt
       null, // deletedAt
       dto.profile_img_url || null,
-      new Date(), // updatedAt
-      new UserRole('', dto.roleId), // 임시 UserRole - 나중에 실제 데이터로 교체
       dto.phone,
       dto.provider,
       dto.provider_id,
+      new UserRole(new Role(dto.roleId, '')), // 임시 UserRole - 나중에 실제 데이터로 교체
     )
   }
 }
