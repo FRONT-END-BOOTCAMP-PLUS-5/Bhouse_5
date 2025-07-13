@@ -4,6 +4,7 @@ import { SigninAuthResponseDto } from '../dtos/SigninAuthResponseDto'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { User } from '@be/domain/entities/User'
+import { cookies } from 'next/headers'
 
 export class SigninAuthUsecase {
   constructor(private readonly authRepository: AuthRepository) {}
@@ -113,7 +114,8 @@ export class SigninAuthUsecase {
     return null
   }
 
-  private createSuccessResponse(user: User): SigninAuthResponseDto {
+  private async createSuccessResponse(user: User): Promise<SigninAuthResponseDto> {
+    const cookieStore = await cookies()
     const jwtSecret = process.env.ACCESS_TOKEN_SECRET
     const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET
 
@@ -134,13 +136,15 @@ export class SigninAuthUsecase {
     }
 
     const now = Math.floor(Date.now() / 1000)
+    const accessTokenMaxAge = 1 * 60 * 60
+    const refreshTokenMaxAge = 2 * 24 * 60 * 60
 
     // Access Token (1시간) - 토큰 검증 함수와 호환되도록 수정
     const accessTokenPayload = {
       userId: user.id,
       email: user.email,
       roleId: user.userRole ? user.userRole.roles.role_id.toString() : '2', // roleId로 변경
-      exp: now + 1 * 60 * 60, // 1시간
+      exp: now + accessTokenMaxAge, // 1시간
     }
 
     // Refresh Token (2일)
@@ -148,11 +152,24 @@ export class SigninAuthUsecase {
       userId: user.id,
       type: 'refresh',
       iat: now,
-      exp: now + 2 * 24 * 60 * 60, // 2일
+      exp: now + refreshTokenMaxAge, // 2일
     }
 
     const accessToken = jwt.sign(accessTokenPayload, jwtSecret)
     const refreshToken = jwt.sign(refreshTokenPayload, refreshTokenSecret)
+
+    if (accessToken && refreshToken) {
+      cookieStore.set('accessToken', accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: accessTokenMaxAge,
+      })
+      cookieStore.set('refreshToken', refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: refreshTokenMaxAge,
+      })
+    }
 
     return {
       message: '로그인이 성공했습니다.',
