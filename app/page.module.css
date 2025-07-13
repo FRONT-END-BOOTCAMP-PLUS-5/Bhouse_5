@@ -5,7 +5,7 @@
   justify-content: center;
   min-height: 100svh;
   padding: 80px;
-  gap: 64px;
+  gap: 20px;
   background-color: var(--secondary-blue-100);
 }
 
@@ -97,4 +97,18 @@
 
 .button:hover {
   background-color: var(--secondary-blue-700);
+}
+
+.fullWidthInput {
+  width: 100%; /* 부모 요소의 너비에 꽉 차게 */
+  /* 하지만 너무 넓어지지 않게 최대 너비 설정 (선택 사항) */
+}
+
+.fixedWidthInput {
+  width: 280px; /* 피그마 이미지에 맞춰서 고정 너비 설정 */
+}
+
+.fullWidthTextarea {
+  width: 100%;
+  min-height: 120px; /* 더 긴 설명을 위한 최소 높이 */
 }

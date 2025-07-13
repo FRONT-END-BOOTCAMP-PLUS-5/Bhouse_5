@@ -2,8 +2,14 @@
 
 import styles from './page.module.css'
 import Button from './_components/Button.tsx'
+import TextInput from './_components/TextInput'
+import React from 'react'
 
 export default function Home() {
+  const [email, setEmail] = React.useState('')
+  const [description, setDescription] = React.useState('')
+  const [search, setSearch] = React.useState('')
+
   return (
     <div className={styles.page}>
       <p className={styles.title48}>보드의 집</p>
@@ -26,6 +32,39 @@ export default function Home() {
       <Button borderRadius="12" variant="primary" size="large" onClick={() => alert('클릭!')}>
         클릭!
       </Button>
+
+      <div style={{ marginBottom: '20px' }}>
+        <TextInput
+          type="email"
+          placeholder="이메일을 입력하세요"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          // 가로 길이를 화면 비율에 맞춰 늘리고 싶다면 width: 100%를 className으로 전달
+          className={styles.fullWidthInput} // CSS 모듈에 .fullWidthInput 정의 필요
+        />
+      </div>
+
+      {/* 피그마의 '지금 인기있는 보드게임은?' 부분 - 검색 입력 */}
+      <div style={{ marginBottom: '20px' }}>
+        <TextInput
+          type="text"
+          placeholder="지금 인기있는 보드게임은?"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className={styles.fixedWidthInput}
+        />
+      </div>
+
+      {/* 여러 줄 입력 (Textarea) 예시 */}
+      <div style={{ marginBottom: '20px' }}>
+        <TextInput
+          type="textarea"
+          placeholder="여기에 상세 설명을 입력하세요."
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          className={styles.fullWidthTextarea}
+        />
+      </div>
     </div>
   )
 }
