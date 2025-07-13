@@ -3,14 +3,18 @@ import { Post } from '@domain/entities/Post'
 import { PostRepository } from '@domain/repositories/PostRepository'
 
 export class PostRepositoryImpl implements PostRepository {
-  async postPost(userId: string, title: string, content: string, town?: string): Promise<Post> {
+  async postPost(userId: string, title: string, content: string, categoryId: number, town?: string): Promise<Post> {
+    const now = new Date().toISOString()
     const { data, error } = await supabaseClient
       .from('community_posts')
       .insert({
         user_id: userId,
-        title,
-        content,
-        town,
+        title: title,
+        content: content,
+        category_id: categoryId,
+        town: town,
+        created_at: now,
+        updated_at: now,
       })
       .select(
         `
@@ -50,16 +54,28 @@ export class PostRepositoryImpl implements PostRepository {
     if (error) throw new Error(error.message)
   }
 
-  async updatePost(postId: number, title: string, content: string, userId: string): Promise<Post> {
+  // infrastructure/repositories/PostRepositoryImpl.ts
+  async updatePost(
+    postId: number,
+    userId: string,
+    title: string,
+    content: string,
+    categoryId?: number,
+    town?: string,
+  ): Promise<Post> {
+    const now = new Date().toISOString()
+
     const { data, error } = await supabaseClient
       .from('community_posts')
       .update({
         title,
         content,
-        updated_at: new Date().toISOString(),
-        updated_by: userId,
+        category_id: categoryId,
+        town,
+        updated_at: now,
       })
       .eq('post_id', postId)
+      .eq('user_id', userId)
       .select(
         `
         post_id,
@@ -85,28 +101,30 @@ export class PostRepositoryImpl implements PostRepository {
       data.title,
       data.content,
       new Date(data.created_at),
+      new Date(now),
+      data.category_id,
       data.town,
       data.hits,
-      data.users[0]?.nickname,
-      data.users[0]?.profile_img_url,
+      data.users?.nickname ?? null,
+      data.users?.profile_img_url ?? null,
     )
   }
 
   async getPostList(): Promise<{ data: Post[]; total: number }> {
     const { data, count, error } = await supabaseClient.from('community_posts').select(
       `
-        post_id,
-        user_id,
-        title,
-        content,
-        created_at,
-        town,
-        hits,
-        users (
-          nickname,
-          profile_img_url
-        )
-      `,
+          post_id,
+          user_id,
+          title,
+          content,
+          created_at,
+          town,
+          hits,
+          users (
+            nickname,
+            profile_img_url
+          )
+        `,
       { count: 'exact' },
     )
 
@@ -120,10 +138,12 @@ export class PostRepositoryImpl implements PostRepository {
           item.title,
           item.content,
           new Date(item.created_at),
+          undefined, // updatedAt 생략 or 추가
+          undefined, // categoryId 생략 or 추가
           item.town,
           item.hits,
-          item.users[0]?.nickname,
-          item.users[0]?.profile_img_url,
+          item.users?.nickname ?? null,
+          item.users?.profile_img_url ?? null,
         ),
     )
 
@@ -149,7 +169,7 @@ export class PostRepositoryImpl implements PostRepository {
       `,
       )
       .eq('post_id', postId)
-      .single()
+      .maybeSingle()
 
     if (error) throw new Error(error.message)
     if (!data) return null
@@ -160,10 +180,12 @@ export class PostRepositoryImpl implements PostRepository {
       data.title,
       data.content,
       new Date(data.created_at),
-      data.town,
-      data.hits,
-      data.users[0]?.nickname,
-      data.users[0]?.profile_img_url,
+      data.updated_at ? new Date(data.updated_at) : undefined,
+      data.category_id ?? undefined,
+      data.town ?? undefined,
+      data.hits ?? undefined,
+      data.users?.nickname ?? undefined,
+      data.users?.profile_img_url ?? undefined,
     )
   }
 }

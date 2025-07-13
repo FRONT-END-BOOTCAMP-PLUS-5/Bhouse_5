@@ -1,37 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { PostRepositoryImpl } from '@infrastructure/repositories/PostRepositoryImpl'
+
 import { CreatePostUseCase } from '@be/application/community/posts/usecases/CreatePostUseCase'
 import { DeletePostUseCase } from '@be/application/community/posts/usecases/DeletePostUseCase'
-import { PostRepositoryImpl } from '@infrastructure/repositories/PostRepositoryImpl'
-import { GetPostByIdUseCase } from '@application/community/posts/usecases/GetPostByIdUseCase'
 import { GetPostListUseCase } from '@application/community/posts/usecases/GetPostListUseCase'
 
 import { supabaseClient } from '@bUtils/supabaseClient'
-const postRepo = new PostRepositoryImpl()
-const getPostByIdUsecase = new GetPostByIdUseCase()
-const getPostListUsecase = new GetPostListUseCase(postRepo)
 
 //게시글 작성 API
 export async function POST(req: NextRequest) {
-  const { title, content, town } = await req.json()
-  const token = req.headers.get('Authorization')?.replace('Bearer ', '')
-
-  const {
-    data: { user },
-    error,
-  } = await supabaseClient.auth.getUser(token)
-
-  if (error || !user) {
-    return NextResponse.json({ message: '인증 실패' }, { status: 401 })
-  }
-
-  const repo = new PostRepositoryImpl()
-  const useCase = new CreatePostUseCase(repo)
-
+  const usecase = new CreatePostUseCase(new PostRepositoryImpl())
   try {
-    const post = await useCase.execute(user.id, title, content, town)
-    return NextResponse.json({ message: '글 등록 완료', data: post })
-  } catch (e) {
-    return NextResponse.json({ message: '글 등록 실패', error: (e as Error).message }, { status: 500 })
+    const body = await req.json()
+    console.log('[CreatePostRoute] Request body:', body)
+    const { userId, title, content, town } = body
+    if (!userId || !title || !content) {
+      return NextResponse.json({ message: '필수 항목이 누락되었습니다.' }, { status: 400 })
+    }
+
+    const result = await usecase.execute({ userId, title, content, categoryId: body.categoryId, town })
+    return NextResponse.json(result)
+  } catch (error) {
+    console.error('[CreatePostRoute Error]', error)
+    return NextResponse.json({ message: '게시글 생성 실패', error }, { status: 500 })
   }
 }
 
@@ -58,31 +49,17 @@ export async function POST(req: NextRequest) {
 //   //       }
 //   //     },
 
-export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url)
-  const postIdParam = searchParams.get('post_id')
+// app/api/community/posts/route.ts
 
-  if (postIdParam) {
-    const postId = Number(postIdParam)
-    if (isNaN(postId)) {
-      return NextResponse.json({ message: 'Invalid post_id' }, { status: 400 })
-    }
+export async function GET() {
+  const usecase = new GetPostListUseCase(new PostRepositoryImpl())
 
-    try {
-      const post = await getPostByIdUsecase.execute(postId)
-      if (!post) return NextResponse.json({ message: 'Post not found' }, { status: 404 })
-      return NextResponse.json(post)
-    } catch (err) {
-      return NextResponse.json({ message: '글 조회 실패', error: err }, { status: 500 })
-    }
-  }
-
-  // post_id 없으면 전체 목록 조회로 처리
   try {
-    const result = await getPostListUsecase.execute()
-    return NextResponse.json(result)
+    const posts = await usecase.execute()
+    return NextResponse.json(posts)
   } catch (err) {
-    return NextResponse.json({ message: '글 목록 조회 실패', error: err }, { status: 500 })
+    console.error('[GetPostListRoute Error]', err)
+    return NextResponse.json({ message: '서버 오류' }, { status: 500 })
   }
 }
 
@@ -120,44 +97,3 @@ export async function DELETE(req: NextRequest) {
 //   "content": "수정된 내용입니다."
 // }
 // post_id,title,content를 가져와서, 글을 수정합니다.
-export async function PATCH(req: NextRequest) {
-  const { post_id, title, content } = await req.json()
-  const token = req.headers.get('Authorization')?.replace('Bearer ', '')
-
-  if (!token) {
-    return NextResponse.json({ message: '토큰이 필요합니다.' }, { status: 401 })
-  }
-
-  if (!post_id || !title || !content) {
-    return NextResponse.json({ message: 'post_id, title, content는 필수입니다.' }, { status: 400 })
-  }
-
-  // 🔐 사용자 인증
-  const {
-    data: { user },
-    error: userError,
-  } = await supabaseClient.auth.getUser(token)
-
-  if (userError || !user) {
-    return NextResponse.json({ message: '유저 인증 실패', error: userError }, { status: 401 })
-  }
-
-  // 📝 글 업데이트
-  const { data, error: updateError } = await supabaseClient
-    .from('community_posts')
-    .update({
-      title,
-      content,
-      updated_at: new Date().toISOString(),
-      updated_by: user.id,
-    })
-    .eq('post_id', post_id)
-    .select()
-    .single()
-
-  if (updateError) {
-    return NextResponse.json({ message: '글 수정 실패', error: updateError }, { status: 500 })
-  }
-
-  return NextResponse.json({ message: '수정 완료', updated_post: data })
-}

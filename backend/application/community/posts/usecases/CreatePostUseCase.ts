@@ -1,26 +1,36 @@
-import { supabaseClient } from '@bUtils/supabaseClient'
+// backend/application/community/posts/usecases/CreatePostUseCase.ts
+import { PostRepository } from '@domain/repositories/PostRepository'
+import { PostDto } from '../dtos/PostDto'
 import { Post } from '@domain/entities/Post'
 
 export class CreatePostUseCase {
-  async execute(post: Omit<Post, 'post_id' | 'created_at' | 'hits'>): Promise<Post> {
-    const { data, error } = await supabaseClient
-      .from('community_posts')
-      .insert({ ...post })
-      .select(`*`)
-      .single()
+  constructor(private readonly repo: PostRepository) {}
 
-    if (error) throw new Error(error.message)
-
-    return new Post(
-      data.post_id,
-      data.user_id,
-      data.title,
-      data.content,
-      new Date(data.created_at),
-      data.town,
-      data.hits,
-      undefined,
-      undefined,
+  async execute(params: {
+    userId: string
+    title: string
+    content: string
+    categoryId: number
+    town?: string
+  }): Promise<PostDto> {
+    const post: Post = await this.repo.postPost(
+      params.userId,
+      params.title,
+      params.content,
+      params.categoryId,
+      params.town,
     )
+
+    return {
+      postId: post.postId,
+      userId: post.userId,
+      title: post.title,
+      content: post.content,
+      createdAt: post.createdAt,
+      town: post.town ?? null,
+      hits: post.hits ?? 0,
+      nickname: post.nickname ?? null,
+      profileImgUrl: post.profileImgUrl ?? null,
+    }
   }
 }
