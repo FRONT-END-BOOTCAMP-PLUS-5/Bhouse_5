@@ -1,0 +1,107 @@
+/* src/components/layout/Header/Header.module.css */
+
+.header {
+  width: 100%;
+  padding: 20px 40px; /* 좌우 패딩 */
+  box-sizing: border-box; /* 패딩을 너비에 포함 */
+  background-color: #fff; /* 헤더 배경색 */
+  border-bottom: 1px solid #eee; /* 하단 경계선 */
+  display: flex;
+  flex-direction: column; /* 기본적으로 요소들을 세로로 정렬 */
+  align-items: center; /* 가로 중앙 정렬 */
+}
+
+.headerTop {
+  display: flex;
+  justify-content: space-between; /* 로고와 우측 요소들 양쪽 끝 정렬 */
+  align-items: center; /* 세로 중앙 정렬 */
+  width: 100%; /* 상단 섹션이 헤더 너비를 꽉 채우도록 */
+  margin-bottom: 15px; /* 하단 Divider와 간격 */
+}
+
+.logoContainer {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  width: 50px; /* 로고 이미지 크기 */
+  height: 50px;
+  margin-right: 10px;
+}
+
+/* .logoText { // 만약 '보드의 집' 텍스트를 로고 옆에 넣는다면
+  font-family: 'MBC1961OTFM', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  white-space: nowrap;
+  color: #333;
+} */
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 15px; /* 검색창, 드롭다운, 아이콘 사이 간격 */
+}
+
+.searchInput {
+  width: 250px; /* 검색 입력창 너비 */
+  /* TextInput 컴포넌트 자체에 기본 높이가 있을 것이므로 여기서는 너비만 지정 */
+}
+
+.userIconContainer {
+  font-size: 24px; /* 사용자 아이콘 크기 */
+  color: #333;
+  cursor: pointer;
+}
+
+.navigation {
+  display: flex;
+  gap: 10px; /* 내비게이션 버튼들 사이 간격 */
+  width: 100%; /* 내비게이션 바가 헤더 너비를 꽉 채우도록 */
+  justify-content: center; /* 버튼들을 중앙 정렬 */
+}
+
+.navButton {
+  /* Button 컴포넌트의 기본 스타일을 사용하면서 추가 조정 */
+  min-width: 80px; /* 각 버튼의 최소 너비 */
+  padding: 8px 15px;
+}
+
+/* ------------------- 모바일 (max-width: 600px) 스타일 ------------------- */
+@media (max-width: 600px) {
+  .header {
+    padding: 15px 20px; /* 모바일 패딩 */
+  }
+
+  .headerTop {
+    flex-direction: column; /* 모바일에서 세로로 정렬 */
+    align-items: flex-start; /* 왼쪽 정렬 */
+    gap: 10px;
+  }
+
+  .headerRight {
+    flex-direction: column; /* 모바일에서 세로로 정렬 */
+    width: 100%; /* 너비 100%로 채우기 */
+    gap: 10px;
+  }
+
+  .searchInput {
+    width: 100%; /* 모바일에서 검색창 너비 100% */
+  }
+
+  .dropdownContainer { /* 드롭다운도 필요하다면 모바일 너비 조정 */
+    width: 100%;
+  }
+
+  .navigation {
+    flex-wrap: wrap; /* 버튼이 넘치면 줄바꿈 */
+    justify-content: flex-start; /* 모바일에서 왼쪽 정렬 */
+    gap: 8px;
+  }
+
+  .navButton {
+    flex-grow: 1; /* 남은 공간을 채우도록 성장 */
+    max-width: fit-content; /* 내용에 맞게 너비 조절 */
+  }
+}

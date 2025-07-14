@@ -1,0 +1,100 @@
+/* src/components/common/Dropdown/Dropdown.module.css */
+
+.dropdownContainer {
+  position: relative;
+  display: inline-block; /* 내용물에 따라 너비 조절 */
+  font-family: sans-serif;
+  --dropdown-fill-color: #f2f2f2; 
+  --dropdown-border-radius: 8px; 
+  --dropdown-max-height: none;
+  --dropdown-list-calculated-width: auto; /* 새로운 CSS 변수 추가 */
+}
+
+.dropdownHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  background-color: var(--dropdown-fill-color);
+  border: 1px solid #ddd;
+  border-radius: var(--dropdown-border-radius);
+  cursor: pointer;
+  width: max-content; /* 헤더의 너비를 내용물(텍스트 + 화살표)에 맞추도록 변경 */
+  white-space: nowrap;
+  color: #333;
+  font-size: 16px;
+  font-weight: 500;
+  outline: none;
+}
+
+.labelContent {
+  flex-grow: 1; 
+  text-align: left;
+}
+
+.arrow {
+  margin-left: 10px;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  transition: transform 0.2s ease-in-out;
+}
+
+.arrowDown {
+  border-top: 5px solid #333;
+}
+
+.arrowUp {
+  border-bottom: 5px solid #333;
+  transform: rotate(180deg);
+}
+
+.dropdownListWrapper {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  /* right: 0; 제거 - 너비가 동적으로 설정될 것이므로 필요 없습니다. */
+  width: var(--dropdown-list-calculated-width); /* JavaScript에서 계산된 너비 적용 */
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: var(--dropdown-border-radius);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  margin-top: 5px;
+  overflow-y: auto;
+  max-height: var(--dropdown-max-height);
+  box-sizing: border-box; /* 패딩과 테두리가 너비에 포함되도록 */
+}
+
+.dropdownList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.dropdownList li {
+  padding: 10px 15px; /* 좌우 15px 패딩 */
+  cursor: pointer;
+  color: #333;
+  font-size: 16px;
+  white-space: nowrap; /* 내용이 한 줄로 표시되도록 */
+}
+
+.dropdownList li:hover {
+  background-color: #f0f0f0;
+}
+
+/* 선택 불가능한 아이템 스타일 */
+.dropdownList li[data-disabled="true"] {
+  color: #aaa;
+  cursor: not-allowed;
+  background-color: #fff;
+}
+
+/* Button 컴포넌트가 Dropdown List 안에 들어갈 때 스타일 */
+.dropdownList .buttonAsListItem {
+  width: auto; /* 버튼 자체 너비에 맡기되, 부모의 너비 제약을 따름 */
+  margin: 10px; 
+  text-align: center;
+}

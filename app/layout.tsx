@@ -1,23 +1,23 @@
-'use client'
+import './globals.css' // 전역 CSS
+import Header from './_components/Header/Header' // Header 컴포넌트 임포트
+import React from 'react'
 
-import { Roboto } from 'next/font/google'
-import { QueryProvider } from 'providers/query.provider'
-import './globals.css'
-import { ReactNode } from 'react'
+// FontAwesome JavaScript 파일 임포트 (전역적으로 한 번만)
+// 이 부분이 있어야 <i class="far fa-user"></i> 아이콘이 제대로 표시됩니다.
+import '@fortawesome/fontawesome-free/js/all.js'
 
-const roboto = Roboto({
-  weight: '400',
-  subsets: ['latin'],
-})
+export const metadata = {
+  title: '보드의 집',
+  description: '보드게임 동네 커뮤니티',
+}
 
-const RootLayout = ({ children }: { children: ReactNode }) => {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={roboto.className}>
+    <html lang="ko">
       <body>
-        <QueryProvider>{children}</QueryProvider>
+        <Header /> {/* 여기에 Header 컴포넌트 추가 */}
+        <main>{children}</main> {/* 페이지 내용은 main 태그로 감싸는 것이 좋습니다. */}
       </body>
     </html>
   )
 }
-
-export default RootLayout
