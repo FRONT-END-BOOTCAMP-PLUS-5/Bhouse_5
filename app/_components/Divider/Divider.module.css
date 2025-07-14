@@ -1,0 +1,18 @@
+/* src/components/common/Divider/Divider.module.css */
+
+.divider {
+  /* 기본 스타일 (매우 강력하게 적용되도록) */
+  display: block; /* 혹시 모를 인라인 요소 특성 방지 */
+  width: 100%; /* 부모 너비에 꽉 채우도록 */
+  height: 1px; /* 고정된 1px 두께 */
+  background-color: #e0e0e0; /* 기본 회색 (가장 일반적인 구분선 색상) */
+  border: none; /* 혹시 모를 border 상속 방지 */
+  box-sizing: content-box; /* 너비 계산 시 패딩/보더 포함 안 되도록 */
+
+  /* 마진은 props로 전달된 변수를 사용하되, 기본값 설정 */
+  --divider-margin-y: 2px; /* 기본 수직 마진 */
+  margin-top: var(--divider-margin-y);
+  margin-bottom: var(--divider-margin-y);
+  margin-left: 0;
+  margin-right: 0;
+}

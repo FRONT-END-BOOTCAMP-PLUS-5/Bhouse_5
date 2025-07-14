@@ -1,3 +1,5 @@
+@import './typography.css';
+
 /* root */
 :root {
   --primary-blue: #2285d5;
@@ -132,7 +134,7 @@ section {
   display: block;
 }
 body {
-  line-height: 1;
+  font-family: 'NanumSquare', sans-serif; 
 }
 ol,
 ul {

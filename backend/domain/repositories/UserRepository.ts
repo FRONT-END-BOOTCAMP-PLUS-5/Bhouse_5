@@ -2,7 +2,6 @@ import { User } from '../entities/User'
 import { UserRelationOptions } from './options/UserRelationOptions'
 
 export interface UserRepository {
-
   // findAll(relations?: UserRelationOptions): Promise<User[]>
 
   deleteLikedBoardgame(userId: string, boardgameId: number): unknown
