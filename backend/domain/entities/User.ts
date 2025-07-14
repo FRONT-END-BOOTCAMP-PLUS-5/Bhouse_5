@@ -9,6 +9,7 @@ export class User {
     public email: string,
     public nickname: string,
     public createdAt: Date,
+    public updatedAt: Date | null,
     public deletedAt: Date | null,
     public image: string | null,
     public updatedAt: Date | null,
@@ -18,5 +19,6 @@ export class User {
     public phone?: string,
     public provider?: string,
     public providerId?: string,
+    public userRole?: UserRole, // 1:1 관계
   ) {}
 }

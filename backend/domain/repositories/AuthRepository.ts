@@ -4,9 +4,11 @@ export interface AuthRepository {
   signup(user: User, roleId: number): Promise<void>
   findByEmailOrUsername(email: string, username: string): Promise<User | null>
   findByProvider(provider: string, providerId: string): Promise<User | null>;
+  findUser(email: string, username: string): Promise<User | null>
+  findUserById(userId: string): Promise<User | null>
+  emailFind(username: string, phone: string): Promise<User | null>
+  passwordFind(username: string, email: string, phone: string): Promise<User | null>
   signin(user: User): Promise<void>
   signout(): Promise<void>
-  passwordFind(): Promise<User>
-  passwordReset(user: User): Promise<void>
-  emailFind(): Promise<User>
+  passwordReset(userId: string, hashedPassword: string): Promise<void>
 }

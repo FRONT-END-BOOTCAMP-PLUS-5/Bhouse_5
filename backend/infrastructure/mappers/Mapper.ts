@@ -1,4 +1,3 @@
-import { UserRole } from '@be/domain/entities/UserRole'
 import { AdTable, AlarmTable, RoleTable, UserRoleTable, UserTable, StoreTable } from '../types/database'
 import { Ad } from '@be/domain/entities/Ad'
 import { Alarm, AlarmType } from '@be/domain/entities/Alarm'
@@ -10,6 +9,7 @@ import { ReadAdDto } from '@be/application/admin/ads/dtos/ReadAdDto'
 import { CreateStoreDto } from '@be/application/owner/stores/dtos/CreatedStoreDto'
 import { ReadStoreDto } from '@be/application/owner/stores/dtos/ReadStoreDto'
 import { UpdateStoreDto } from '@be/application/owner/stores/dtos/UpdateStoreDto'
+import { UserRole } from '@be/domain/entities/UserRole'
 
 export class Mapper {
   static toStoreTableFromCreate(dto: CreateStoreDto, userId: string) {
