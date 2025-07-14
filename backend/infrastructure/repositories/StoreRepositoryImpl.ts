@@ -1,36 +1,76 @@
-import { supabaseClient } from '@bUtils/supabaseClient';
-import { Mapper } from '../mappers/Mapper';
-import {
-  StoreRepository,
-  StoreSearchParams,
-} from '@be/domain/repositories/StoreRepository';
-import { StoreTable } from '../types/database';
-import {
-  getCurrentUserId,
-  getCurrentUserRole,
-} from '@bUtils/constantfunctions';
-import { ReadStoreDto } from '@be/application/owner/stores/dtos/ReadStoreDto';
-import { CreateStoreDto } from '@be/application/owner/stores/dtos/CreatedStoreDto';
-import { UpdateStoreDto } from '@be/application/owner/stores/dtos/UpdateStoreDto';
+import { BoardgameStoreDto } from '@application/boardgames/stores/dtos/BoardgameStoreDto'
+import { supabaseClient } from '@bUtils/supabaseClient'
+import { Mapper } from '../mappers/Mapper'
+import { StoreRepository, StoreSearchParams } from '@be/domain/repositories/StoreRepository'
+import { Store } from '@be/domain/entities/Store'
+import { StoreTable } from '../types/database'
+import { getCurrentUserId, getCurrentUserRole } from '@bUtils/constantfunctions'
 
-// Supabase Row + Joined Users
 interface StoreWithUser extends Omit<StoreTable, 'created_by'> {
   created_by: string;
   users: { username: string }[] | null;
 }
-
 export class StoreRepositoryImpl implements StoreRepository {
-  async findAll(): Promise<ReadStoreDto[]> {
+  async getStoresByBoardgameId(boardgameId: number): Promise<BoardgameStoreDto[]> {
     const { data, error } = await supabaseClient
-      .from('store_places')
-      .select(`
-        store_id, name, address, phone, description,
-        image_place_url, image_menu_url, created_by, open_time,
-        users:created_by (username)
-      `);
+      .from('store_own_boardgames')
+      .select(
+        `
+      store_id,
+      store_places (
+        name,
+        address
+      )
+    `,
+      )
+      .eq('boardgame_id', boardgameId)
 
-    if (error) throw error;
-    return data ? data.map(Mapper.toReadStoreDtoFromTableRow) : [];
+    if (error) throw new Error(error.message)
+    if (!data) return []
+
+    return data
+      .filter((entry) => {
+        console.log(entry)
+        return !!entry.store_places
+      })
+      .map((entry) => ({
+        storeId: String(entry.store_id),
+        storeName: entry.store_places.name,
+        address: entry.store_places.address,
+      }))
+  }
+
+  async findAll(): Promise<Store[]> {
+    const { data, error } = await supabaseClient.from('store_places').select(`
+      store_id,
+      name,
+      address,
+      phone,
+      description,
+      image_place_url,
+      image_menu_url,
+      created_by,
+      open_time,
+      users:created_by (
+        username
+      )
+    `)
+    if (error) throw error
+    return data.map(
+      (d: StoreWithUser) =>
+        new Store(
+          d.store_id,
+          d.name,
+          d.address,
+          d.phone,
+          d.description,
+          d.image_place_url,
+          d.image_menu_url,
+          '',
+          d.users?.username ?? '',
+          d.open_time,
+        ),
+    )
   }
 
   async findById(id: number): Promise<ReadStoreDto | null> {
