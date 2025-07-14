@@ -6,6 +6,7 @@ export class Ad {
     public imgUrl: string,
     public redirectUrl: string,
     public isActive: boolean,
+    public createdAt: Date = new Date(),
     public type: string,
   ) {}
 }
