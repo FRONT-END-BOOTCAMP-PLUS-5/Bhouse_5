@@ -6,6 +6,7 @@ import { GetAdListUseCase } from '@be/application/admin/ads/usecases/GetAdListUs
 import { CreateAdUseCase } from '@be/application/admin/ads/usecases/CreateAdUseCase';
 import { Ad } from '@be/domain/entities/Ad';
 import { supabaseClient } from '@bUtils/supabaseClient';
+import { CreateAdDto } from '@be/application/admin/ads/dtos/CreatedAdDto';
 
 const repo = new AdRepositoryImpl();
 const getAdListUseCase = new GetAdListUseCase(repo);
@@ -24,26 +25,24 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const supabase = supabaseClient;
     const {
       data: { user },
-    } = await supabase.auth.getUser();
+    } = await supabaseClient.auth.getUser();
 
-    if (!user) {
+    if (!user || user.user_metadata?.role !== 'ADMIN') {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
-    const ad = new Ad(
-      body.id,
-      user.id,
-      body.title,
-      body.imgUrl,
-      body.redirectUrl,
-      body.isActive,
-      body.type
-    );
+    const dto: CreateAdDto = {
+      title: body.title,
+      imageUrl: body.imgUrl,
+      redirectUrl: body.redirectUrl,
+      isActive: body.isActive,
+      type: body.type,
+      description: body.description,
+    };
 
-    await createAdUseCase.execute(ad);
+    await createAdUseCase.execute(dto);
     return NextResponse.json({ message: 'Ad created' }, { status: 201 });
   } catch (e) {
     console.error('POST error', e);

@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { SigninAuthUsecase } from '@be/application/auth/signin/usecases/SigninAuthUsecase'
 import { AuthRepositoryImpl } from '@be/infrastructure/repositories/AuthRepositoryImpl'
+import { SigninUsecase } from '@be/application/auth/signin/usecases/SigninUsecase'
 
 export async function POST(request: NextRequest) {
   try {
     // Basic Auth 헤더를 UseCase로 전달
     const authHeader = request.headers.get('authorization')
-    const usecase = new SigninAuthUsecase(new AuthRepositoryImpl())
+    const usecase = new SigninUsecase(new AuthRepositoryImpl())
     const result = await usecase.execute(authHeader)
 
     return NextResponse.json(result, { status: result.status })

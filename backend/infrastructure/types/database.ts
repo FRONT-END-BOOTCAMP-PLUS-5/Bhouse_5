@@ -49,6 +49,7 @@ export interface AlarmTable {
 }
 
 export interface AdTable {
+  created_at: string | number | Date
   id: number // int4
   user_id: string
   title: string // varchar(100)

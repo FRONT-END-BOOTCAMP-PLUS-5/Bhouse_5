@@ -1,4 +1,6 @@
-import { Store } from '../entities/Store'
+import { ReadStoreDto } from '@be/application/owner/stores/dtos/ReadStoreDto'
+import { CreateStoreDto } from '@be/application/owner/stores/dtos/CreatedStoreDto'
+import { UpdateStoreDto } from '@be/application/owner/stores/dtos/UpdateStoreDto'
 
 export interface StoreSearchParams {
   keyword?: string
@@ -8,6 +10,7 @@ export interface StoreSearchParams {
 }
 
 export interface StoreRepository {
+  getStoresByBoardgameId(boardgameId: number): Promise<{ storeId: string; storeName: string; address: string }[]>
   findById(id: number): Promise<Store | null>
   findByUserId(userId: string): Promise<Store[]>
   findByKeyword(keyword: StoreSearchParams): Promise<Store[]>
