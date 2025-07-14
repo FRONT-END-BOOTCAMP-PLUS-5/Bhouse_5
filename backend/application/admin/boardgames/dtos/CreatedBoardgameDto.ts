@@ -1,6 +1,6 @@
-// backend/application/admin/boardgames/dtos/RegisteredBoardgameDto.ts
+// backend/application/admin/boardgames/dtos/CreatedBoardgameDto.ts
 
-export interface RegisteredBoardgameDto {
+export interface CreatedBoardgameDto {
   boardgameId: number
   name: string
   description: string | null

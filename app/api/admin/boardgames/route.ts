@@ -1,16 +1,16 @@
-// app/api/admin/boardgames/register/route.ts
+// app/api/admin/boardgames/route.ts
 
 import { NextResponse } from 'next/server'
 // import { supabase } from 'backend/utils/supabaseClient'; // 기존 파일과 동일하게 supabaseClient 임포트
-import { supabaseClient } from 'backend/utils/supabaseClient' // 미리 정의된 클라이언트 임포트
+import { supabaseClient } from '@be/utils/supabaseClient' // 미리 정의된 클라이언트 임포트
 
-import { RegisterBoardgameUseCase } from 'backend/application/admin/boardgames/usecases/RegisterBoardgameUseCase'
-import { SupabaseBoardgameRepository } from 'backend/infrastructure/repositories/SupabaseBoardgameRepository'
-import { RegisterBoardgameDto } from 'backend/application/admin/boardgames/dtos/RegisterBoardgameDto'
+import { CreateBoardgameUseCase } from '@application/admin/boardgames/usecases/CreateBoardgameUseCase'
+import { SupabaseBoardgameRepository } from '@infrastructure/repositories/SupabaseBoardgameRepository'
+import { CreateBoardgameDto } from '@application/admin/boardgames/dtos/CreateBoardgameDto'
 
 /**
  * 새로운 보드게임을 등록하는 API 엔드포인트입니다.
- * POST /api/admin/boardgames/register
+ * POST /api/admin/boardgames/create
  */
 export async function POST(request: Request) {
   // FIXME: 이 부분에 관리자 인증/인가 로직을 추가해야 합니다.
@@ -46,7 +46,7 @@ export async function POST(request: Request) {
     }
 
     // 1. 애플리케이션 계층으로 전달할 DTO 생성
-    const registerDto: RegisterBoardgameDto = {
+    const createDto: CreateBoardgameDto = {
       userId: user_id,
       korName: kor_name,
       description: description,
@@ -63,14 +63,14 @@ export async function POST(request: Request) {
     const boardgameRepository = new SupabaseBoardgameRepository() // supabaseClient는 내부에서 사용
 
     // 3. 애플리케이션 계층의 유즈케이스 생성 및 레포지토리 주입
-    const registerBoardgameUseCase = new RegisterBoardgameUseCase(boardgameRepository)
+    const createBoardgameUseCase = new CreateBoardgameUseCase(boardgameRepository)
 
     // 4. 유즈케이스 실행
-    const registeredBoardgame = await registerBoardgameUseCase.execute(registerDto)
+    const createdBoardgame = await createBoardgameUseCase.execute(createDto)
 
     // 성공 시 201 Created 상태 코드와 함께 응답
     return NextResponse.json(
-      { success: true, message: '보드게임이 성공적으로 등록되었습니다.', boardgame: registeredBoardgame },
+      { success: true, message: '보드게임이 성공적으로 등록되었습니다.', boardgame: createdBoardgame },
       { status: 201 },
     )
   } catch (error: any) {
