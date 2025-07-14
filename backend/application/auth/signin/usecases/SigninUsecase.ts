@@ -1,4 +1,4 @@
-// backend/application/auth/signin/usecases/SigninAuthUsecase.ts
+// backend/application/auth/signin/usecases/SigninUsecase.ts
 import { AuthRepository } from '@be/domain/repositories/AuthRepository'
 import { SigninAuthResponseDto } from '../dtos/SigninAuthResponseDto'
 import bcrypt from 'bcrypt'
@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken'
 import { User } from '@be/domain/entities/User'
 import { cookies } from 'next/headers'
 
-export class SigninAuthUsecase {
+export class SigninUsecase {
   constructor(private readonly authRepository: AuthRepository) {}
 
   async execute(authHeader: string | null): Promise<SigninAuthResponseDto> {
