@@ -1,6 +1,6 @@
 'use client'
 
-import instance from '@utils/instance'
+import { signinService } from 'models/services/auth.service'
 import { getProfileService } from 'models/services/profile.service'
 import Link from 'next/link'
 import { useAuthStore } from 'store/auth.store'
@@ -10,16 +10,13 @@ function SigninPage() {
 
   const handleClick = async () => {
     try {
-      await instance.post('/api/auth/signin', null, {
-        auth: { username: 'test12@example.com', password: 'test123' },
-      })
-      const res = await getProfileService()
+      await signinService({ username: 'test12@example.com', password: 'test123' })
 
+      const res = await getProfileService()
       if (res) {
         setLogin(res)
       }
     } catch (error) {
-      // todo 에러 처리
       alert('에러가 발생했습니다.')
       console.log(error)
     }

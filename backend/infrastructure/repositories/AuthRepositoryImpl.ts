@@ -151,18 +151,6 @@ export class AuthRepositoryImpl implements AuthRepository {
     return Mapper.toUser(data as UserTable)
   }
 
-  async signin(): Promise<void> {
-    // TODO(@채영): 로그인 로직 구현
-    await Promise.resolve() // 임시 await 추가
-    throw new Error('Method not implemented.')
-  }
-
-  async signout(): Promise<void> {
-    // TODO(@채영): 로그아웃 로직 구현
-    await Promise.resolve() // 임시 await 추가
-    throw new Error('Method not implemented.')
-  }
-
   async passwordReset(userId: string, hashedPassword: string): Promise<void> {
     const { error } = await supabaseClient
       .from('users')
