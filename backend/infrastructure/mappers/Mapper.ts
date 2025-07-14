@@ -5,6 +5,8 @@ import { Alarm, AlarmType } from '@be/domain/entities/Alarm'
 import { User } from '@be/domain/entities/User'
 import { Role } from '@be/domain/entities/Role'
 import { Store } from '@be/domain/entities/Store'
+import { CreateAdDto } from '@be/application/admin/ads/dtos/CreatedAdDto'
+import { ReadAdDto } from '@be/application/admin/ads/dtos/ReadAdDto'
 
 export class Mapper {
   static toAd(source: AdTable): Ad {
@@ -15,6 +17,7 @@ export class Mapper {
       source.img_url,
       source.redirect_url,
       source.is_active,
+      new Date(source.created_at),
       source.type,
     )
   }
@@ -27,8 +30,32 @@ export class Mapper {
       img_url: ad.imgUrl,
       redirect_url: ad.redirectUrl,
       is_active: ad.isActive,
+      created_at: ad.createdAt,
       type: ad.type,
     }
+  }
+
+  static toAdEntity(dto: CreateAdDto): Ad {
+    return new Ad(
+      undefined, // id는 sequence로 supabase에서 자동 생성
+      "", // userId - will be set by repository
+      dto.title,
+      dto.imageUrl,
+      "", // redirectUrl - not provided in CreateAdDto
+      true, // isActive - default to true for new ads
+      new Date(),
+      dto.type || "BANNER", // type - provide default if not specified
+    );
+  }
+
+  static toReadAdDto(ad: Ad): ReadAdDto {
+    return {
+      id: ad.id?.toString() ?? '',
+      title: ad.title,
+      description: '', // Ad entity doesn't have description field, providing default empty string
+      imageUrl: ad.imgUrl, // ✅ Entity의 imgUrl을 DTO의 imageUrl로 변환
+      createdAt: ad.createdAt.toISOString(),
+    };
   }
 
   static toAlarm(source: AlarmTable): Alarm {

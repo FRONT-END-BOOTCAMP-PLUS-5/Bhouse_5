@@ -1,7 +1,7 @@
 import { Alarm } from './Alarms'
 import UserRole from './UserRole'
 
-export class User {
+export default class User {
   constructor(
     public id: string,
     public username: string,
@@ -14,7 +14,8 @@ export class User {
     public updatedAt: Date | null,
     //관계
     public userRole?: UserRole,
-    public userAlarms?: Alarm[], // 1:N    public phone?: string,
+    public userAlarms?: Alarm[], // 1:N
+    public phone?: string,
     public provider?: string,
     public providerId?: string,
   ) {}

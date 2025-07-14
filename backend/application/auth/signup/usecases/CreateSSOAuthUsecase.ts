@@ -2,7 +2,7 @@ import { AuthRepository } from "@be/domain/repositories/AuthRepository";
 import { CreateSSOAuthDto } from "../dtos/CreateSSOAuthDto";
 import { CreateAuthResponseDto } from "../dtos/CreateAuthDto";
 import { User } from "@be/domain/entities/User";
-import { UserRole } from "@be/domain/entities/UserRole";
+import UserRole from "@be/domain/entities/UserRole";
 
 export class CreateSSOAuthUsecase {
   constructor(private readonly authRepo: AuthRepository) {}
@@ -27,10 +27,11 @@ export class CreateSSOAuthUsecase {
         "", // 비밀번호 없음 (SSO)
         dto.email,
         dto.nickname || dto.username,
-        new Date(),
-        new Date(),
-        dto.profileImgUrl || null,
-        new UserRole("", 2), // 일반 사용자 roleId = 2
+        new Date(), // createdAt
+        null, // deletedAt
+        dto.profileImgUrl || null, // image
+        new Date(), // updatedAt
+        new UserRole("", 2), // userRole - 일반 사용자 roleId = 2
         undefined, // userAlarms
         undefined, // phone
         dto.provider,
