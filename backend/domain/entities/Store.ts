@@ -1,7 +1,7 @@
 export interface StoreSearchParams {
-  keyword?: string;
-  address?: string;
-  ownerName?: string;
+  keyword?: string
+  address?: string
+  ownerName?: string
 }
 
 export class Store {

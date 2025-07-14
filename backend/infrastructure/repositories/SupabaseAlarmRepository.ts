@@ -1,19 +1,19 @@
 // backend/infrastructure/repositories/SupabaseAlarmRepository.ts
 
-import { supabaseClient } from "@be/utils/supabaseClient"; // 기존에 정의된 Supabase 클라이언트 인스턴스 임포트
+import { supabaseClient } from '@be/utils/supabaseClient' // 기존에 정의된 Supabase 클라이언트 인스턴스 임포트
 
-import AlarmRepository from "@domain/repositories/AlarmRepository";
-import { Alarm, AlarmType } from "@domain/entities/Alarm";
-import { AlarmRelationsOptions } from "@domain/repositories/options/AlarmRelationsOptions";
+import AlarmRepository from '@domain/repositories/AlarmRepository'
+import { Alarm, AlarmType } from '@domain/entities/Alarm'
+import { AlarmRelationsOptions } from '@domain/repositories/options/AlarmRelationsOptions'
 
 // Supabase의 alarms 테이블에서 가져올 데이터의 타입 정의 (DB 스키마와 매핑)
 interface AlarmTable {
-  alarm_id: number;
-  user_id: string;
-  message: string;
-  is_read: boolean;
-  created_at: string; // Supabase에서 가져올 때는 ISO 문자열
-  alarm_type: AlarmType;
+  alarm_id: number
+  user_id: string
+  message: string
+  is_read: boolean
+  created_at: string // Supabase에서 가져올 때는 ISO 문자열
+  alarm_type: AlarmType
 }
 
 /**
@@ -32,8 +32,8 @@ class AlarmMapper {
       data.message,
       data.is_read,
       new Date(data.created_at), // 문자열을 Date 객체로 변환
-      data.alarm_type
-    );
+      data.alarm_type,
+    )
   }
 
   /**
@@ -49,7 +49,7 @@ class AlarmMapper {
       alarm_type: alarm.alarmType,
       // created_at은 DB에서 기본값으로 설정되거나, 엔티티의 값을 사용 (insert 시)
       created_at: alarm.createdAt ? alarm.createdAt.toISOString() : undefined,
-    };
+    }
   }
 }
 
@@ -66,105 +66,99 @@ export class SupabaseAlarmRepository implements AlarmRepository {
   }
 
   async findAll(relations?: AlarmRelationsOptions): Promise<Alarm[]> {
-    let query = supabaseClient.from("alarms").select("*"); // supabaseClient 사용
+    const query = supabaseClient.from('alarms').select('*') // supabaseClient 사용
     // 관계 포함 로직 (필요시 구현)
-    const { data, error } = await query;
-    if (error) throw new Error(`Failed to fetch all alarms: ${error.message}`);
-    return (data ?? []).map((item: AlarmTable) => AlarmMapper.toAlarm(item)); // item 타입 명시
+    const { data, error } = await query
+    if (error) throw new Error(`Failed to fetch all alarms: ${error.message}`)
+    return (data ?? []).map((item: AlarmTable) => AlarmMapper.toAlarm(item)) // item 타입 명시
   }
 
-  async findById(
-    alarmId: number,
-    relations?: AlarmRelationsOptions
-  ): Promise<Alarm | null> {
-    let query = supabaseClient // supabaseClient 사용
-      .from("alarms")
-      .select("*")
-      .eq("alarm_id", alarmId)
-      .single();
+  async findById(alarmId: number, relations?: AlarmRelationsOptions): Promise<Alarm | null> {
+    const query = supabaseClient // supabaseClient 사용
+      .from('alarms')
+      .select('*')
+      .eq('alarm_id', alarmId)
+      .single()
     // 관계 포함 로직 (필요시 구현)
-    const { data, error } = await query;
+    const { data, error } = await query
     if (error) {
-      if (error.code === 'PGRST116') return null; // No rows found
-      throw new Error(`Failed to fetch alarm by ID: ${error.message}`);
+      if (error.code === 'PGRST116') return null // No rows found
+      throw new Error(`Failed to fetch alarm by ID: ${error.message}`)
     }
-    return data ? AlarmMapper.toAlarm(data) : null;
+    return data ? AlarmMapper.toAlarm(data) : null
   }
 
-  async findByUserId(
-    userId: string,
-    relations?: AlarmRelationsOptions
-  ): Promise<Alarm[]> {
-    let query = supabaseClient // supabaseClient 사용
-      .from("alarms")
-      .select("*")
-      .eq("user_id", userId);
+  async findByUserId(userId: string, relations?: AlarmRelationsOptions): Promise<Alarm[]> {
+    const query = supabaseClient // supabaseClient 사용
+      .from('alarms')
+      .select('*')
+      .eq('user_id', userId)
     // 관계 포함 로직 (필요시 구현)
-    const { data, error } = await query;
-    if (error) throw new Error(`Failed to fetch alarms by user ID: ${error.message}`);
-    return (data ?? []).map((item: AlarmTable) => AlarmMapper.toAlarm(item)); // item 타입 명시
+    const { data, error } = await query
+    if (error) throw new Error(`Failed to fetch alarms by user ID: ${error.message}`)
+    return (data ?? []).map((item: AlarmTable) => AlarmMapper.toAlarm(item)) // item 타입 명시
   }
 
   async save(alarm: Alarm): Promise<Alarm> {
     const { data, error } = await supabaseClient // supabaseClient 사용
-      .from("alarms")
+      .from('alarms')
       .insert([AlarmMapper.toAlarmTable(alarm)])
       .select()
-      .single();
-    if (error) throw new Error(`Failed to save alarm: ${error.message}`);
-    return AlarmMapper.toAlarm(data);
+      .single()
+    if (error) throw new Error(`Failed to save alarm: ${error.message}`)
+    return AlarmMapper.toAlarm(data)
   }
 
   async update(alarm: Alarm): Promise<Alarm> {
     const { data, error } = await supabaseClient // supabaseClient 사용
-      .from("alarms")
+      .from('alarms')
       .update(AlarmMapper.toAlarmTable(alarm))
-      .eq("alarm_id", alarm.alarmId)
+      .eq('alarm_id', alarm.alarmId)
       .select()
-      .single();
-    if (error) throw new Error(`Failed to update alarm: ${error.message}`);
-    return AlarmMapper.toAlarm(data);
+      .single()
+    if (error) throw new Error(`Failed to update alarm: ${error.message}`)
+    return AlarmMapper.toAlarm(data)
   }
 
   async delete(alarmId: number): Promise<void> {
     const { error } = await supabaseClient // supabaseClient 사용
-      .from("alarms")
+      .from('alarms')
       .delete()
-      .eq("alarm_id", alarmId);
-    if (error) throw new Error(`Failed to delete alarm: ${error.message}`);
+      .eq('alarm_id', alarmId)
+    if (error) throw new Error(`Failed to delete alarm: ${error.message}`)
   }
 
   async markAsRead(alarmId: number): Promise<void> {
     const { error } = await supabaseClient // supabaseClient 사용
-      .from("alarms")
+      .from('alarms')
       .update({ is_read: true })
-      .eq("alarm_id", alarmId);
-    if (error) throw new Error(`Failed to mark alarm as read: ${error.message}`);
+      .eq('alarm_id', alarmId)
+    if (error) throw new Error(`Failed to mark alarm as read: ${error.message}`)
   }
 
   async findByUserIdAndType(
     userId: string,
-    alarmType: AlarmType | "ALL"
+    alarmType: AlarmType | 'ALL',
   ): Promise<{ alarms: Alarm[]; totalCount: number }> {
     let query = supabaseClient // supabaseClient 사용
-      .from("alarms")
-      .select("alarm_id, user_id, alarm_type, message, is_read, created_at", { count: "exact" })
-      .eq("user_id", userId);
+      .from('alarms')
+      .select('alarm_id, user_id, alarm_type, message, is_read, created_at', { count: 'exact' })
+      .eq('user_id', userId)
 
-    if (alarmType !== "ALL") {
-      query = query.eq("alarm_type", alarmType);
+    if (alarmType !== 'ALL') {
+      query = query.eq('alarm_type', alarmType)
     }
 
-    const { data, error, count } = await query;
+    const { data, error, count } = await query
 
     if (error) {
-      console.error('Supabase 쿼리 에러:', error.message);
-      throw new Error(`Failed to fetch alarms: ${error.message}`);
+      console.error('Supabase 쿼리 에러:', error.message)
+      throw new Error(`Failed to fetch alarms: ${error.message}`)
     }
 
-    const alarms: Alarm[] = (data ?? []).map((item: AlarmTable) => AlarmMapper.toAlarm(item));
-    const totalCount: number = count ?? 0;
+    const alarms: Alarm[] = (data ?? []).map((item: AlarmTable) => AlarmMapper.toAlarm(item))
+    const totalCount: number = count ?? 0
 
-    return { alarms, totalCount };
+    return { alarms, totalCount }
   }
 }

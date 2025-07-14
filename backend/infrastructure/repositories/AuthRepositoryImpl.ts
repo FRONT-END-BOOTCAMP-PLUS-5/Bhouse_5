@@ -1,0 +1,192 @@
+import { User } from '@be/domain/entities/User'
+import { AuthRepository } from '@be/domain/repositories/AuthRepository'
+import { supabaseClient } from '@bUtils/supabaseClient'
+
+export class AuthRepositoryImpl implements AuthRepository {
+  async signup(user: User, roleId: number): Promise<void> {
+    // 1. users 테이블에 insert
+    const { data, error } = await supabaseClient
+      .from('users')
+      .insert([
+        {
+          username: user.username,
+          email: user.email,
+          password: user.password,
+          nickname: user.nickname,
+          phone: user.phone,
+          profile_img_url: user.profileImgUrl,
+          provider: user.provider,
+          provider_id: user.providerId,
+          created_at: user.createdAt,
+          updated_at: user.updatedAt,
+        },
+      ])
+      .select('user_id')
+
+    if (error || !data || !data[0]?.user_id) {
+      throw new Error(`회원가입 실패: ${error?.message}`)
+    }
+
+    const userId = data[0].user_id
+
+    // 2. user_roles 테이블에 insert
+    const { error: roleError } = await supabaseClient.from('user_roles').insert([{ user_id: userId, role_id: roleId }])
+
+    if (roleError) {
+      throw new Error(`권한 등록 실패: ${roleError.message}`)
+    }
+  }
+
+  async findUser(email: string, username: string): Promise<User | null> {
+    const { data, error } = await supabaseClient
+      .from('users')
+      .select('*')
+      .or(`email.eq.${email},username.eq.${username}`)
+      .maybeSingle()
+
+    if (error) {
+      throw new Error(`사용자 조회 실패: ${error.message}`)
+    }
+
+    if (!data) {
+      return null
+    }
+
+    return new User(
+      data.user_id,
+      data.username,
+      data.password,
+      data.email,
+      data.nickname,
+      data.created_at,
+      data.updated_at,
+      data.deleted_at,
+      data.profile_img_url,
+      data.phone,
+      data.provider,
+      data.provider_id,
+      data.user_role,
+    )
+  }
+
+  async emailFind(username: string, phone: string): Promise<User | null> {
+    const { data, error } = await supabaseClient
+      .from('users')
+      .select('*')
+      .eq('username', username)
+      .eq('phone', phone)
+      .maybeSingle()
+
+    if (error) {
+      throw new Error(`사용자 조회 실패: ${error.message}`)
+    }
+
+    if (!data) {
+      return null
+    }
+
+    return new User(
+      data.user_id,
+      data.username,
+      data.password,
+      data.email,
+      data.nickname,
+      data.created_at,
+      data.updated_at,
+      data.deleted_at,
+      data.profile_img_url,
+      data.phone,
+      data.provider,
+      data.provider_id,
+      undefined,
+    )
+  }
+
+  async passwordFind(username: string, email: string, phone: string): Promise<User | null> {
+    const { data, error } = await supabaseClient
+      .from('users')
+      .select('*')
+      .eq('username', username)
+      .eq('email', email)
+      .eq('phone', phone)
+      .maybeSingle()
+
+    if (error) {
+      throw new Error(`사용자 조회 실패: ${error.message}`)
+    }
+
+    if (!data) {
+      return null
+    }
+
+    return new User(
+      data.user_id,
+      data.username,
+      data.password,
+      data.email,
+      data.nickname,
+      data.created_at,
+      data.updated_at,
+      data.deleted_at,
+      data.profile_img_url,
+      data.phone,
+      data.provider,
+      data.provider_id,
+      undefined,
+    )
+  }
+
+  async signin(): Promise<void> {
+    // TODO(@채영): 로그인 로직 구현
+    await Promise.resolve() // 임시 await 추가
+    throw new Error('Method not implemented.')
+  }
+
+  async signout(): Promise<void> {
+    // TODO(@채영): 로그아웃 로직 구현
+    await Promise.resolve() // 임시 await 추가
+    throw new Error('Method not implemented.')
+  }
+
+  async passwordReset(userId: string, hashedPassword: string): Promise<void> {
+    const { error } = await supabaseClient
+      .from('users')
+      .update({
+        password: hashedPassword,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('user_id', userId)
+
+    if (error) {
+      throw new Error(`비밀번호 재설정 실패: ${error.message}`)
+    }
+  }
+
+  async findUserById(userId: string): Promise<User | null> {
+    const { data, error } = await supabaseClient.from('users').select('*').eq('user_id', userId).maybeSingle()
+
+    if (error) {
+      throw new Error(`사용자 조회 실패: ${error.message}`)
+    }
+
+    if (!data) {
+      return null
+    }
+
+    return new User(
+      data.user_id,
+      data.username,
+      data.password,
+      data.email,
+      data.nickname,
+      data.created_at,
+      data.updated_at,
+      data.deleted_at,
+      data.profile_img_url,
+      data.phone,
+      data.provider,
+      data.provider_id,
+      data.user_role,
+    )
+  }
+}

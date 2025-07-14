@@ -5,6 +5,6 @@
  * 'Y'/'N' 문자열 값을 포함합니다.
  */
 export interface UserSettingResponseDto {
-  reply: 'Y' | 'N';
-  keyword: 'Y' | 'N';
+  reply: 'Y' | 'N'
+  keyword: 'Y' | 'N'
 }

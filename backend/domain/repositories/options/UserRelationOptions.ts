@@ -1,5 +1,3 @@
-
 export interface UserRelationOptions {
-    includeUserRole?: boolean;
-    includeUserAlarms?: boolean;
+  includeUserRole?: boolean
 }
