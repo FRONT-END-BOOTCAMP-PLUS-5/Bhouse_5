@@ -5,8 +5,7 @@ export async function DELETE() {
   try {
     const cookieStore = await cookies()
 
-    cookieStore.delete('accessToken')
-    cookieStore.delete('refreshToken')
+    await Promise.all([cookieStore.delete('accessToken'), cookieStore.delete('refreshToken')])
 
     return NextResponse.json({ message: '로그아웃 성공' }, { status: 200 })
   } catch (error) {

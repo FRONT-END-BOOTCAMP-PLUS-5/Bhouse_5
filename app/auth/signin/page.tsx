@@ -1,39 +1,64 @@
 'use client'
 
+import React, { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import TextInput from '@/_components/TextInput/TextInput'
 import { signinService } from 'models/services/auth.service'
 import { getProfileService } from 'models/services/profile.service'
-import Link from 'next/link'
 import { useAuthStore } from 'store/auth.store'
+import { loginSchema, LoginSchemaType } from 'models/schemas/auth.schema'
+import styles from './signin.module.css'
+import Button from '@/_components/Button/Button'
 
 function SigninPage() {
-  const { setLogin, ...rest } = useAuthStore()
+  const { setLogin } = useAuthStore()
+  const [serverError, setServerError] = useState<string>('')
 
-  const handleClick = async () => {
+  const form = useForm<LoginSchemaType>({
+    resolver: zodResolver(loginSchema),
+    mode: 'all',
+  })
+
+  const handleSubmit = async (data: LoginSchemaType) => {
+    setServerError('') // 에러 초기화
     try {
-      await signinService({ username: 'test12@example.com', password: 'test123' })
+      await signinService({ username: data.email, password: data.password })
 
       const res = await getProfileService()
       if (res) {
         setLogin(res)
       }
-    } catch (error) {
-      alert('에러가 발생했습니다.')
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || '로그인에 실패했습니다.'
+      setServerError(errorMessage)
       console.log(error)
     }
   }
 
-  return (
-    <div>
-      <button onClick={handleClick}>test</button>
-      <button
-        onClick={() => {
-          console.log(rest)
-        }}
-      >
-        test2
-      </button>
+  console.log(form.watch())
+  console.log('form.formState.errors:', form.formState.errors)
 
-      <Link href="/">Home</Link>
+  return (
+    <div className={styles.container}>
+      <form onSubmit={form.handleSubmit(handleSubmit)} className={styles.form}>
+        <TextInput type="email" placeholder="이메일" {...form.register('email')} />
+        <TextInput type="password" placeholder="비밀번호" {...form.register('password')} />
+        <Button type="submit">로그인</Button>
+      </form>
+
+      {/* 폼 에러 메시지 */}
+      {form.formState.errors.email && (
+        <p style={{ color: 'red', fontSize: '14px', marginTop: '8px' }}>{form.formState.errors.email.message}</p>
+      )}
+      {form.formState.errors.password && (
+        <p style={{ color: 'red', fontSize: '14px', marginTop: '8px' }}>{form.formState.errors.password.message}</p>
+      )}
+
+      {/* 서버 에러 메시지 */}
+      {serverError && (
+        <p style={{ color: 'red', fontSize: '14px', marginTop: '8px', fontWeight: 'bold' }}>{serverError}</p>
+      )}
     </div>
   )
 }
