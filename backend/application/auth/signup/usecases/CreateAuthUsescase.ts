@@ -1,7 +1,7 @@
 import { AuthRepository } from '@be/domain/repositories/AuthRepository'
 import { CreateAuthDto, CreateAuthResponseDto } from '../dtos/CreateAuthDto'
 import bcrypt from 'bcrypt'
-import UserRole from '@be/domain/entities/UserRole'
+import { UserRole } from '@be/domain/entities/UserRole'
 import { User } from '@be/domain/entities/User'
 import { Role } from '@be/domain/entities/Role'
 

@@ -1,7 +1,7 @@
 import { Role } from './Role'
 import { User } from './User'
 
-export default class UserRole {
+export class UserRole {
   constructor(
     public roles: Role, // N:1
   ) {}

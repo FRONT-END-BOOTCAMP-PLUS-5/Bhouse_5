@@ -4,10 +4,18 @@ import { Alarm, AlarmType } from '@be/domain/entities/Alarm'
 import { User } from '@be/domain/entities/User'
 import { Role } from '@be/domain/entities/Role'
 import { Store } from '@be/domain/entities/Store'
-import UserRole from '@be/domain/entities/UserRole'
+import { CreateAdDto } from '@be/application/admin/ads/dtos/CreatedAdDto'
+import { ReadAdDto } from '@be/application/admin/ads/dtos/ReadAdDto'
+import { CreateStoreDto } from '@be/application/owner/stores/dtos/CreatedStoreDto'
+import { ReadStoreDto } from '@be/application/owner/stores/dtos/ReadStoreDto'
+import { UpdateStoreDto } from '@be/application/owner/stores/dtos/UpdateStoreDto'
+import { UserRole } from '@be/domain/entities/UserRole'
 
 export class Mapper {
-  static toAd(source: AdTable): Ad {
+  static toStoreTableFromCreate(dto: CreateStoreDto, userId: string) {
+    throw new Error('Method not implemented.')
+  }
+  static fromAdTable(source: AdTable): Ad {
     return new Ad(
       source.id,
       source.user_id,
@@ -15,6 +23,7 @@ export class Mapper {
       source.img_url,
       source.redirect_url,
       source.is_active,
+      new Date(source.created_at),
       source.type,
     )
   }
@@ -27,8 +36,39 @@ export class Mapper {
       img_url: ad.imgUrl,
       redirect_url: ad.redirectUrl,
       is_active: ad.isActive,
+      created_at: ad.createdAt,
       type: ad.type,
     }
+  }
+
+  static toAdEntity(dto: CreateAdDto): Ad {
+    return new Ad(
+      undefined, // id는 sequence로 supabase에서 자동 생성
+      "", // userId - will be set by repository
+      dto.title,
+      dto.imageUrl,
+      "", // redirectUrl - not provided in CreateAdDto
+      true, // isActive - default to true for new ads
+      new Date(),
+      dto.type || "BANNER", // type - provide default if not specified
+    );
+  }
+
+  static toReadAdDto(ad: Ad): ReadAdDto {
+    return {
+      id: ad.id?.toString() ?? '',
+      title: ad.title,
+      description: '', // Ad entity doesn't have description field, providing default empty string
+      imageUrl: ad.imgUrl, // ✅ Entity의 imgUrl을 DTO의 imageUrl로 변환
+      redirectUrl: ad.redirectUrl,
+      createdAt:
+        ad.createdAt instanceof Date
+          ? ad.createdAt.toISOString()
+          : typeof ad.createdAt === 'string'
+            ? ad.createdAt
+            : '',
+      isActive: ad.isActive,
+    };
   }
 
   static toAlarm(source: AlarmTable): Alarm {
@@ -48,34 +88,54 @@ export class Mapper {
       source.username,
       source.password || '',
       source.email,
+      source.nickname || '',
       new Date(source.created_at),
       null, // deletedAt - not available in UserTable
       source.profile_img_url || null,
       new Date(source.updated_at),
-      source.provider_id || null,
+      undefined, // userRole - not available in UserTable
+      undefined, // userAlarms - not available in UserTable
+      source.phone || undefined,
+      source.provider || undefined,
+      source.provider_id || undefined,
     )
   }
 
   static toRole(source: RoleTable): Role {
-    return new Role(source.role_id.toString(), source.name)
+    return new Role(source.role_id, source.name)
   }
 
   static toMemberRole(source: UserRoleTable): UserRole {
     return new UserRole(source.user_id, source.role_id)
   }
 
-  static toStore(source: StoreTable): Store {
+  static toStore(dto: CreateStoreDto): Store {
     return new Store(
-      source.store_id,
-      source.name,
-      source.address,
-      source.phone,
-      source.description,
-      source.image_place_url,
-      source.image_menu_url,
-      source.created_by,
-      source.open_time,
-    )
+      undefined,               // storeId: Supabase에서 자동 생성
+      dto.name,
+      dto.address,
+      dto.phone,
+      dto.description,
+      dto.imagePlaceUrl,
+      dto.imageMenuUrl,
+      dto.createdBy,
+      dto.ownerName,
+      dto.openTime
+    );
+  }
+
+  static toReadStoreDto(store: Store): ReadStoreDto {
+    return {
+      storeId: store.storeId ?? 0, // optional일 수 있으므로 fallback
+      name: store.name,
+      address: store.address,
+      phone: store.phone,
+      description: store.description,
+      imagePlaceUrl: store.imagePlaceUrl,
+      imageMenuUrl: store.imageMenuUrl,
+      ownerName: store.ownerName,
+      openTime: store.openTime,
+    };
   }
 
   static toStoreTable(store: Store): StoreTable {
@@ -90,5 +150,35 @@ export class Mapper {
       created_by: store.createdBy,
       open_time: store.openTime,
     }
+  }
+
+  static toUpdateStoreTable(dto: UpdateStoreDto): any {
+    return {
+      name: dto.name,
+      address: dto.address,
+      phone: dto.phone,
+      description: dto.description,
+      image_place_url: dto.imagePlaceUrl,
+      image_menu_url: dto.imageMenuUrl,
+      open_time: dto.openTime,
+    };
+  }
+
+  static toReadStoreDtoFromTableRow(row: any): ReadStoreDto {
+    return {
+      storeId: row.store_id,
+      name: row.name,
+      address: row.address,
+      phone: row.phone,
+      description: row.description,
+      imagePlaceUrl: row.image_place_url,
+      imageMenuUrl: row.image_menu_url,
+      openTime: row.open_time,
+      ownerName: Array.isArray(row.users)
+        ? row.users.length > 0
+          ? row.users[0].username
+          : ''
+        : row.users?.username ?? '', // for non-array join fallback
+    };
   }
 }
