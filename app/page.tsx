@@ -5,6 +5,7 @@ import Button from './_components/Button/Button'
 import React, { useState } from 'react'
 import Dropdown from './_components/Dropdown/Dropdown'
 import TextInput from './_components/TextInput/TextInput'
+import Divider from './_components/Divider/Divider'
 
 export default function Home() {
   const [email, setEmail] = React.useState('')
@@ -26,7 +27,9 @@ export default function Home() {
   return (
     <div className={styles.page}>
       <p className={styles.title48}>보드의 집</p>
+      <Divider color="#FF0000" thickness="2px" />
       <h1 className={styles.boldText}>환영합니다!</h1>
+      <Divider marginY="8px" />
       <p className={styles.regularText}>이것은 나눔스퀘어 레귤러 텍스트입니다.</p>
       <p className={styles.header48}>이것 텍스트입니다. (header48)</p>
       <p className={styles.extraBoldText}>이것은 나눔스퀘어 엑스트라볼드 텍스트입니다.</p>
@@ -88,6 +91,7 @@ export default function Home() {
         <li onClick={() => handleRegionSelect('서초구')} data-disabled="true">
           서초구 (선택 불가)
         </li>
+        <Divider marginY="8px" />
         <li>
           {/* 드롭다운 리스트 안에 Button 컴포넌트 활용 */}
           <Button
