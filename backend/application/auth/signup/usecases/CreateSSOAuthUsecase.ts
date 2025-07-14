@@ -30,7 +30,7 @@ export class CreateSSOAuthUsecase {
         dto.nickname || dto.username,
         new Date(), // createdAt
         new Date(), // updatedAt
-        "TRUE",
+        "APPROVED",
         dto.profileImgUrl || null, // image
         [],
         undefined, // phone
