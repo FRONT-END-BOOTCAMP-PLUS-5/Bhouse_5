@@ -8,6 +8,7 @@ export interface StoreSearchParams {
 }
 
 export interface StoreRepository {
+  getStoresByBoardgameId(boardgameId: number): Promise<{ storeId: string; storeName: string; address: string }[]>
   findById(id: number): Promise<Store | null>
   findByUserId(userId: string): Promise<Store[]>
   findByKeyword(keyword: StoreSearchParams): Promise<Store[]>
