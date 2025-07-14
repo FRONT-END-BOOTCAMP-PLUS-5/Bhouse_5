@@ -1,14 +1,14 @@
-// backend/application/admin/boardgames/usecases/RegisterBoardgameUseCase.ts
+// backend/application/admin/boardgames/usecases/CreateBoardgameUseCase.ts
 
 import BoardgameRepository from '@domain/repositories/BoardgameRepository'
 import { Boardgame } from '@domain/entities/Boardgame'
-import { RegisterBoardgameDto } from '../dtos/RegisterBoardgameDto'
-import { RegisteredBoardgameDto } from '../dtos/RegisteredBoardgameDto'
+import { CreateBoardgameDto } from '../dtos/CreateBoardgameDto'
+import { CreatedBoardgameDto } from '../dtos/CreatedBoardgameDto'
 
 /**
  * 새로운 보드게임을 등록하는 유즈케이스입니다.
  */
-export class RegisterBoardgameUseCase {
+export class CreateBoardgameUseCase {
   private boardgameRepository: BoardgameRepository
 
   constructor(boardgameRepository: BoardgameRepository) {
@@ -20,7 +20,7 @@ export class RegisterBoardgameUseCase {
    * @param dto 보드게임 등록에 필요한 데이터를 담은 DTO
    * @returns 등록된 보드게임 정보를 담은 DTO
    */
-  async execute(dto: RegisterBoardgameDto): Promise<RegisteredBoardgameDto> {
+  async execute(dto: CreateBoardgameDto): Promise<CreatedBoardgameDto> {
     // 1. DTO로부터 Boardgame 엔티티 객체 생성
     // boardgameId는 DB에서 자동 생성되므로 초기값은 0 또는 undefined로 설정
     // created_at은 DB 기본값 사용, updated_at은 현재 시간으로 설정
@@ -44,7 +44,7 @@ export class RegisterBoardgameUseCase {
     // 2. BoardgameRepository를 통해 보드게임 저장
     const savedBoardgame = await this.boardgameRepository.save(newBoardgame)
 
-    // 3. 저장된 Boardgame 엔티티를 RegisteredBoardgameDto로 변환하여 반환
+    // 3. 저장된 Boardgame 엔티티를 CreatedBoardgameDto로 변환하여 반환
     return {
       boardgameId: savedBoardgame.boardgameId,
       name: savedBoardgame.name,
