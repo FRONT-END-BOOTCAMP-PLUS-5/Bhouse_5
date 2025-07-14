@@ -1,3 +1,4 @@
+import { BoardgameStoreDto } from '@application/boardgames/stores/dtos/BoardgameStoreDto'
 import { supabaseClient } from '@bUtils/supabaseClient'
 import { Mapper } from '../mappers/Mapper'
 import { StoreRepository, StoreSearchParams } from '@be/domain/repositories/StoreRepository'
@@ -5,13 +6,40 @@ import { Store } from '@be/domain/entities/Store'
 import { StoreTable } from '../types/database'
 import { getCurrentUserId, getCurrentUserRole } from '@bUtils/constantfunctions'
 
-// Type for store data with user relationship from Supabase
 interface StoreWithUser extends Omit<StoreTable, 'created_by'> {
   created_by: string
   users: { username: string }[] | null
 }
-
 export class StoreRepositoryImpl implements StoreRepository {
+  async getStoresByBoardgameId(boardgameId: number): Promise<BoardgameStoreDto[]> {
+    const { data, error } = await supabaseClient
+      .from('store_own_boardgames')
+      .select(
+        `
+      store_id,
+      store_places (
+        name,
+        address
+      )
+    `,
+      )
+      .eq('boardgame_id', boardgameId)
+
+    if (error) throw new Error(error.message)
+    if (!data) return []
+
+    return data
+      .filter((entry) => {
+        console.log(entry)
+        return !!entry.store_places
+      })
+      .map((entry) => ({
+        storeId: String(entry.store_id),
+        storeName: entry.store_places.name,
+        address: entry.store_places.address,
+      }))
+  }
+
   async findAll(): Promise<Store[]> {
     const { data, error } = await supabaseClient.from('store_places').select(`
       store_id,
