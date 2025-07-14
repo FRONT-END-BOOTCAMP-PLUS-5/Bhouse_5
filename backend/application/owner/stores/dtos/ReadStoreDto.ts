@@ -6,7 +6,6 @@ export interface ReadStoreDto {
   description: string;
   imagePlaceUrl: string;
   imageMenuUrl: string;
-  createdBy: string;
   ownerName: string;
   openTime: string;
 }

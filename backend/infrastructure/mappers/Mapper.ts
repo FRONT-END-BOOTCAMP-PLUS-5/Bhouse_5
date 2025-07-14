@@ -15,7 +15,7 @@ export class Mapper {
   static toStoreTableFromCreate(dto: CreateStoreDto, userId: string) {
     throw new Error('Method not implemented.')
   }
-  static toAd(source: AdTable): Ad {
+  static fromAdTable(source: AdTable): Ad {
     return new Ad(
       source.id,
       source.user_id,
@@ -60,7 +60,14 @@ export class Mapper {
       title: ad.title,
       description: '', // Ad entity doesn't have description field, providing default empty string
       imageUrl: ad.imgUrl, // ✅ Entity의 imgUrl을 DTO의 imageUrl로 변환
-      createdAt: ad.createdAt.toISOString(),
+      redirectUrl: ad.redirectUrl,
+      createdAt:
+        ad.createdAt instanceof Date
+          ? ad.createdAt.toISOString()
+          : typeof ad.createdAt === 'string'
+            ? ad.createdAt
+            : '',
+      isActive: ad.isActive,
     };
   }
 
@@ -102,7 +109,7 @@ export class Mapper {
     return new UserRole(source.user_id, source.role_id)
   }
 
-   static toStore(dto: CreateStoreDto): Store {
+  static toStore(dto: CreateStoreDto): Store {
     return new Store(
       undefined,               // storeId: Supabase에서 자동 생성
       dto.name,
@@ -126,7 +133,6 @@ export class Mapper {
       description: store.description,
       imagePlaceUrl: store.imagePlaceUrl,
       imageMenuUrl: store.imageMenuUrl,
-      createdBy: store.createdBy,
       ownerName: store.ownerName,
       openTime: store.openTime,
     };
@@ -146,7 +152,7 @@ export class Mapper {
     }
   }
 
-   static toUpdateStoreTable(dto: UpdateStoreDto): any {
+  static toUpdateStoreTable(dto: UpdateStoreDto): any {
     return {
       name: dto.name,
       address: dto.address,
@@ -155,6 +161,24 @@ export class Mapper {
       image_place_url: dto.imagePlaceUrl,
       image_menu_url: dto.imageMenuUrl,
       open_time: dto.openTime,
+    };
+  }
+
+  static toReadStoreDtoFromTableRow(row: any): ReadStoreDto {
+    return {
+      storeId: row.store_id,
+      name: row.name,
+      address: row.address,
+      phone: row.phone,
+      description: row.description,
+      imagePlaceUrl: row.image_place_url,
+      imageMenuUrl: row.image_menu_url,
+      openTime: row.open_time,
+      ownerName: Array.isArray(row.users)
+        ? row.users.length > 0
+          ? row.users[0].username
+          : ''
+        : row.users?.username ?? '', // for non-array join fallback
     };
   }
 }

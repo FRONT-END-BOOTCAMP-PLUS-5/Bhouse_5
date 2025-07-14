@@ -5,12 +5,12 @@ import { ReadAdDto } from '@be/application/admin/ads/dtos/ReadAdDto';
 import { CreateAdDto } from '@be/application/admin/ads/dtos/CreatedAdDto';
 import { UpdateAdDto } from '@be/application/admin/ads/dtos/UpdateAdDto';
 import { getCurrentUser, requireAdminUserId } from '@bUtils/constantfunctions';
+import { AdTable } from '../types/database';
 
 
 export class AdRepositoryImpl implements AdRepository {
   // ✅ 모든 사용자 → 공개 광고만
   async findAll(): Promise<ReadAdDto[]> {
-    // 현재 사용자 정보 조회 (로그인 안 되어도 null 반환 가능)
     const {
       data: { user },
     } = await supabaseClient.auth.getUser();
@@ -29,16 +29,16 @@ export class AdRepositoryImpl implements AdRepository {
       }
     }
 
+    // 조건 분기 방식으로 안전하게 쿼리 작성
     const query = supabaseClient.from('ad_management').select('*');
 
-    if (!isAdmin) {
-      query.eq('is_active', true); // ✅ 일반 사용자 → 공개된 광고만
-    }
+    const { data, error } = isAdmin
+      ? await query
+      : await query.eq('is_active', true);
 
-    const { data, error } = await query;
     if (error || !data) throw error;
 
-    return data.map(Mapper.toReadAdDto);
+    return data.map((row) => Mapper.toReadAdDto(Mapper.fromAdTable(row)));
   }
 
   // ✅ 광고가 공개면 누구나 가능, 비공개면 ADMIN만
@@ -68,7 +68,7 @@ export class AdRepositoryImpl implements AdRepository {
       }
     }
 
-    return Mapper.toReadAdDto(data);
+    return Mapper.toReadAdDto(Mapper.fromAdTable(data));
   }
 
   async create(dto: CreateAdDto): Promise<void> {
