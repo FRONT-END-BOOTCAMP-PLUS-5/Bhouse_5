@@ -8,7 +8,7 @@ export class LikeRepositoryImpl implements LikeRepository {
     if (error) throw error
   }
 
-  async removeLike(userId: string, boardgameId: number): Promise<void> {
+  async deleteLike(userId: string, boardgameId: number): Promise<void> {
     const { error } = await supabaseClient
       .from('user_likes')
       .delete()
