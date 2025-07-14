@@ -13,11 +13,17 @@ export class JwtTokenRepository implements TokenRepository {
   }
 
   extractTokenFromRequest(request: NextRequest): string | null {
-    const authHeader = request.headers.get('authorization')
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return null
+    const cookie = request.cookies.get('accessToken')
+    if (cookie?.value) {
+      return cookie.value
     }
-    return authHeader.substring(7) // 'Bearer ' 제거
+
+    return null
+    // const authHeader = request.headers.get('authorization')
+    // if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    //   return null
+    // }
+    // return authHeader.substring(7) // 'Bearer ' 제거
   }
 
   verifyToken(token: string): DecodedToken | null {

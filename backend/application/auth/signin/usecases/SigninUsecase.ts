@@ -1,11 +1,12 @@
-// backend/application/auth/signin/usecases/SigninAuthUsecase.ts
+// backend/application/auth/signin/usecases/SigninUsecase.ts
 import { AuthRepository } from '@be/domain/repositories/AuthRepository'
 import { SigninAuthResponseDto } from '../dtos/SigninAuthResponseDto'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import User from '@be/domain/entities/User'
+import { User } from '@be/domain/entities/User'
+import { cookies } from 'next/headers'
 
-export class SigninAuthUsecase {
+export class SigninUsecase {
   constructor(private readonly authRepository: AuthRepository) {}
 
   async execute(authHeader: string | null): Promise<SigninAuthResponseDto> {
@@ -22,7 +23,7 @@ export class SigninAuthUsecase {
     if (validationError) return validationError
 
     // 3. 유저 조회 (email 또는 username으로)
-    const user = await this.authRepository.findByEmailOrUsername(email, email)
+    const user = await this.authRepository.findUser(email, email)
     if (!user) {
       return {
         message: '존재하지 않는 사용자입니다.',
@@ -113,7 +114,8 @@ export class SigninAuthUsecase {
     return null
   }
 
-  private createSuccessResponse(user: User): SigninAuthResponseDto {
+  private async createSuccessResponse(user: User): Promise<SigninAuthResponseDto> {
+    const cookieStore = await cookies()
     const jwtSecret = process.env.ACCESS_TOKEN_SECRET
     const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET
 
@@ -134,13 +136,15 @@ export class SigninAuthUsecase {
     }
 
     const now = Math.floor(Date.now() / 1000)
+    const accessTokenMaxAge = 1 * 60 * 60
+    const refreshTokenMaxAge = 2 * 24 * 60 * 60
 
     // Access Token (1시간) - 토큰 검증 함수와 호환되도록 수정
     const accessTokenPayload = {
       userId: user.id,
       email: user.email,
-      roleId: user.userRole ? user.userRole.roleId.toString() : '1', // roleId로 변경
-      exp: now + 1 * 60 * 60, // 1시간
+      roleId: user.userRole ? user.userRole.roles.role_id.toString() : '2', // roleId로 변경
+      exp: now + accessTokenMaxAge, // 1시간
     }
 
     // Refresh Token (2일)
@@ -148,11 +152,24 @@ export class SigninAuthUsecase {
       userId: user.id,
       type: 'refresh',
       iat: now,
-      exp: now + 2 * 24 * 60 * 60, // 2일
+      exp: now + refreshTokenMaxAge, // 2일
     }
 
     const accessToken = jwt.sign(accessTokenPayload, jwtSecret)
     const refreshToken = jwt.sign(refreshTokenPayload, refreshTokenSecret)
+
+    if (accessToken && refreshToken) {
+      cookieStore.set('accessToken', accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: accessTokenMaxAge,
+      })
+      cookieStore.set('refreshToken', refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: refreshTokenMaxAge,
+      })
+    }
 
     return {
       message: '로그인이 성공했습니다.',
