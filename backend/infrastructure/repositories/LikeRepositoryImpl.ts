@@ -1,7 +1,7 @@
 // backend/infrastructure/repositories/LikeRepositoryImpl.ts
 import { LikeRepository } from '@domain/repositories/LikeRepository'
 import { supabaseClient } from '@bUtils/supabaseClient'
-import { BoardGame } from '@domain/entities/Boardgame'
+import { BoardGame } from '@be/domain/entities/Boardgame'
 
 export class LikeRepositoryImpl implements LikeRepository {
   async addLikedBoardgame(userId: string, boardgameId: number): Promise<void> {

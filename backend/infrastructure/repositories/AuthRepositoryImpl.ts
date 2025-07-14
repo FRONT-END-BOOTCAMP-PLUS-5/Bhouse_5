@@ -1,12 +1,10 @@
 import { User } from '@be/domain/entities/User'
-import { UserRole } from '@be/domain/entities/UserRole'
 import { AuthRepository } from '@be/domain/repositories/AuthRepository'
 import { supabaseClient } from '@bUtils/supabaseClient'
 import { Mapper } from '../mappers/Mapper'
 import { UserTable } from '../types/database'
 
 export class AuthRepositoryImpl implements AuthRepository {
-
   async signup(user: User, roleId: number): Promise<void> {
     // 1. users 테이블에 insert
     const { data, error } = await supabaseClient
@@ -142,28 +140,15 @@ export class AuthRepositoryImpl implements AuthRepository {
 
   async findByProvider(provider: string, providerId: string): Promise<User | null> {
     const { data, error } = await supabaseClient
-      .from("users")
-      .select("*")
-      .eq("provider", provider)
-      .eq("provider_id", providerId)
-      .single();
+      .from('users')
+      .select('*')
+      .eq('provider', provider)
+      .eq('provider_id', providerId)
+      .single()
 
-    if (error || !data) return null;
+    if (error || !data) return null
 
-    return Mapper.toUser(data as UserTable);
-  }
-
-  async findByProvider(provider: string, providerId: string): Promise<User | null> {
-    const { data, error } = await supabaseClient
-      .from("users")
-      .select("*")
-      .eq("provider", provider)
-      .eq("provider_id", providerId)
-      .single();
-
-    if (error || !data) return null;
-
-    return Mapper.toUser(data as UserTable);
+    return Mapper.toUser(data as UserTable)
   }
 
   async signin(): Promise<void> {

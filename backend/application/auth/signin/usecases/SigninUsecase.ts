@@ -22,7 +22,7 @@ export class SigninUsecase {
     const validationError = this.validateInput(email, password)
     if (validationError) return validationError
 
-    // 3. 유저 조회 (email 또는 username으로)
+    // 3. 유저 조회 (email)
     const user = await this.authRepository.findUser(email, email)
     if (!user) {
       return {
