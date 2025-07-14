@@ -11,7 +11,7 @@ export class User {
     public createdAt: Date,
     public updatedAt: Date | null,
     public isActive: string,
-    public imgUrl: string | null,
+    public profileImgUrl: string | null,
     //관계
     public userAlarms?: Alarm[], // 1:N
     public phone?: string,
