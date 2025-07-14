@@ -50,6 +50,12 @@
   line-height: 1.5;
 }
 
+.body20 {
+  font-size: 16px;
+  font-weight: 400; /* Bold */
+  line-height: 1.5;
+}
+
 .header20 {
   font-size: 20px;
   font-weight: 700; /* Bold */
@@ -155,6 +161,12 @@
     line-height: 1.5;
   }
 
+  .body20 {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+
   .header20 {
     font-size: 20px;
     font-weight: 700; /* Bold */
@@ -166,6 +178,7 @@
     font-weight: 700; /* Bold */
     line-height: 1.2;
   }
+
 
   .title48 {
     font-family: 'MBC1961OTFM', sans-serif; 
