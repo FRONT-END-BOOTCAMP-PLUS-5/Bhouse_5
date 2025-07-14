@@ -18,7 +18,7 @@ export const customRules = {
     // 변수명은 camelCase, UPPER_CASE, PascalCase 허용
     {
       selector: 'variable',
-      format: ['camelCase', 'UPPER_CASE', 'PascalCase'],
+      format: ['camelCase', 'UPPER_CASE', 'PascalCase', 'snake_case'],
       leadingUnderscore: 'forbid',
       trailingUnderscore: 'forbid',
     },
