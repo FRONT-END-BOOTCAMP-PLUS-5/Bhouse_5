@@ -7,8 +7,14 @@ import { Role } from '@be/domain/entities/Role'
 import { Store } from '@be/domain/entities/Store'
 import { CreateAdDto } from '@be/application/admin/ads/dtos/CreatedAdDto'
 import { ReadAdDto } from '@be/application/admin/ads/dtos/ReadAdDto'
+import { CreateStoreDto } from '@be/application/owner/stores/dtos/CreatedStoreDto'
+import { ReadStoreDto } from '@be/application/owner/stores/dtos/ReadStoreDto'
+import { UpdateStoreDto } from '@be/application/owner/stores/dtos/UpdateStoreDto'
 
 export class Mapper {
+  static toStoreTableFromCreate(dto: CreateStoreDto, userId: string) {
+    throw new Error('Method not implemented.')
+  }
   static toAd(source: AdTable): Ad {
     return new Ad(
       source.id,
@@ -75,34 +81,55 @@ export class Mapper {
       source.username,
       source.password || '',
       source.email,
+      source.nickname || '',
       new Date(source.created_at),
       null, // deletedAt - not available in UserTable
       source.profile_img_url || null,
       new Date(source.updated_at),
-      source.provider_id || null,
+      undefined, // userRole - not available in UserTable
+      undefined, // userAlarms - not available in UserTable
+      source.phone || undefined,
+      source.provider || undefined,
+      source.provider_id || undefined,
     )
   }
 
   static toRole(source: RoleTable): Role {
-    return new Role(source.role_id.toString(), source.name)
+    return new Role(source.role_id, source.name)
   }
 
   static toMemberRole(source: UserRoleTable): UserRole {
     return new UserRole(source.user_id, source.role_id)
   }
 
-  static toStore(source: StoreTable): Store {
+   static toStore(dto: CreateStoreDto): Store {
     return new Store(
-      source.store_id,
-      source.name,
-      source.address,
-      source.phone,
-      source.description,
-      source.image_place_url,
-      source.image_menu_url,
-      source.created_by,
-      source.open_time,
-    )
+      undefined,               // storeId: Supabase에서 자동 생성
+      dto.name,
+      dto.address,
+      dto.phone,
+      dto.description,
+      dto.imagePlaceUrl,
+      dto.imageMenuUrl,
+      dto.createdBy,
+      dto.ownerName,
+      dto.openTime
+    );
+  }
+
+  static toReadStoreDto(store: Store): ReadStoreDto {
+    return {
+      storeId: store.storeId ?? 0, // optional일 수 있으므로 fallback
+      name: store.name,
+      address: store.address,
+      phone: store.phone,
+      description: store.description,
+      imagePlaceUrl: store.imagePlaceUrl,
+      imageMenuUrl: store.imageMenuUrl,
+      createdBy: store.createdBy,
+      ownerName: store.ownerName,
+      openTime: store.openTime,
+    };
   }
 
   static toStoreTable(store: Store): StoreTable {
@@ -117,5 +144,17 @@ export class Mapper {
       created_by: store.createdBy,
       open_time: store.openTime,
     }
+  }
+
+   static toUpdateStoreTable(dto: UpdateStoreDto): any {
+    return {
+      name: dto.name,
+      address: dto.address,
+      phone: dto.phone,
+      description: dto.description,
+      image_place_url: dto.imagePlaceUrl,
+      image_menu_url: dto.imageMenuUrl,
+      open_time: dto.openTime,
+    };
   }
 }

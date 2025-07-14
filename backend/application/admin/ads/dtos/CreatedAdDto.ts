@@ -1,5 +1,7 @@
 // CreateAdDto.ts
 export interface CreateAdDto {
+  redirectUrl: string;
+  isActive: any;
   type: any;
   title: string;
   description: string;
@@ -11,4 +13,6 @@ export interface CreatedAdDto {
   id: string;
   title: string;
   createdAt: Date;
+  isActive: boolean;
+  type: string;
 }

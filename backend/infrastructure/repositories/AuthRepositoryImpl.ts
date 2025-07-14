@@ -1,5 +1,5 @@
-import User from '@be/domain/entities/User'
-import UserRole from '@be/domain/entities/UserRole'
+import { User } from '@be/domain/entities/User'
+import { UserRole } from '@be/domain/entities/UserRole'
 import { AuthRepository } from '@be/domain/repositories/AuthRepository'
 import { supabaseClient } from '@bUtils/supabaseClient'
 import { Mapper } from '../mappers/Mapper'

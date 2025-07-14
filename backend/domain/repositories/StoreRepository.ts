@@ -1,4 +1,6 @@
-import { Store } from '../entities/Store'
+import { ReadStoreDto } from '@be/application/owner/stores/dtos/ReadStoreDto'
+import { CreateStoreDto } from '@be/application/owner/stores/dtos/CreatedStoreDto'
+import { UpdateStoreDto } from '@be/application/owner/stores/dtos/UpdateStoreDto'
 
 export interface StoreSearchParams {
   keyword?: string
@@ -8,11 +10,13 @@ export interface StoreSearchParams {
 }
 
 export interface StoreRepository {
-  findById(id: number): Promise<Store | null>
-  findByUserId(userId: string): Promise<Store[]>
-  findByKeyword(keyword: StoreSearchParams): Promise<Store[]>
-  findAll(): Promise<Store[]>
-  create(ad: Store): Promise<void>
-  update(id: number, createdBy: string, updateData: Partial<Store>): Promise<void>
-  delete(id: number): Promise<void>
+  findById(id: number): Promise<ReadStoreDto | null>;
+  findByUserId(userId: string): Promise<ReadStoreDto[]>;
+  findByKeyword(keyword: StoreSearchParams): Promise<ReadStoreDto[]>;
+  findAll(): Promise<ReadStoreDto[]>;
+
+  create(store: CreateStoreDto): Promise<void>;
+  update(id: number, createdBy: string, updateData: UpdateStoreDto): Promise<void>;
+
+  delete(id: number): Promise<void>;
 }

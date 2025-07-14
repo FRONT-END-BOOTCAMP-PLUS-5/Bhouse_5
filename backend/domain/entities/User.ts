@@ -1,7 +1,7 @@
 import { Alarm } from './Alarms'
-import UserRole from './UserRole'
+import { UserRole } from './UserRole'
 
-export default class User {
+export class User {
   constructor(
     public id: string,
     public username: string,
