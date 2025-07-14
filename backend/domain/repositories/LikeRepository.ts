@@ -1,5 +1,8 @@
+// backend/domain/repositories/LikeRepository.ts
+import { BoardGame } from '@domain/entities/Boardgame'
+
 export interface LikeRepository {
-  deleteLike(userId: string, boardgameId: number): unknown
-  addLike(userId: string, boardgameId: number): Promise<void>
-  getLikedBoardgames(userId: string): Promise<number[]>
+  addLikedBoardgame(userId: string, boardgameId: number): Promise<void>
+  deleteLikedBoardgame(userId: string, boardgameId: number): Promise<void>
+  getLikedBoardgames(userId: string): Promise<BoardGame[]>
 }

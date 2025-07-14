@@ -1,6 +1,6 @@
 import { BoardgameRepository } from '@domain/repositories/BoardgameRepository'
 import { BoardgameDetailDto } from '../dtos/BoardgameDetailDto'
-import { BoardGame } from '@domain/entities/Boardgame'
+import { BoardGame } from '@be/domain/entities/Boardgame'
 
 //TODO:like_count 추후 LikeRepository 통해 계산
 // 현재는 0으로 고정
