@@ -1,12 +1,10 @@
-import { User } from '@be/domain/entities/User'
-import { UserRole } from '@be/domain/entities/UserRole'
+import User from '@be/domain/entities/User'
+import UserRole from '@be/domain/entities/UserRole'
 import { AuthRepository } from '@be/domain/repositories/AuthRepository'
 import { supabaseClient } from '@bUtils/supabaseClient'
-import { Mapper } from '../mappers/Mapper'
 
 export class AuthRepositoryImpl implements AuthRepository {
-
-  async signup(user: User, roles: number): Promise<void> {
+  async signup(user: User, roleId: number): Promise<void> {
     // 1. users 테이블에 insert
     const { data, error } = await supabaseClient
       .from('users')
@@ -30,10 +28,10 @@ export class AuthRepositoryImpl implements AuthRepository {
       throw new Error(`회원가입 실패: ${error?.message}`)
     }
 
-    const user_id = data[0].user_id
+    const userId = data[0].user_id
 
     // 2. user_roles 테이블에 insert
-    const { error: roleError } = await supabaseClient.from('user_roles').insert([{ user_id, role_id: roles }])
+    const { error: roleError } = await supabaseClient.from('user_roles').insert([{ user_id: userId, role_id: roleId }])
 
     if (roleError) {
       throw new Error(`권한 등록 실패: ${roleError.message}`)
@@ -72,41 +70,33 @@ export class AuthRepositoryImpl implements AuthRepository {
     )
   }
 
-  async findByProvider(provider: string, providerId: string): Promise<User | null> {
-    const { data, error } = await supabaseClient
-      .from("users")
-      .select("*")
-      .eq("provider", provider)
-      .eq("provider_id", providerId)
-      .single();
-
-    if (error || !data) return null;
-
-    return Mapper.toUser(data);
-  }
-
   async signin(): Promise<void> {
-    // TODO: 로그인 로직 구현
+    // TODO(@채영): 로그인 로직 구현
+    await Promise.resolve() // 임시 await 추가
     throw new Error('Method not implemented.')
   }
 
   async signout(): Promise<void> {
-    // TODO: 로그아웃 로직 구현
+    // TODO(@채영): 로그아웃 로직 구현
+    await Promise.resolve() // 임시 await 추가
     throw new Error('Method not implemented.')
   }
 
   async passwordFind(): Promise<User> {
-    // TODO: 비밀번호 찾기 로직 구현
+    // TODO(@채영): 비밀번호 찾기 로직 구현
+    await Promise.resolve() // 임시 await 추가
     throw new Error('Method not implemented.')
   }
 
   async passwordReset(): Promise<void> {
-    // TODO: 비밀번호 재설정 로직 구현
+    // TODO(@채영): 비밀번호 재설정 로직 구현
+    await Promise.resolve() // 임시 await 추가
     throw new Error('Method not implemented.')
   }
 
   async emailFind(): Promise<User> {
-    // TODO: 이메일 찾기 로직 구현
+    // TODO(@채영): 이메일 찾기 로직 구현
+    await Promise.resolve() // 임시 await 추가
     throw new Error('Method not implemented.')
   }
 }

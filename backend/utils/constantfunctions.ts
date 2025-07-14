@@ -1,32 +1,32 @@
-import { supabaseClient } from "./supabaseClient";
+import { supabaseClient } from './supabaseClient'
 
 export async function getCurrentUserId(): Promise<string> {
   const {
     data: { user },
     error,
-  } = await supabaseClient.auth.getUser();
+  } = await supabaseClient.auth.getUser()
 
-  if (error || !user) throw new Error("인증된 사용자 정보가 없습니다.");
-  return user.id;
+  if (error || !user) throw new Error('인증된 사용자 정보가 없습니다.')
+  return user.id
 }
 
-export async function getCurrentUserRole(): Promise<"admin" | "user"> {
+export async function getCurrentUserRole(): Promise<'admin' | 'user'> {
   const {
     data: { user },
     error,
-  } = await supabaseClient.auth.getUser();
+  } = await supabaseClient.auth.getUser()
 
-  if (error || !user) throw new Error("인증된 사용자 정보가 없습니다.");
+  if (error || !user) throw new Error('인증된 사용자 정보가 없습니다.')
 
   const { data: profile, error: profileError } = await supabaseClient
-    .from("users")
-    .select("role")
-    .eq("user_id", user.id)
-    .single();
+    .from('users')
+    .select('role')
+    .eq('user_id', user.id)
+    .single()
 
   if (profileError || !profile?.role) {
-    throw new Error("사용자 권한 정보를 불러올 수 없습니다.");
+    throw new Error('사용자 권한 정보를 불러올 수 없습니다.')
   }
 
-  return profile.role === "admin" ? "admin" : "user";
+  return profile.role === 'admin' ? 'admin' : 'user'
 }

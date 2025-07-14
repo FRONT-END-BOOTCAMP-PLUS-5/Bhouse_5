@@ -8,21 +8,21 @@ export class UserSetting {
   constructor(
     public userId: string, // UUID (Primary Key)
     public keywordAlarm: boolean,
-    public replyAlarm: boolean
+    public replyAlarm: boolean,
   ) {}
 
   /**
    * 키워드 알림 설정을 토글합니다.
    */
   toggleKeywordAlarm(): void {
-    this.keywordAlarm = !this.keywordAlarm;
+    this.keywordAlarm = !this.keywordAlarm
   }
 
   /**
    * 댓글 알림 설정을 토글합니다.
    */
   toggleReplyAlarm(): void {
-    this.replyAlarm = !this.replyAlarm;
+    this.replyAlarm = !this.replyAlarm
   }
 
   /**
@@ -32,10 +32,10 @@ export class UserSetting {
    */
   updateSettings(newKeywordAlarm?: boolean, newReplyAlarm?: boolean): void {
     if (newKeywordAlarm !== undefined) {
-      this.keywordAlarm = newKeywordAlarm;
+      this.keywordAlarm = newKeywordAlarm
     }
     if (newReplyAlarm !== undefined) {
-      this.replyAlarm = newReplyAlarm;
+      this.replyAlarm = newReplyAlarm
     }
   }
 }

@@ -1,18 +1,18 @@
 // backend/application/admin/alarms/usecases/CreateAlarmsUseCase.ts
 
-import { Alarm, AlarmType } from "@domain/entities/Alarm"; // 도메인 계층의 Alarm 엔티티 임포트
-import AlarmRepository from "@domain/repositories/AlarmRepository"; // 도메인 계층의 AlarmRepository 인터페이스 임포트
-import { CreateAlarmDto } from "../dtos/CreateAlarmDto"; // 애플리케이션 계층의 DTO 임포트
-import { CreatedAlarmDto } from "../dtos/CreatedAlarmDto"; // 생성 후 반환할 DTO (아래에 정의 예정)
+import { Alarm, AlarmType } from '@domain/entities/Alarm' // 도메인 계층의 Alarm 엔티티 임포트
+import AlarmRepository from '@domain/repositories/AlarmRepository' // 도메인 계층의 AlarmRepository 인터페이스 임포트
+import { CreateAlarmDto } from '../dtos/CreateAlarmDto' // 애플리케이션 계층의 DTO 임포트
+import { CreatedAlarmDto } from '../dtos/CreatedAlarmDto' // 생성 후 반환할 DTO (아래에 정의 예정)
 
 /**
  * 어드민 권한으로 전체 사용자에게 알람을 생성하는 유즈케이스입니다.
  */
 export class CreateAlarmsUseCase {
-  private alarmRepository: AlarmRepository;
+  private alarmRepository: AlarmRepository
 
   constructor(alarmRepository: AlarmRepository) {
-    this.alarmRepository = alarmRepository;
+    this.alarmRepository = alarmRepository
   }
 
   /**
@@ -29,11 +29,11 @@ export class CreateAlarmsUseCase {
       createAlarmsDto.message,
       false, // isRead 기본값
       new Date(), // createdAt 기본값
-      createAlarmsDto.alarmType
-    );
+      createAlarmsDto.alarmType,
+    )
 
     // 2. AlarmRepository를 통해 알람 저장
-    const savedAlarm = await this.alarmRepository.save(newAlarm);
+    const savedAlarm = await this.alarmRepository.save(newAlarm)
 
     // 3. 저장된 Alarm 엔티티를 CreatedAlarmDto로 변환하여 반환
     return {
@@ -43,6 +43,6 @@ export class CreateAlarmsUseCase {
       isRead: savedAlarm.isRead,
       createdAt: savedAlarm.createdAt.toISOString(), // ISO 문자열로 변환하여 반환
       alarmType: savedAlarm.alarmType,
-    };
+    }
   }
 }
