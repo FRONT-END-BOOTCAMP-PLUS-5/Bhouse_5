@@ -2,7 +2,8 @@ import { AuthRepository } from "@be/domain/repositories/AuthRepository";
 import { CreateSSOAuthDto } from "../dtos/CreateSSOAuthDto";
 import { CreateAuthResponseDto } from "../dtos/CreateAuthDto";
 import { User } from "@be/domain/entities/User";
-import UserRole from "@be/domain/entities/UserRole";
+import { UserRole } from "@be/domain/entities/UserRole";
+import { Role } from "@be/domain/entities/Role";
 
 export class CreateSSOAuthUsecase {
   constructor(private readonly authRepo: AuthRepository) {}
@@ -28,14 +29,14 @@ export class CreateSSOAuthUsecase {
         dto.email,
         dto.nickname || dto.username,
         new Date(), // createdAt
-        null, // deletedAt
-        dto.profileImgUrl || null, // image
         new Date(), // updatedAt
-        new UserRole("", 2), // userRole - 일반 사용자 roleId = 2
-        undefined, // userAlarms
+        "TRUE",
+        dto.profileImgUrl || null, // image
+        [],
         undefined, // phone
         dto.provider,
-        dto.providerId
+        dto.providerId,
+        new UserRole(new Role(2, "")), // userRole - 일반 사용자 roleId = 2
       );
 
       await this.authRepo.signup(newUser, 2); // 2: 기본 USER role
