@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useState, useRef, useEffect, useLayoutEffect } from 'react' // useLayoutEffect 추가
 import styles from './Dropdown.module.css'
 import Button from '../Button/Button'
