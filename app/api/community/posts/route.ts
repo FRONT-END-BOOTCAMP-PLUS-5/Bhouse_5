@@ -79,11 +79,10 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ message: '인증 실패' }, { status: 401 })
   }
 
-  const repo = new PostRepositoryImpl()
-  const useCase = new DeletePostUseCase(repo)
+  const useCase = new DeletePostUseCase()
 
   try {
-    await useCase.execute(post_id, user.id)
+    await useCase.execute(post_id)
     return NextResponse.json({ message: '글 삭제 완료' })
   } catch (e) {
     return NextResponse.json({ message: '글 삭제 실패', error: (e as Error).message }, { status: 500 })

@@ -1,0 +1,40 @@
+/* src/components/common/Footer/Footer.module.css */
+
+.footer {
+  width: 100%;
+  background-color:  var(--secondary-blue-950);
+  padding: 20px; /* 내부 여백 */
+  box-sizing: border-box; /* 패딩 포함 너비 계산 */
+  display: flex;
+  justify-content: center; /* 내용을 가로 중앙으로 정렬 */
+  align-items: center; /* 내용을 세로 중앙으로 정렬 */
+  margin-top: auto; /* 페이지 하단에 붙도록 (flex container의 경우) */
+}
+
+.footerContent {
+  display: flex;
+  gap: 30px; /* "고객지원"과 "문의하기" 사이의 간격 */
+}
+
+.footerLink {
+  text-decoration: underline; /* 밑줄 */
+  cursor: pointer;
+  white-space: nowrap; /* 텍스트가 줄바꿈되지 않도록 */
+}
+
+/* 텍스트 색상 (이미지에 맞춰 검정 대신 흰색 계열로 정의) */
+.whiteText {
+  color: var(--primary-white, #FFFFFF); /* --primary-white 변수가 없으면 흰색 사용 */
+}
+
+/* 폰트 스타일 */
+.body16 {
+  font-size: 16px;
+  font-weight: 400; /* Regular */
+  line-height: 1.5;
+}
+
+/* 호버 시 밑줄 유지 또는 색상 변경 등 추가 스타일 */
+.footerLink:hover {
+  opacity: 0.8; /* 호버 시 약간 투명하게 */
+}

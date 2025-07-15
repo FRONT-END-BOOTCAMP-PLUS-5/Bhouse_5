@@ -1,6 +1,6 @@
 import { Boardgame } from '../entities/Boardgame'
 
-export interface BoardgameRepository {
+export default interface BoardgameRepository {
   findBoardgameById(id: number): Promise<Boardgame | null>
   searchBoardgames(params: {
     name?: string
