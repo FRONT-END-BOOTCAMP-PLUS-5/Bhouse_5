@@ -60,7 +60,7 @@ const Header: React.FC = () => {
       <div className={styles.searchAndDropdown}>
         <TextInput
           type="text"
-          placeholder="지금 인기있는 보드게임은?"
+          placeholder="지금 인기있는 보드게임"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className={styles.searchInput}

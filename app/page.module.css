@@ -60,6 +60,10 @@
   color: var(--primary-white);
 }
 
+.primaryText {
+  color: var(--primary-blue);
+}
+
 
 .button {
   background-color: var(--secondary-blue-600);

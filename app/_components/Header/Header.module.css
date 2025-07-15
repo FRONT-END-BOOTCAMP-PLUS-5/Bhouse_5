@@ -21,7 +21,7 @@
 }
 
 .logo {
-  height: 70px;
+  height: 60px;
   width: auto;
   cursor: pointer;
 }
@@ -86,8 +86,8 @@
 }
 
 .searchInput {
-  flex-grow: 1;
-  max-width: 300px;
+  flex-grow: 1; /* 검색 입력창이 가능한 공간을 차지하도록 */
+  max-width: 170px; /* 검색창 최대 너비를 200px로 줄임 (원하는 크기로 조정) */
 }
 
 .navigation {
