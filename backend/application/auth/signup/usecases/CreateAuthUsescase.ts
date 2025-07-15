@@ -72,7 +72,7 @@ export class CreateAuthUsecase {
       dto.nickname || '',
       new Date(),
       new Date(), // updatedAt
-      "PENDING", // isActive
+      'PENDING', // isActive
       dto.profile_img_url || null,
       [], // userAlarms
       dto.phone,
