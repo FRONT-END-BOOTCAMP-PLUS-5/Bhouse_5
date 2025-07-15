@@ -5,11 +5,16 @@ import { SendGlobalAlarmUseCase } from 'backend/application/admin/alarms/usecase
 import { SupabaseGlobalAlarmService } from 'backend/infrastructure/repositories/SupabaseGlobalAlarmService'
 import { SendGlobalAlarmDto } from 'backend/application/admin/alarms/dtos/SendGlobalAlarmDto'
 import { AlarmType } from '@domain/entities/Alarm' // AlarmType 필요 시 임포트
+import { verifyToken } from '@be/utils/auth'
 
 export async function POST(request: Request) {
-  // FIXME: 이 부분에 관리자 인증/인가 로직을 추가해야 합니다.
-  // 이 로직은 프레젠테이션 계층(컨트롤러)의 책임입니다.
-  
+  //토큰 검증
+  const decoded = await verifyToken(request)
+
+  // 관리자 권한 확인
+  if (!decoded || !decoded.roleId || decoded.roleId !== '1') {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
 
   try {
     const { message, type } = await request.json()

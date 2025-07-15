@@ -8,6 +8,7 @@ import { SupabaseUserKeywordRepository } from 'backend/infrastructure/repositori
 import { AddUserKeywordDto } from 'backend/application/user/keywords/dtos/AddUserKeywordDto'
 import { GetUserKeywordsQueryDto } from 'backend/application/user/keywords/dtos/GetUserKeywordsQueryDto'
 import { DeleteUserKeywordDto } from 'backend/application/user/keywords/dtos/DeleteUserKeywordDto'
+import { verifyToken } from '@be/utils/auth'
 
 export async function POST(request: Request) {
   // FIXME : 실제 운영 환경에서는 사용자 인증/인가 로직이 필요합니다.
