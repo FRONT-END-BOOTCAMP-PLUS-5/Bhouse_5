@@ -34,7 +34,8 @@ export class LikeRepositoryImpl implements LikeRepository {
           max_players,
           min_playtime,
           max_playtime,
-          img_url
+          img_url,
+          year_published
         )
       `,
       )
@@ -43,18 +44,23 @@ export class LikeRepositoryImpl implements LikeRepository {
     if (error) throw new Error(error.message)
     if (!data) return []
 
-    return data.map((item) => {
-      const game = item.boardgames
-      return new BoardGame(
-        game.boardgame_id,
-        game.name,
-        game.description,
-        game.min_players,
-        game.max_players,
-        game.min_playtime,
-        game.max_playtime,
-        game.img_url,
-      )
-    })
+    return data
+      .map((item) => {
+        const games = item.boardgames
+        if (!games || games.length === 0) return null
+        const game = Array.isArray(games) ? games[0] : games
+        return new BoardGame(
+          game.boardgame_id,
+          game.name,
+          game.description,
+          game.min_players,
+          game.max_players,
+          game.min_playtime,
+          game.max_playtime,
+          game.img_url,
+          game.year_published,
+        )
+      })
+      .filter((game) => game !== null)
   }
 }

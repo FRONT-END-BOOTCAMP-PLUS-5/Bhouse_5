@@ -16,12 +16,6 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const userId = searchParams.get('uuid') // 'uuid' 파라미터로 사용자 ID 가져오기
 
-  // FIXME: 실제 운영 환경에서는 'uuid' 대신 인증 토큰에서 사용자 ID를 추출해야 합니다.
-  // 예시: const userId = await getUserIdFromAuthToken(request.headers.get('Authorization'));
-  // if (!userId) {
-  //   return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
-  // }
-
   // 필수 파라미터 누락 시 에러 응답
   if (!userId) {
     return NextResponse.json(

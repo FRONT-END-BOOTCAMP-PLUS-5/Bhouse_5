@@ -12,6 +12,12 @@ export default function Home() {
   const [description, setDescription] = React.useState('')
   const [search, setSearch] = React.useState('')
   const [selectedRegion, setSelectedRegion] = useState('중랑구')
+  const [smallSelectedOption, setSmallSelectedOption] = React.useState('옵션 1')
+
+  const handleSmallOptionSelect = (option: string) => {
+    setSmallSelectedOption(option)
+    console.log(`${option} 선택됨`)
+  }
 
   const handleRegionSelect = (region: string) => {
     setSelectedRegion(region)
@@ -26,27 +32,40 @@ export default function Home() {
 
   return (
     <div className={styles.page}>
-      <p className={styles.title48}>보드의 집</p>
+      <p className={styles.title48}>보드의 집 title48텍스트입니다.</p>
       <Divider color="#FF0000" thickness="2px" />
-      <h1 className={styles.boldText}>환영합니다!</h1>
+      <h1 className={styles.body16}>환영합니다! 이것은 본문 텍스트 body 16입니다.</h1>
       <Divider marginY="8px" />
-      <p className={styles.regularText}>이것은 나눔스퀘어 레귤러 텍스트입니다.</p>
-      <p className={styles.header48}>이것 텍스트입니다. (header48)</p>
+      <p className={styles.header20}>이것은 본문보다 살짝 큰 header20 텍스트입니다.</p>
+      <p className={styles.header48}>이것은 페이지 타이틀을 담당하는 header48입니다. </p>
       <p className={styles.extraBoldText}>이것은 나눔스퀘어 엑스트라볼드 텍스트입니다.</p>
-
-      <button className={styles.button}>클릭하세요</button>
 
       <Button borderRadius="8" variant="primary">
         기본 버튼
       </Button>
-      <Button borderRadius="16" variant="secondary">
-        둥근 버튼
+      <Button variant="primary" onClick={() => console.log('Primary Clicked')}>
+        로그인하기
+      </Button>
+
+      {/* --light-gray 색상의 비활성화된 버튼 (가입완료) */}
+      <Button variant="primary" disabled={true}>
+        가입완료
+      </Button>
+
+      {/* 새로운 secondaryBlue100 스타일 버튼 */}
+      <Button variant="secondaryBlue100" onClick={() => console.log('Secondary Blue 100 Clicked')}>
+        다른 기능
+      </Button>
+
+      {/* 새로운 secondaryBlue400 스타일 버튼 */}
+      <Button variant="secondaryBlue400" onClick={() => console.log('Secondary Blue 400 Clicked')}>
+        강조 기능
       </Button>
       <Button borderRadius="60" variant="ghost" size="small">
         아주 둥근 버튼
       </Button>
       <Button borderRadius="12" variant="primary" size="large" onClick={() => alert('클릭!')}>
-        클릭!
+        클릭! 하십시오. 저는 큰 버튼입니다.
       </Button>
 
       <div style={{ marginBottom: '20px' }}>
@@ -81,6 +100,9 @@ export default function Home() {
           className={styles.fullWidthTextarea}
         />
       </div>
+
+      {/* small 크기 텍스트 입력창 */}
+      <TextInput type="text" size="small" placeholder="작은 입력" style={{ marginTop: '10px' }} />
 
       {/* 드롭다운 (회색 배경, round 8) */}
       <Dropdown label={selectedRegion}>
@@ -120,6 +142,14 @@ export default function Home() {
             아이템 {i + 1}
           </li>
         ))}
+      </Dropdown>
+
+      <Dropdown label={smallSelectedOption} borderRadius="8" size="small">
+        {' '}
+        {/* size="small" 추가 */}
+        <li onClick={() => handleSmallOptionSelect('옵션 1')}>옵션 1</li>
+        <li onClick={() => handleSmallOptionSelect('더 긴 옵션 2')}>더 긴 옵션 2</li>
+        <li onClick={() => handleSmallOptionSelect('세 번째 옵션')}>세 번째 옵션</li>
       </Dropdown>
     </div>
   )

@@ -1,6 +1,7 @@
 import { ReadStoreDto } from '@be/application/owner/stores/dtos/ReadStoreDto'
 import { CreateStoreDto } from '@be/application/owner/stores/dtos/CreatedStoreDto'
 import { UpdateStoreDto } from '@be/application/owner/stores/dtos/UpdateStoreDto'
+import { Store } from '@domain/entities/Store'
 
 export interface StoreSearchParams {
   keyword?: string

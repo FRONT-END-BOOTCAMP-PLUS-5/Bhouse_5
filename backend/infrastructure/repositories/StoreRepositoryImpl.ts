@@ -5,10 +5,13 @@ import { StoreRepository, StoreSearchParams } from '@be/domain/repositories/Stor
 import { Store } from '@be/domain/entities/Store'
 import { StoreTable } from '../types/database'
 import { getCurrentUserId, getCurrentUserRole } from '@bUtils/constantfunctions'
+import { CreateStoreDto } from '@be/application/owner/stores/dtos/CreatedStoreDto'
+import { ReadStoreDto } from '@be/application/owner/stores/dtos/ReadStoreDto'
+import { UpdateStoreDto } from '@be/application/owner/stores/dtos/UpdateStoreDto'
 
 interface StoreWithUser extends Omit<StoreTable, 'created_by'> {
-  created_by: string;
-  users: { username: string }[] | null;
+  created_by: string
+  users: { username: string }[] | null
 }
 export class StoreRepositoryImpl implements StoreRepository {
   async getStoresByBoardgameId(boardgameId: number): Promise<BoardgameStoreDto[]> {
@@ -76,30 +79,34 @@ export class StoreRepositoryImpl implements StoreRepository {
   async findById(id: number): Promise<ReadStoreDto | null> {
     const { data, error } = await supabaseClient
       .from('store_places')
-      .select(`
+      .select(
+        `
         store_id, name, address, phone, description,
         image_place_url, image_menu_url, created_by, open_time,
         users:created_by (username)
-      `)
+      `,
+      )
       .eq('store_id', id)
-      .single();
+      .single()
 
-    if (error) throw error;
-    return data ? Mapper.toReadStoreDtoFromTableRow(data) : null;
+    if (error) throw error
+    return data ? Mapper.toReadStoreDtoFromTableRow(data) : null
   }
 
   async findByUserId(userId: string): Promise<ReadStoreDto[]> {
     const { data, error } = await supabaseClient
       .from('store_places')
-      .select(`
+      .select(
+        `
         store_id, name, address, phone, description,
         image_place_url, image_menu_url, created_by, open_time,
         users:created_by (username)
-      `)
-      .eq('created_by', userId);
+      `,
+      )
+      .eq('created_by', userId)
 
-    if (error) throw error;
-    return data ? data.map(Mapper.toReadStoreDtoFromTableRow) : [];
+    if (error) throw error
+    return data ? data.map(Mapper.toReadStoreDtoFromTableRow) : []
   }
 
   async findByKeyword(params: StoreSearchParams): Promise<ReadStoreDto[]> {
@@ -107,83 +114,69 @@ export class StoreRepositoryImpl implements StoreRepository {
       store_id, name, address, phone, description,
       image_place_url, image_menu_url, created_by, open_time,
       users:created_by (username)
-    `);
+    `)
 
     if (params.keyword) {
-      query = query.ilike('name', `%${params.keyword}%`);
+      query = query.ilike('name', `%${params.keyword}%`)
     }
 
     if (params.address) {
-      query = query.ilike('address', `%${params.address}%`);
+      query = query.ilike('address', `%${params.address}%`)
     }
 
     if (params.ownerName) {
-      query = query.ilike('users.username', `%${params.ownerName}%`);
+      query = query.ilike('users.username', `%${params.ownerName}%`)
     }
 
-    const { data, error } = await query;
-    if (error) throw new Error(error.message);
+    const { data, error } = await query
+    if (error) throw new Error(error.message)
 
-    return data ? data.map(Mapper.toReadStoreDtoFromTableRow) : [];
+    return data ? data.map(Mapper.toReadStoreDtoFromTableRow) : []
   }
 
   async create(dto: CreateStoreDto): Promise<void> {
-    const userId = await getCurrentUserId();
-    const tableRow = Mapper.toStoreTableFromCreate(dto, userId);
-    const { error } = await supabaseClient
-      .from('store_places')
-      .insert(tableRow);
-    if (error) throw error;
+    const userId = await getCurrentUserId()
+    const tableRow = Mapper.toStoreTableFromCreate(dto, userId)
+    const { error } = await supabaseClient.from('store_places').insert(tableRow)
+    if (error) throw error
   }
 
-  async update(
-    id: number,
-    createdBy: string,
-    dto: UpdateStoreDto
-  ): Promise<void> {
-    const userId = await getCurrentUserId();
-    const role = await getCurrentUserRole();
+  async update(id: number, createdBy: string, dto: UpdateStoreDto): Promise<void> {
+    const userId = await getCurrentUserId()
+    const role = await getCurrentUserRole()
 
     if (role !== 'ADMIN' && userId !== createdBy) {
-      throw new Error('매장을 수정할 권한이 없습니다.');
+      throw new Error('매장을 수정할 권한이 없습니다.')
     }
 
-    const updateTable = Mapper.toUpdateStoreTable(dto);
-    const cleanUpdate = Object.fromEntries(
-      Object.entries(updateTable).filter(([_, v]) => v !== undefined && v !== '')
-    );
+    const updateTable = Mapper.toUpdateStoreTable(dto)
+    const cleanUpdate = Object.fromEntries(Object.entries(updateTable).filter(([_, v]) => v !== undefined && v !== ''))
 
-    const { error } = await supabaseClient
-      .from('store_places')
-      .update(cleanUpdate)
-      .eq('store_id', id);
+    const { error } = await supabaseClient.from('store_places').update(cleanUpdate).eq('store_id', id)
 
-    if (error) throw error;
+    if (error) throw error
   }
 
   async delete(id: number): Promise<void> {
-    const userId = await getCurrentUserId();
-    const role = await getCurrentUserRole();
+    const userId = await getCurrentUserId()
+    const role = await getCurrentUserRole()
 
     const { data: store, error } = await supabaseClient
       .from('store_places')
       .select('created_by')
       .eq('store_id', id)
-      .single();
+      .single()
 
     if (error || !store) {
-      throw new Error('해당 매장을 찾을 수 없습니다.');
+      throw new Error('해당 매장을 찾을 수 없습니다.')
     }
 
     if (role !== 'ADMIN' && store.created_by !== userId) {
-      throw new Error('매장을 삭제할 권한이 없습니다.');
+      throw new Error('매장을 삭제할 권한이 없습니다.')
     }
 
-    const { error: deleteError } = await supabaseClient
-      .from('store_places')
-      .delete()
-      .eq('store_id', id);
+    const { error: deleteError } = await supabaseClient.from('store_places').delete().eq('store_id', id)
 
-    if (deleteError) throw deleteError;
+    if (deleteError) throw deleteError
   }
 }

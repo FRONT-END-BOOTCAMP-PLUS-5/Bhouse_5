@@ -5,8 +5,8 @@
   --primary-blue: #2285d5;
   --primary-white: #ffffff;
   --primary-black: #000000;
-  --light-gray: #f5f5f5;
-  --dark-gray: #888888;
+  --light-gray: #ababab;
+  --dark-gray: #6d6d6d;
 
   --secondary-blue-50: #f1f7fe;
   --secondary-blue-100: #e3eefb;
@@ -156,7 +156,6 @@ table {
   border-spacing: 0;
 }
 
-/* Remove default link styles */
 a {
   text-decoration: none;
   color: inherit;

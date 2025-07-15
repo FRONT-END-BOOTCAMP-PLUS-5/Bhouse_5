@@ -1,78 +1,71 @@
-import { supabaseClient } from '@bUtils/supabaseClient';
-import { AdRepository } from '../../domain/repositories/AdRepository';
-import { Mapper } from '../mappers/Mapper';
-import { ReadAdDto } from '@be/application/admin/ads/dtos/ReadAdDto';
-import { CreateAdDto } from '@be/application/admin/ads/dtos/CreatedAdDto';
-import { UpdateAdDto } from '@be/application/admin/ads/dtos/UpdateAdDto';
-import { getCurrentUser, requireAdminUserId } from '@bUtils/constantfunctions';
-import { AdTable } from '../types/database';
-
+import { supabaseClient } from '@bUtils/supabaseClient'
+import { AdRepository } from '../../domain/repositories/AdRepository'
+import { Mapper } from '../mappers/Mapper'
+import { ReadAdDto } from '@be/application/admin/ads/dtos/ReadAdDto'
+import { CreateAdDto } from '@be/application/admin/ads/dtos/CreatedAdDto'
+import { UpdateAdDto } from '@be/application/admin/ads/dtos/UpdateAdDto'
+import { getCurrentUser, requireAdminUserId } from '@bUtils/constantfunctions'
+import { AdTable } from '../types/database'
 
 export class AdRepositoryImpl implements AdRepository {
   // ✅ 모든 사용자 → 공개 광고만
   async findAll(): Promise<ReadAdDto[]> {
     const {
       data: { user },
-    } = await supabaseClient.auth.getUser();
+    } = await supabaseClient.auth.getUser()
 
-    let isAdmin = false;
+    let isAdmin = false
 
     if (user) {
       const { data: userData, error: userError } = await supabaseClient
         .from('users')
         .select('role')
         .eq('id', user.id)
-        .single();
+        .single()
 
       if (!userError && userData?.role === 'ADMIN') {
-        isAdmin = true;
+        isAdmin = true
       }
     }
 
     // 조건 분기 방식으로 안전하게 쿼리 작성
-    const query = supabaseClient.from('ad_management').select('*');
+    const query = supabaseClient.from('ad_management').select('*')
 
-    const { data, error } = isAdmin
-      ? await query
-      : await query.eq('is_active', true);
+    const { data, error } = isAdmin ? await query : await query.eq('is_active', true)
 
-    if (error || !data) throw error;
+    if (error || !data) throw error
 
-    return data.map((row) => Mapper.toReadAdDto(Mapper.fromAdTable(row)));
+    return data.map((row) => Mapper.toReadAdDto(Mapper.fromAdTable(row)))
   }
 
   // ✅ 광고가 공개면 누구나 가능, 비공개면 ADMIN만
   async findById(id: number): Promise<ReadAdDto | null> {
-    const { data, error } = await supabaseClient
-      .from('ad_management')
-      .select('*')
-      .eq('id', id)
-      .single();
+    const { data, error } = await supabaseClient.from('ad_management').select('*').eq('id', id).single()
 
-    if (error) throw error;
-    if (!data) return null;
+    if (error) throw error
+    if (!data) return null
 
     if (!data.is_active) {
       // 비공개 광고 → ADMIN만 가능
-      const user = await getCurrentUser();
-      if (!user) throw new Error('비공개 광고는 관리자만 조회할 수 있습니다.');
+      const user = await getCurrentUser()
+      if (!user) throw new Error('비공개 광고는 관리자만 조회할 수 있습니다.')
 
       const { data: userData, error: roleError } = await supabaseClient
         .from('users')
         .select('role')
         .eq('id', user.id)
-        .single();
+        .single()
 
       if (roleError || !userData || userData.role !== 'ADMIN') {
-        throw new Error('비공개 광고는 관리자만 조회할 수 있습니다.');
+        throw new Error('비공개 광고는 관리자만 조회할 수 있습니다.')
       }
     }
 
-    return Mapper.toReadAdDto(Mapper.fromAdTable(data));
+    return Mapper.toReadAdDto(Mapper.fromAdTable(data))
   }
 
   async create(dto: CreateAdDto): Promise<void> {
-    const userId = await requireAdminUserId();
+    const userId = await requireAdminUserId()
 
     const tableRow = {
       title: dto.title,
@@ -81,39 +74,36 @@ export class AdRepositoryImpl implements AdRepository {
       is_active: dto.isActive,
       type: dto.type,
       user_id: userId,
-    };
+    }
 
-    const { error } = await supabaseClient.from('ad_management').insert(tableRow);
-    if (error) throw error;
+    const { error } = await supabaseClient.from('ad_management').insert(tableRow)
+    if (error) throw error
   }
 
   async update(id: number, dto: UpdateAdDto): Promise<void> {
-    await requireAdminUserId();
+    await requireAdminUserId()
 
     const updateFields: Partial<{
-      title: string;
-      img_url: string;
-      redirect_url: string;
-      is_active: boolean;
-      type: string;
-    }> = {};
+      title: string
+      img_url: string
+      redirect_url: string
+      is_active: boolean
+      type: string
+    }> = {}
 
-    if (dto.title !== undefined) updateFields.title = dto.title;
-    if (dto.imageUrl !== undefined) updateFields.img_url = dto.imageUrl;
-    if (dto.redirectUrl !== undefined) updateFields.redirect_url = dto.redirectUrl;
-    if (dto.isActive !== undefined) updateFields.is_active = dto.isActive;
-    if (dto.type !== undefined) updateFields.type = dto.type;
+    if (dto.title !== undefined) updateFields.title = dto.title
+    if (dto.imageUrl !== undefined) updateFields.img_url = dto.imageUrl
+    if (dto.redirectUrl !== undefined) updateFields.redirect_url = dto.redirectUrl
+    if (dto.isActive !== undefined) updateFields.is_active = dto.isActive
+    if (dto.type !== undefined) updateFields.type = dto.type
 
-    const { error } = await supabaseClient
-      .from('ad_management')
-      .update(updateFields)
-      .eq('id', id);
-    if (error) throw error;
+    const { error } = await supabaseClient.from('ad_management').update(updateFields).eq('id', id)
+    if (error) throw error
   }
 
   async delete(id: number): Promise<void> {
-    await requireAdminUserId();
-    const { error } = await supabaseClient.from('ad_management').delete().eq('id', id);
-    if (error) throw error;
+    await requireAdminUserId()
+    const { error } = await supabaseClient.from('ad_management').delete().eq('id', id)
+    if (error) throw error
   }
 }

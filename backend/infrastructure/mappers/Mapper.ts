@@ -44,14 +44,14 @@ export class Mapper {
   static toAdEntity(dto: CreateAdDto): Ad {
     return new Ad(
       undefined, // id는 sequence로 supabase에서 자동 생성
-      "", // userId - will be set by repository
+      '', // userId - will be set by repository
       dto.title,
       dto.imageUrl,
-      "", // redirectUrl - not provided in CreateAdDto
+      '', // redirectUrl - not provided in CreateAdDto
       true, // isActive - default to true for new ads
       new Date(),
-      dto.type || "BANNER", // type - provide default if not specified
-    );
+      dto.type || 'BANNER', // type - provide default if not specified
+    )
   }
 
   static toReadAdDto(ad: Ad): ReadAdDto {
@@ -68,7 +68,7 @@ export class Mapper {
             ? ad.createdAt
             : '',
       isActive: ad.isActive,
-    };
+    }
   }
 
   static toAlarm(source: AlarmTable): Alarm {
@@ -111,7 +111,7 @@ export class Mapper {
 
   static toStore(dto: CreateStoreDto): Store {
     return new Store(
-      undefined,               // storeId: Supabase에서 자동 생성
+      undefined, // storeId: Supabase에서 자동 생성
       dto.name,
       dto.address,
       dto.phone,
@@ -120,8 +120,8 @@ export class Mapper {
       dto.imageMenuUrl,
       dto.createdBy,
       dto.ownerName,
-      dto.openTime
-    );
+      dto.openTime,
+    )
   }
 
   static toReadStoreDto(store: Store): ReadStoreDto {
@@ -135,7 +135,7 @@ export class Mapper {
       imageMenuUrl: store.imageMenuUrl,
       ownerName: store.ownerName,
       openTime: store.openTime,
-    };
+    }
   }
 
   static toStoreTable(store: Store): StoreTable {
@@ -161,7 +161,7 @@ export class Mapper {
       image_place_url: dto.imagePlaceUrl,
       image_menu_url: dto.imageMenuUrl,
       open_time: dto.openTime,
-    };
+    }
   }
 
   static toReadStoreDtoFromTableRow(row: any): ReadStoreDto {
@@ -178,7 +178,7 @@ export class Mapper {
         ? row.users.length > 0
           ? row.users[0].username
           : ''
-        : row.users?.username ?? '', // for non-array join fallback
-    };
+        : (row.users?.username ?? ''), // for non-array join fallback
+    }
   }
 }
