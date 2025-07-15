@@ -11,15 +11,18 @@ import { DeleteUserKeywordDto } from 'backend/application/user/keywords/dtos/Del
 import { verifyToken } from '@be/utils/auth'
 
 export async function POST(request: Request) {
-  // FIXME : 실제 운영 환경에서는 사용자 인증/인가 로직이 필요합니다.
-  // user_id는 인증된 사용자로부터 안전하게 얻어야 합니다.
-  // 현재는 테스트를 위해 요청 본문에서 user_id를 직접 받는 것으로 가정합니다.
-
   try {
-    const { user_id, keyword } = await request.json()
+    const decoded = await verifyToken(request)
+
+    if (!decoded) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const userId = decoded.userId
+    const { keyword } = await request.json()
 
     // 필수 필드 유효성 검사
-    if (!user_id || !keyword) {
+    if (!userId || !keyword) {
       return NextResponse.json(
         { success: false, error: 'user_id 또는 keyword가 누락되었습니다.' },
         { status: 400 }, // Bad Request
@@ -33,7 +36,7 @@ export async function POST(request: Request) {
     const addUserKeywordUseCase = new AddUserKeywordUseCase(userKeywordRepository)
 
     // 3. 유즈케이스 실행
-    const addDto: AddUserKeywordDto = { userId: user_id, keyword }
+    const addDto: AddUserKeywordDto = { userId: userId, keyword }
     const registeredKeyword = await addUserKeywordUseCase.execute(addDto)
 
     // 성공 시 201 Created 상태 코드와 함께 응답
@@ -51,15 +54,19 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  // ⚠️ 중요: 실제 운영 환경에서는 사용자 인증/인가 로직이 필요합니다.
-  // user_id는 인증된 사용자로부터 안전하게 얻어야 합니다.
-  // 현재는 테스트를 위해 요청 본문에서 user_id를 직접 받는 것으로 가정합니다.
-
   try {
-    const { user_id, keyword_id } = await request.json()
+    // 인증된 사용자 ID를 decoded 토큰에서 가져옵니다.
+    const decoded = await verifyToken(request)
+
+    if (!decoded) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+    const userId = decoded.userId
+
+    const { keyword_id } = await request.json()
 
     // 필수 필드 유효성 검사
-    if (!user_id || !keyword_id) {
+    if (!userId || !keyword_id) {
       return NextResponse.json(
         { success: false, error: 'user_id 또는 keyword_id가 누락되었습니다.' },
         { status: 400 }, // Bad Request
@@ -73,7 +80,7 @@ export async function DELETE(request: Request) {
     const deleteUserKeywordUseCase = new DeleteUserKeywordUseCase(userKeywordRepository)
 
     // 3. 유즈케이스 실행
-    const deleteDto: DeleteUserKeywordDto = { userId: user_id, keywordId: keyword_id }
+    const deleteDto: DeleteUserKeywordDto = { userId: userId, keywordId: keyword_id }
     await deleteUserKeywordUseCase.execute(deleteDto)
 
     // 성공 시 204 No Content 상태 코드와 함께 응답 (본문 없음)
@@ -88,19 +95,16 @@ export async function DELETE(request: Request) {
 }
 
 export async function GET(request: Request) {
-  // ⚠️ 중요: 실제 운영 환경에서는 사용자 인증/인가 로직이 필요합니다.
-  // user_id는 인증된 사용자로부터 안전하게 얻어야 합니다.
-  // 현재는 테스트를 위해 쿼리 파라미터에서 user_id를 직접 받는 것으로 가정합니다.
+  const decoded = await verifyToken(request)
+  if (!decoded) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+  // 인증된 사용자 ID를 decoded 토큰에서 가져옵니다.
+  const userId = decoded.userId
 
-  const { searchParams } = new URL(request.url)
-  const userId = searchParams.get('uuid') // 'uuid' 파라미터로 사용자 ID 가져오기
-
-  // 필수 파라미터 누락 시 에러 응답
   if (!userId) {
-    return NextResponse.json(
-      { success: false, error: 'uuid 파라미터가 누락되었습니다.' },
-      { status: 400 }, // Bad Request
-    )
+    // userId가 토큰에 없으면 에러 처리 (토큰 검증 로직에서 이미 처리될 수 있지만, 한 번 더 확인)
+    return NextResponse.json({ error: 'User ID not found in token' }, { status: 400 })
   }
 
   try {
