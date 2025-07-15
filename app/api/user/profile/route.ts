@@ -59,6 +59,18 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({ success: true, data: updatedUser })
   } catch (error: any) {
     console.error('Profile API Error:', error)
+
+    // 닉네임 중복 에러 처리
+    if (error.message === '이미 사용 중인 닉네임입니다.') {
+      return NextResponse.json(
+        {
+          error: '이미 사용 중인 닉네임입니다.',
+          message: '다른 닉네임을 사용해주세요.',
+        },
+        { status: 409 },
+      )
+    }
+
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
   }
 }

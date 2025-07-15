@@ -5,8 +5,8 @@
   --primary-blue: #2285d5;
   --primary-white: #ffffff;
   --primary-black: #000000;
-  --light-gray: #ABABAB;
-  --dark-gray: #6D6D6D;
+  --light-gray: #ababab;
+  --dark-gray: #6d6d6d;
 
   --secondary-blue-50: #f1f7fe;
   --secondary-blue-100: #e3eefb;
@@ -18,7 +18,6 @@
   --secondary-blue-900: #123456;
   --secondary-blue-950: #0e2743;
 }
-
 
 /* common */
 .flex-center {
@@ -135,7 +134,7 @@ section {
   display: block;
 }
 body {
-  font-family: 'NanumSquare', sans-serif; 
+  font-family: 'NanumSquare', sans-serif;
 }
 ol,
 ul {
@@ -156,6 +155,7 @@ table {
   border-collapse: collapse;
   border-spacing: 0;
 }
+
 a {
   text-decoration: none;
   color: inherit;
