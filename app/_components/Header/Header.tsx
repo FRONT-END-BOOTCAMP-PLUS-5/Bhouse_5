@@ -64,8 +64,11 @@ const Header: React.FC = () => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className={styles.searchInput}
+          size="small" // 여기에 size="small" 추가
         />
-        <Dropdown label={selectedRegion} borderRadius="8">
+        <Dropdown label={selectedRegion} borderRadius="8" size="small">
+          {' '}
+          {/* 여기에 size="small" 추가 */}
           {/*FIXME : 유저 정보 내 town으로 변경하기*/}
           <li onClick={() => handleRegionSelect('중랑구')}>중랑구</li>
           <li onClick={() => handleRegionSelect('은평구')}>은평구</li>
