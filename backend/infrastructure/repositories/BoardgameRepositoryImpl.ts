@@ -1,29 +1,53 @@
 import { supabaseClient } from '@bUtils/supabaseClient'
 import { BoardgameRepository } from '@domain/repositories/BoardgameRepository'
-import { BoardGame } from '@be/domain/entities/Boardgame'
+import { Boardgame } from '@domain/entities/Boardgame'
 
 //TODO: supabase에서 store_own_boardgames 테이블 더미데이터 넣기
 
 export class BoardgameRepositoryImpl implements BoardgameRepository {
-  async findBoardgameById(id: number): Promise<BoardGame | null> {
-    const { data, error } = await supabaseClient.from('boardgames').select('*').eq('boardgame_id', id).single()
-
+  async findBoardgameById(id: number): Promise<Boardgame | null> {
+    console.log('Trying to find boardgame id:', id)
+    const { data, error } = await supabaseClient
+      .from('boardgames')
+      .select(
+        `
+        boardgame_id,
+        name,
+        description,
+        genre_id,
+        min_players,
+        max_players,
+        min_playtime,
+        max_playtime,
+        difficulty,
+        img_url,
+        created_at,
+        updated_at,
+        updated_by,
+        created_by
+      `,
+      )
+      .eq('boardgame_id', id)
+      .single()
+    console.log('Supabase data:', data)
+    console.log('Supabase error:', error)
     if (error || !data) return null
 
-    return new BoardGame(
+    return new Boardgame(
       data.boardgame_id,
-      data.difficulty,
       data.name,
-      data.img_url,
+      data.created_by,
+      data.genre_id,
+      data.description,
       data.min_players,
       data.max_players,
       data.min_playtime,
       data.max_playtime,
-      data.year_published ?? 0,
-      data.genre_id,
-      data.description,
-      data.created_at,
-      data.updated_at,
+      data.difficulty,
+      data.img_url,
+      new Date(data.created_at),
+      new Date(data.updated_at),
+      data.updated_by,
     )
   }
 
@@ -32,7 +56,7 @@ export class BoardgameRepositoryImpl implements BoardgameRepository {
     genre?: string
     minPlayers?: number
     maxPlayers?: number
-  }): Promise<BoardGame[]> {
+  }): Promise<Boardgame[]> {
     let query = supabaseClient.from('boardgames').select('*')
 
     if (params.name) query = query.ilike('name', `%${params.name}%`)
@@ -45,20 +69,21 @@ export class BoardgameRepositoryImpl implements BoardgameRepository {
 
     return data.map(
       (b) =>
-        new BoardGame(
+        new Boardgame(
           b.boardgame_id,
-          b.difficulty,
           b.name,
-          b.img_url,
+          b.created_by,
+          b.genre_id,
+          b.description,
           b.min_players,
           b.max_players,
           b.min_playtime,
           b.max_playtime,
-          b.year_published ?? 0,
-          b.genre_id,
-          b.description,
+          b.difficulty,
+          b.img_url,
           b.created_at,
           b.updated_at,
+          b.updated_by,
         ),
     )
   }

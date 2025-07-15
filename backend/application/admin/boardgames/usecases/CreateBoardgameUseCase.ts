@@ -1,7 +1,7 @@
 // backend/application/admin/boardgames/usecases/CreateBoardgameUseCase.ts
 
 import BoardgameRepository from '@domain/repositories/BoardgameRepository'
-import { Boardgame } from '@be/domain/entities/Boardgame'
+import { Boardgame } from '@domain/entities/Boardgame'
 import { CreateBoardgameDto } from '../dtos/CreateBoardgameDto'
 import { CreatedBoardgameDto } from '../dtos/CreatedBoardgameDto'
 

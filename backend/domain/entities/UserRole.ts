@@ -1,5 +1,5 @@
-import Role from './Role'
-import User from './User'
+import { Role } from './Role'
+import { User } from './User'
 
 export default class UserRole {
   constructor(

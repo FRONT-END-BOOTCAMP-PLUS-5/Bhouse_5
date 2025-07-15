@@ -1,4 +1,4 @@
-import { UserRole } from '@be/domain/entities/UserRole'
+import UserRole from '@be/domain/entities/UserRole'
 import { AdTable, AlarmTable, RoleTable, UserRoleTable, UserTable, StoreTable } from '../types/database'
 import { Ad } from '@be/domain/entities/Ad'
 import { Alarm, AlarmType } from '@be/domain/entities/Alarm'
