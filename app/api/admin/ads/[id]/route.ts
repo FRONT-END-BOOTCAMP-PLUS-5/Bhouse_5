@@ -1,40 +1,34 @@
-// app/(backend)/api/admin/ads/[id]/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { AdRepositoryImpl } from '@be/infrastructure/repositories/AdRepositoryImpl'
 import { GetAdUseCase } from '@be/application/admin/ads/usecases/GetAdUseCase'
 import { UpdateAdUseCase } from '@be/application/admin/ads/usecases/UpdateAdUseCase'
 import { DeleteAdUseCase } from '@be/application/admin/ads/usecases/DeleteAdUseCase'
-import { supabaseClient } from '@bUtils/supabaseClient'
+import { verifyToken } from '@be/utils/auth'
 
 const repo = new AdRepositoryImpl()
 const getAdUseCase = new GetAdUseCase(repo)
 const updateAdUseCase = new UpdateAdUseCase(repo)
 const deleteAdUseCase = new DeleteAdUseCase(repo)
 
-// ✅ 관리자 여부 체크 함수
-async function isAdmin(): Promise<boolean> {
-  const {
-    data: { user },
-  } = await supabaseClient.auth.getUser()
-
-  if (!user) return false
-
-  const { data, error } = await supabaseClient.from('users').select('role').eq('id', user.id).single()
-
-  return !error && data?.role === 'ADMIN'
-}
-
-export async function GET(_: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   const id = parseInt(params.id)
-  if (isNaN(id)) return NextResponse.json({ message: 'Invalid ID' }, { status: 400 })
+  if (isNaN(id)) {
+    return NextResponse.json({ message: 'Invalid ID' }, { status: 400 })
+  }
 
   try {
     const ad = await getAdUseCase.execute(id)
-    if (!ad) return NextResponse.json({ message: 'Not found' }, { status: 404 })
+    if (!ad) {
+      return NextResponse.json({ message: 'Not found' }, { status: 404 })
+    }
 
-    // 비공개 광고는 관리자만 볼 수 있음
-    if (!ad.isActive && !(await isAdmin())) {
-      return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
+    // 비공개 광고는 관리자만 조회 가능
+    if (!ad.isActive) {
+      const decoded = verifyToken(req)
+      const isAdmin = decoded?.roleId === '1'
+      if (!isAdmin) {
+        return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
+      }
     }
 
     return NextResponse.json(ad)
@@ -46,9 +40,12 @@ export async function GET(_: NextRequest, { params }: { params: { id: string } }
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
   const id = parseInt(params.id)
-  if (isNaN(id)) return NextResponse.json({ message: 'Invalid ID' }, { status: 400 })
+  if (isNaN(id)) {
+    return NextResponse.json({ message: 'Invalid ID' }, { status: 400 })
+  }
 
-  if (!(await isAdmin())) {
+  const decoded = verifyToken(req)
+  if (!decoded || decoded.roleId !== '1') {
     return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
   }
 
@@ -62,11 +59,14 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   }
 }
 
-export async function DELETE(_: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
   const id = parseInt(params.id)
-  if (isNaN(id)) return NextResponse.json({ message: 'Invalid ID' }, { status: 400 })
+  if (isNaN(id)) {
+    return NextResponse.json({ message: 'Invalid ID' }, { status: 400 })
+  }
 
-  if (!(await isAdmin())) {
+  const decoded = verifyToken(req)
+  if (!decoded || decoded.roleId !== '1') {
     return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
   }
 
