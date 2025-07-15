@@ -19,6 +19,7 @@
   --secondary-blue-950: #0e2743;
 }
 
+
 /* common */
 .flex-center {
   display: flex;
@@ -154,4 +155,8 @@ q:after {
 table {
   border-collapse: collapse;
   border-spacing: 0;
+}
+a {
+  text-decoration: none;
+  color: inherit;
 }

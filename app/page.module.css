@@ -10,32 +10,12 @@
 }
 
 /* TODO: 텍스트 크기 피그마와 동일하게 적용했으나, 화면과 스케일이 상이하여 크기 상세 조정 필요함. */
-.boldText {
-  font-family: 'NanumSquare', sans-serif;
-  font-weight: 700; /* Bold */
-  color: var(--secondary-blue-50); 
-  font-size: 1.8rem;
-  margin-bottom: 20px;
-}
+/* 텍스트 스타일 */
 
-.regularText {
-  font-weight: 400;
-  font-size: 1.2rem;
-  margin-bottom: 10px;
-}
-
-.lightText {
-  font-weight: 300;
-  font-size: 1.1rem;
-  color: var(--dark-gray);
-  margin-bottom: 10px;
-}
-
-.extraBoldText {
-  font-weight: 800;
-  font-size: 1.8rem;
-  color: var(--primary-black);
-  margin-bottom: 20px;
+.body12 {
+  font-size: 12px;
+  font-weight: 400; /* Regular */
+  line-height: 1.5; /* 가독성을 위해 line-height 추가 */
 }
 
 .body16 {
@@ -75,6 +55,11 @@
   line-height: 1.2;
 }
 
+/* 텍스트 색상 */
+.whiteText {
+  color: var(--primary-white);
+}
+
 
 .button {
   background-color: var(--secondary-blue-600);
@@ -104,6 +89,7 @@
   width: 100%;
   min-height: 120px; /* 더 긴 설명을 위한 최소 높이 */
 }
+
 
 /* --------------------------------------------- */
 /* 미디어 쿼리가 하단에 가도록 작성. */
@@ -147,6 +133,12 @@
     font-size: 1.8rem;
     color: var(--primary-black);
     margin-bottom: 20px;
+  }
+
+  .body12 {
+    font-size: 12px;
+    font-weight: 400; /* Regular */
+    line-height: 1.5; /* 가독성을 위해 line-height 추가 */
   }
 
   .body16 {
