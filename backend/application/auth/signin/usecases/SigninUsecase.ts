@@ -139,11 +139,12 @@ export class SigninUsecase {
     const accessTokenMaxAge = 1 * 60 * 60
     const refreshTokenMaxAge = 2 * 24 * 60 * 60
 
+    console.log('user', user)
     // Access Token (1시간) - 토큰 검증 함수와 호환되도록 수정
     const accessTokenPayload = {
       userId: user.id,
       email: user.email,
-      roleId: user.userRole ? user.userRole.roles.role_id.toString() : '2', // roleId로 변경
+      roleId: user.userRole?.toString() || '3', // roleId로 변경
       exp: now + accessTokenMaxAge, // 1시간
     }
 

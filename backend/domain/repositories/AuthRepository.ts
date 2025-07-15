@@ -7,7 +7,5 @@ export interface AuthRepository {
   findUserById(userId: string): Promise<User | null>
   emailFind(username: string, phone: string): Promise<User | null>
   passwordFind(username: string, email: string, phone: string): Promise<User | null>
-  signin(user: User): Promise<void>
-  signout(): Promise<void>
   passwordReset(userId: string, hashedPassword: string): Promise<void>
 }
