@@ -16,6 +16,7 @@ export interface KakaoUserInfo {
       nickname?: string
     }
   }
+  nickname?: string
 }
 
 export class KakaoOAuthService {

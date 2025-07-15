@@ -13,9 +13,9 @@ export class SearchBoardgamesUseCase {
     return boardgames.map((game) => ({
       id: game.boardgameId,
       name: game.name,
-      min_players: game.minPlayers,
-      max_players: game.maxPlayers,
-      img_url: game.imgUrl,
+      min_players: game.minPlayers ?? 0,
+      max_players: game.maxPlayers ?? 0,
+      img_url: game.imgUrl ?? '',
     }))
   }
 }

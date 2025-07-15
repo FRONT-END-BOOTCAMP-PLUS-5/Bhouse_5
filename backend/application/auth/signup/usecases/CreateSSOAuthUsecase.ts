@@ -12,27 +12,27 @@ export class CreateSSOAuthUsecase {
 
   async execute(dto: CreateSSOAuthDto): Promise<SigninAuthResponseDto> {
     try {
+      // 1. 기존 사용자 조회
       const existingUser = await this.authRepo.findByProvider(dto.provider, dto.providerId)
 
       if (existingUser) {
         return {
           message: '이미 가입된 사용자입니다.',
           status: 200,
-          error: 'ALREADY_REGISTERED',
         }
       }
 
       // 1. 회원 생성
       const newUser = new User(
-        '',
+        '', // userId (자동 생성)
         dto.username,
-        '', // no password for SSO
+        '', // 비밀번호 없음 (SSO)
         dto.email,
         dto.nickname || dto.username,
-        new Date(),
-        new Date(),
+        new Date(), // createdAt
+        new Date(), // updatedAt
         'APPROVED',
-        dto.profileImgUrl || null,
+        dto.profileImgUrl || null, // image
         [],
         undefined,
         dto.provider,

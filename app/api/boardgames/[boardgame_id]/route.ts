@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { GetBoardgameByIdUseCase } from '@application/boardgames/usecases/GetBoardgameByIdUseCase'
+import { FindBoardgameByIdUseCase } from '@be/application/boardgames/usecases/FindBoardgameByIdUseCase'
 import { BoardgameRepositoryImpl } from '@infrastructure/repositories/BoardgameRepositoryImpl'
 
 export async function GET(req: NextRequest) {
-  const usecase = new GetBoardgameByIdUseCase(new BoardgameRepositoryImpl())
+  const usecase = new FindBoardgameByIdUseCase(new BoardgameRepositoryImpl())
   const segments = req.nextUrl.pathname.split('/')
   const boardgameId = Number(segments[segments.length - 1])
 

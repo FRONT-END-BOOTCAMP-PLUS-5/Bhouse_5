@@ -20,9 +20,9 @@ export interface StoreRepository {
 
   findAll(): Promise<ReadStoreDto[]>
 
-  create(dto: CreateStoreDto): Promise<void>
+  create(dto: CreateStoreDto, userId: string): Promise<void>
 
-  update(id: number, dto: UpdateStoreDto): Promise<void>
+  update(id: number, userId: string, role: string, createdBy: string, dto: UpdateStoreDto): Promise<void>
 
-  delete(id: number, createdBy: string, isAdmin: boolean): Promise<void>
+  delete(id: number, userId: string, role: string): Promise<void>
 }

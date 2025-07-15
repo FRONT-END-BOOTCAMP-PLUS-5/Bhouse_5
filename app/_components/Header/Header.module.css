@@ -1,107 +1,108 @@
-/* src/components/layout/Header/Header.module.css */
+/* Header.module.css */
 
 .header {
   width: 100%;
-  padding: 20px 40px; /* 좌우 패딩 */
-  box-sizing: border-box; /* 패딩을 너비에 포함 */
-  background-color: #fff; /* 헤더 배경색 */
-  border-bottom: 1px solid #eee; /* 하단 경계선 */
+  padding: 15px 20px; /* 전체 헤더의 패딩 */
+  box-sizing: border-box;
+  background-color: var(--primary-white);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  position: relative; /* 로고의 absolute 위치 지정을 위한 기준점 */
+  display: flex; /* 자식 요소들을 세로로 쌓기 위해 flex column */
+  flex-direction: column;
+  /* align-items: center; // 이 부분이 전체 너비를 줄이고 중앙 정렬해서 오른쪽 여백이 생긴 원인일 수 있습니다. 제거합니다. */
+}
+
+/* logoContainer는 그대로 absolute로 유지 */
+.logoContainer {
+  position: absolute;
+  top: 15px; /* header의 padding-top과 동일 */
+  left: 20px; /* header의 padding-left와 동일 */
+  z-index: 10;
+}
+
+.logo {
+  height: 60px;
+  width: auto;
+  cursor: pointer;
+}
+
+/* 새로운 래퍼 div를 도입하여 로고를 제외한 나머지 영역을 감쌉니다. */
+/* Header.tsx에 <div className={styles.contentWrapper}></div> 를 추가해야 합니다. */
+.contentWrapper {
+  width: 100%; /* 부모(header)의 남은 너비를 모두 사용 */
   display: flex;
-  flex-direction: column; /* 기본적으로 요소들을 세로로 정렬 */
-  align-items: center; /* 가로 중앙 정렬 */
+  flex-direction: column;
+  /* 로고의 너비와 좌측 여백만큼의 공간을 확보하기 위해 margin-left를 추가합니다. */
+  /* 로고 너비(70px) + 로고와 내용 사이의 여백 (예: 20px) = 90px */
+  margin-left: 90px;
+  /* header의 padding-right(20px)를 고려하여, contentWrapper의 실제 사용 가능 너비를 확보합니다. */
+  /* margin-right: 20px; 또는 width: calc(100% - 90px - 20px); */
+  width: calc(100% - 90px); /* 로고 영역 (90px)만큼의 공간을 제외한 100% */
+  box-sizing: border-box; /* 패딩 포함 너비 계산 */
+  padding-right: 20px; /* header의 오른쪽 패딩에 맞춥니다. */
 }
 
 .headerTop {
   display: flex;
-  justify-content: space-between; /* 로고와 우측 요소들 양쪽 끝 정렬 */
-  align-items: center; /* 세로 중앙 정렬 */
-  width: 100%; /* 상단 섹션이 헤더 너비를 꽉 채우도록 */
-  margin-bottom: 15px; /* 하단 Divider와 간격 */
+  justify-content: flex-end; /* 로그인/회원가입을 오른쪽 끝으로 정렬 */
+  align-items: center;
+  width: 100%; /* contentWrapper 내에서 100% */
+  /* padding-left는 contentWrapper가 담당하므로 여기서는 제거 */
+  margin-bottom: 5px;
 }
 
-.logoContainer {
+.authSection {
   display: flex;
   align-items: center;
+  gap: 10px;
 }
 
-.logo {
-  width: 50px; /* 로고 이미지 크기 */
-  height: 50px;
-  margin-right: 10px;
-}
-
-/* .logoText { // 만약 '보드의 집' 텍스트를 로고 옆에 넣는다면
-  font-family: 'MBC1961OTFM', sans-serif;
-  font-size: 24px;
+.loginText {
+  font-size: 16px;
   font-weight: 700;
-  white-space: nowrap;
-  color: #333;
-} */
+  line-height: 1.5;
+  color: var(--primary-black);
+  cursor: pointer;
+  text-decoration: underline;
+}
 
-.headerRight {
+.loginText:hover {
+  color: var(--secondary-blue-700); /* 호버 시 색상 변경 */
+}
+
+/* 추가: 방문한 링크의 색상을 기본 색상과 동일하게 유지 */
+.loginText:visited {
+  color: var(--primary-black); /* 방문 후에도 검정색 유지 */
+}
+
+.searchAndDropdown {
   display: flex;
+  gap: 10px;
   align-items: center;
-  gap: 15px; /* 검색창, 드롭다운, 아이콘 사이 간격 */
+  justify-content: flex-end; /* 검색창과 드롭다운을 오른쪽 정렬 */
+  width: 100%; /* contentWrapper 내에서 100% */
+  /* padding-left는 contentWrapper가 담당하므로 여기서는 제거 */
+  margin-bottom: 15px;
 }
 
 .searchInput {
-  width: 250px; /* 검색 입력창 너비 */
-  /* TextInput 컴포넌트 자체에 기본 높이가 있을 것이므로 여기서는 너비만 지정 */
-}
-
-.userIconContainer {
-  font-size: 24px; /* 사용자 아이콘 크기 */
-  color: #333;
-  cursor: pointer;
+  flex-grow: 1; /* 검색 입력창이 가능한 공간을 차지하도록 */
+  max-width: 170px; /* 검색창 최대 너비를 200px로 줄임 (원하는 크기로 조정) */
 }
 
 .navigation {
   display: flex;
-  gap: 10px; /* 내비게이션 버튼들 사이 간격 */
-  width: 100%; /* 내비게이션 바가 헤더 너비를 꽉 채우도록 */
-  justify-content: center; /* 버튼들을 중앙 정렬 */
+  gap: 8px;
+  justify-content: flex-start;
+  width: 100%; /* contentWrapper 내에서 100% */
+  /* contentWrapper에서 이미 좌측 마진을 주었으므로, 여기서는 패딩을 0으로 합니다. */
+  padding-left: 0;
+  margin-top: 5px;
 }
 
-.navButton {
-  /* Button 컴포넌트의 기본 스타일을 사용하면서 추가 조정 */
-  min-width: 80px; /* 각 버튼의 최소 너비 */
-  padding: 8px 15px;
-}
-
-/* ------------------- 모바일 (max-width: 600px) 스타일 ------------------- */
-@media (max-width: 600px) {
-  .header {
-    padding: 15px 20px; /* 모바일 패딩 */
-  }
-
-  .headerTop {
-    flex-direction: column; /* 모바일에서 세로로 정렬 */
-    align-items: flex-start; /* 왼쪽 정렬 */
-    gap: 10px;
-  }
-
-  .headerRight {
-    flex-direction: column; /* 모바일에서 세로로 정렬 */
-    width: 100%; /* 너비 100%로 채우기 */
-    gap: 10px;
-  }
-
-  .searchInput {
-    width: 100%; /* 모바일에서 검색창 너비 100% */
-  }
-
-  .dropdownContainer { /* 드롭다운도 필요하다면 모바일 너비 조정 */
-    width: 100%;
-  }
-
-  .navigation {
-    flex-wrap: wrap; /* 버튼이 넘치면 줄바꿈 */
-    justify-content: flex-start; /* 모바일에서 왼쪽 정렬 */
-    gap: 8px;
-  }
-
-  .navButton {
-    flex-grow: 1; /* 남은 공간을 채우도록 성장 */
-    max-width: fit-content; /* 내용에 맞게 너비 조절 */
-  }
+/* Dropdown 내부의 버튼을 위한 스타일 (ListItem처럼 보이도록) */
+.buttonAsListItem {
+  width: 100%; /* 드롭다운 메뉴 너비에 맞춤 */
+  text-align: center; /* 텍스트 가운데 정렬 */
+  /* Dropdown 내부의 Button에 추가적인 스타일이 필요하다면 여기에 정의 */
 }
