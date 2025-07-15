@@ -1,7 +1,6 @@
 import './globals.css' // 전역 CSS
 import Header from './_components/Header/Header' // Header 컴포넌트 임포트
 import React from 'react'
-import '@fortawesome/fontawesome-free/js/all.js'
 
 export const metadata = {
   title: '보드의 집',

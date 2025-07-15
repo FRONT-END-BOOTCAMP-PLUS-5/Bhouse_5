@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
-import Image from 'next/image'
 import styles from './usertype.module.css'
+import BellIcon from '@public/bell.svg'
 
 export default function UserTypePage() {
   return (
@@ -10,7 +10,7 @@ export default function UserTypePage() {
         사장님으로 가입하기
       </Link>
       <Link className={styles.link} href="/auth/signup">
-        <Image src="/user.svg" alt="User icon" width={24} height={24} />
+        <BellIcon width={12} height={12} />
         회원으로 가입하기
       </Link>
     </div>
