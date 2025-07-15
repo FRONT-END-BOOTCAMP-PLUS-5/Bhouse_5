@@ -92,6 +92,14 @@ export class Mapper {
   }
 
   static toUser(source: UserTable): User {
+    console.log('🧪 source.user_roles:', JSON.stringify(source.user_roles, null, 2))
+    const userRoleEntry = Array.isArray(source.user_roles) ? source.user_roles[0] : source.user_roles
+
+    const roleId = userRoleEntry?.role_id
+    const roleName = userRoleEntry?.role?.name
+
+    const userRole = roleId && roleName ? new UserRole(new Role(roleId, roleName)) : undefined
+
     return new User(
       source.user_id,
       source.username,
@@ -99,14 +107,14 @@ export class Mapper {
       source.email,
       source.nickname || '',
       new Date(source.created_at),
-      null, // deletedAt - not available in UserTable
+      source.updated_at ? new Date(source.updated_at) : null,
+      '', // isActive - not available in UserTable
       source.profile_img_url || null,
-      new Date(source.updated_at),
-      undefined, // userRole - not available in UserTable
       undefined, // userAlarms - not available in UserTable
       source.phone || undefined,
       source.provider || undefined,
       source.provider_id || undefined,
+      userRole,
     )
   }
 
@@ -115,7 +123,9 @@ export class Mapper {
   }
 
   static toMemberRole(source: UserRoleTable): UserRole {
-    return new UserRole(source.user_id, source.role_id)
+    // Create a Role object from the UserRoleTable data
+    const role = source.role ? new Role(source.role.role_id, source.role.name) : new Role(source.role_id, '')
+    return new UserRole(role)
   }
 
   static toStore(dto: CreateStoreDto): Store {
