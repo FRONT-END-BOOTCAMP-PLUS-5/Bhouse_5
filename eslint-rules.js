@@ -3,7 +3,6 @@ export const customRules = {
   // 기본 규칙들
 
   // ===== 코드 품질 관련 규칙 =====
-
   // 파일의 최대 라인 수 제한
   'max-lines': ['warn', 300],
 
@@ -12,7 +11,7 @@ export const customRules = {
 
   // ===== 네이밍 컨벤션 ===== 채원 : 이거 다 넣져?
 
-  // // 변수, 함수, 클래스 네이밍 컨벤션 통합
+  // 변수, 함수, 클래스 네이밍 컨벤션 통합
   '@typescript-eslint/naming-convention': [
     'error',
     // 변수명은 camelCase, UPPER_CASE, PascalCase 허용
@@ -49,12 +48,11 @@ export const customRules = {
 
   // ===== 주석 관련 규칙 =====
 
-  // 주석 관련 규칙: TODO, FIXME 주석에 이슈 번호나 담당자 추가 권장
+  // TODO, FIXME 주석에 이슈 번호나 담당자 추가 권장 이것도여 채원채원
   'no-warning-comments': [
     'warn',
     {
-      terms: ['todo', 'fixme', 'hack', 'xxx'],
-
+      terms: ['todo', 'fixme'],
       location: 'anywhere',
     },
   ],
@@ -63,9 +61,6 @@ export const customRules = {
 
   // 사용하지 않는 import 금지 채원 : 좋아요 동규 : 좋아요
   '@typescript-eslint/no-unused-vars': 'warn',
-
-  // any 타입 사용 허용
-  '@typescript-eslint/no-explicit-any': 'off',
 
   // any 타입 사용 허용
   '@typescript-eslint/no-explicit-any': 'off',

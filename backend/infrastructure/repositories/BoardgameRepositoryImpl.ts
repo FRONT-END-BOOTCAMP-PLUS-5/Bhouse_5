@@ -1,5 +1,5 @@
 import { supabaseClient } from '@bUtils/supabaseClient'
-import { BoardgameRepository } from '@domain/repositories/BoardgameRepository'
+import BoardgameRepository from '@domain/repositories/BoardgameRepository'
 import { Boardgame } from '@be/domain/entities/Boardgame'
 
 //TODO: supabase에서 store_own_boardgames 테이블 더미데이터 넣기

@@ -1,0 +1,61 @@
+/* Button.module.css */
+
+.button {
+  padding: 10px 20px;
+  cursor: pointer;
+  border: none;
+  font-family: 'NanumSquare', sans-serif; /* 폰트 적용 */
+  font-weight: 700; /* 버튼 텍스트는 보통 볼드 */
+  transition: background-color 0.2s ease-in-out;
+  display: inline-flex; /* 텍스트 정렬을 위해 */
+  align-items: center;
+  justify-content: center;
+}
+
+/* 둥글기 (Border Radius) variants */
+.borderRadius8 { border-radius: 8px; }
+.borderRadius12 { border-radius: 12px; }
+.borderRadius16 { border-radius: 16px; }
+.borderRadius20 { border-radius: 20px; }
+.borderRadius60 { border-radius: 60px; } /* 또는 큰 값으로 원형에 가깝게 */
+
+/* 버튼 스타일 (Color/Background) variants - 예시 */
+.primary {
+  background-color: var(--primary-blue);
+  color: var(--primary-white);
+}
+.primary:hover {
+  background-color: var(--secondary-blue-700);
+}
+
+.secondary {
+  background-color: var(--light-gray);
+  color: var(--primary-black);
+  border: 1px solid var(--dark-gray);
+}
+.secondary:hover {
+  background-color: #e0e0e0;
+}
+
+.ghost {
+  background-color: transparent;
+  color: var(--primary-blue);
+  border: 1px solid var(--primary-blue);
+}
+.ghost:hover {
+  background-color: var(--secondary-blue-50);
+}
+
+/* 버튼 크기 variants */
+.small {
+  padding: 8px 16px;
+  font-size: 14px;
+}
+.medium {
+  padding: 10px 20px;
+  font-size: 16px;
+}
+.large {
+  padding: 12px 24px;
+  font-size: 18px;
+}

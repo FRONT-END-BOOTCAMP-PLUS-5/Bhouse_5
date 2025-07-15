@@ -1,7 +1,7 @@
 // backend/infrastructure/repositories/SupabaseBoardgameRepository.ts
 
 import { supabaseClient } from '../../utils/supabaseClient' // 미리 정의된 Supabase 클라이언트 임포트
-import { BoardgameRepository } from '@domain/repositories/BoardgameRepository'
+import BoardgameRepository from '@domain/repositories/BoardgameRepository'
 import { Boardgame } from '@be/domain/entities/Boardgame'
 import { BoardgameRelationsOptions } from '@domain/repositories/options/BoardgameRelationsOptions'
 // import { BoardgameGenre } from '@domain/entities/BoardgameGenre' // 필요한 경우 임포트
