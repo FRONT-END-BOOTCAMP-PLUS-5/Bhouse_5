@@ -1,10 +1,6 @@
 import './globals.css' // 전역 CSS
 import Header from './_components/Header/Header' // Header 컴포넌트 임포트
 import React from 'react'
-import styles from './page.module.css'
-
-// FontAwesome JavaScript 파일 임포트 (전역적으로 한 번만)
-// 이 부분이 있어야 <i class="far fa-user"></i> 아이콘이 제대로 표시됩니다.
 import '@fortawesome/fontawesome-free/js/all.js'
 
 export const metadata = {

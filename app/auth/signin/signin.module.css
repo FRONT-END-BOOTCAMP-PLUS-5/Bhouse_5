@@ -11,7 +11,7 @@
   flex-direction: column;
   margin-top: auto;
   margin-bottom: auto;
-  gap: 8px;
+  gap: 20px;
 }
 
 .form {
@@ -24,6 +24,25 @@
   margin-top: auto;
   margin-bottom: auto;
   width: 100%;
+}
+
+.LinkContainer {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+.forgotLink {
+  text-align: center;
+  color: var(--dark-gray);
+  text-decoration: none;
+  padding-right: 6px;
+  border-right: 1px solid var(--dark-gray);
+}
+
+.signupLink {
+  text-align: center;
+  color: var(--dark-gray);
 }
 
 @media (max-width: 600px) {

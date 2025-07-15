@@ -134,7 +134,7 @@ section {
   display: block;
 }
 body {
-  font-family: 'NanumSquare', sans-serif; 
+  font-family: 'NanumSquare', sans-serif;
 }
 ol,
 ul {
@@ -154,4 +154,10 @@ q:after {
 table {
   border-collapse: collapse;
   border-spacing: 0;
+}
+
+/* Remove default link styles */
+a {
+  text-decoration: none;
+  color: inherit;
 }

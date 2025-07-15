@@ -7,9 +7,6 @@ import Dropdown from '../Dropdown/Dropdown' // Dropdown 컴포넌트 경로
 import TextInput from '../TextInput/TextInput' // TextInput 컴포넌트 경로
 import Divider from '../Divider/Divider' // Divider 컴포넌트 경로
 
-// FontAwesome 아이콘을 사용하기 위해 필요하지만, 보통 layout.tsx에서 전역으로 임포트하는 것이 좋습니다.
-import '@fortawesome/fontawesome-free/js/all.js'
-
 const Header: React.FC = () => {
   const [search, setSearch] = useState('')
   const [selectedRegion, setSelectedRegion] = useState('중랑구')
@@ -66,7 +63,8 @@ const Header: React.FC = () => {
             </li>
           </Dropdown>
           <div className={styles.userIconContainer}>
-            <i className="far fa-user"></i>
+            {/* 사용자 아이콘 - Font Awesome 제거로 인해 임시로 텍스트로 대체 */}
+            <span>👤</span>
           </div>
         </div>
       </div>
