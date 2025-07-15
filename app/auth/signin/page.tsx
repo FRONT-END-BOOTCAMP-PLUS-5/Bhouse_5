@@ -10,6 +10,7 @@ import { useAuthStore } from 'store/auth.store'
 import { loginSchema, LoginSchemaType } from 'models/schemas/auth.schema'
 import styles from './signin.module.css'
 import Button from '@/_components/Button/Button'
+import { ErrorMessage } from '@/_components/Message/Message'
 
 function SigninPage() {
   const { setLogin } = useAuthStore()
@@ -41,24 +42,20 @@ function SigninPage() {
 
   return (
     <div className={styles.container}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className={styles.form}>
-        <TextInput type="email" placeholder="이메일" {...form.register('email')} />
-        <TextInput type="password" placeholder="비밀번호" {...form.register('password')} />
-        <Button type="submit">로그인</Button>
-      </form>
+      <div className={styles.formContainer}>
+        <form onSubmit={form.handleSubmit(handleSubmit)} className={styles.form}>
+          <TextInput type="email" placeholder="이메일" {...form.register('email')} />
+          <TextInput type="password" placeholder="비밀번호" {...form.register('password')} />
+          <Button type="submit">로그인</Button>
+        </form>
 
-      {/* 폼 에러 메시지 */}
-      {form.formState.errors.email && (
-        <p style={{ color: 'red', fontSize: '14px', marginTop: '8px' }}>{form.formState.errors.email.message}</p>
-      )}
-      {form.formState.errors.password && (
-        <p style={{ color: 'red', fontSize: '14px', marginTop: '8px' }}>{form.formState.errors.password.message}</p>
-      )}
+        {/* 폼 에러 메시지 */}
+        {form.formState.errors.email && <ErrorMessage message={form.formState.errors.email.message!} />}
+        {form.formState.errors.password && <ErrorMessage message={form.formState.errors.password.message!} />}
 
-      {/* 서버 에러 메시지 */}
-      {serverError && (
-        <p style={{ color: 'red', fontSize: '14px', marginTop: '8px', fontWeight: 'bold' }}>{serverError}</p>
-      )}
+        {/* 서버 에러 메시지 */}
+        {serverError && <ErrorMessage message={serverError} />}
+      </div>
     </div>
   )
 }

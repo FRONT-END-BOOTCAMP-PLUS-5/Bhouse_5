@@ -42,9 +42,16 @@ export class AuthRepositoryImpl implements AuthRepository {
   async findUser(email: string, username: string): Promise<User | null> {
     const { data, error } = await supabaseClient
       .from('users')
-      .select('*')
+      .select(
+        `
+        *,
+        user_roles!inner(role_id)
+      `,
+      )
       .or(`email.eq.${email},username.eq.${username}`)
       .maybeSingle()
+
+    console.log('data', data)
 
     if (error) {
       throw new Error(`사용자 조회 실패: ${error.message}`)
@@ -64,10 +71,11 @@ export class AuthRepositoryImpl implements AuthRepository {
       data.updated_at,
       data.deleted_at,
       data.profile_img_url,
+      undefined, // userAlarms
       data.phone,
       data.provider,
       data.provider_id,
-      data.user_role,
+      data.user_roles?.role_id || null,
     )
   }
 
@@ -99,8 +107,7 @@ export class AuthRepositoryImpl implements AuthRepository {
       data.profile_img_url,
       data.phone,
       data.provider,
-      data.provider_id,
-      undefined,
+      data.user_role,
     )
   }
 
@@ -134,7 +141,7 @@ export class AuthRepositoryImpl implements AuthRepository {
       data.phone,
       data.provider,
       data.provider_id,
-      undefined,
+      data.user_role,
     )
   }
 
