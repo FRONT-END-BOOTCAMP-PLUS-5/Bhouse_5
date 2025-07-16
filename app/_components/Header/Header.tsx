@@ -7,6 +7,7 @@ import Button from '../Button/Button'
 import Dropdown from '../Dropdown/Dropdown'
 import TextInput from '../TextInput/TextInput'
 import Divider from '../Divider/Divider'
+import CircleButton from '../CircleButton/CircleButton'
 import ProfileDropdown from '../ProfileDropdown/ProfileDropdown'
 
 import { useAuthStore } from '@store/auth.store' // Auth 스토어 경로
@@ -14,13 +15,12 @@ import { useAuthStore } from '@store/auth.store' // Auth 스토어 경로
 const Header: React.FC = () => {
   const [search, setSearch] = useState('')
   const [selectedRegion, setSelectedRegion] = useState('중랑구')
-  const currentUserType = 'OWNER' //FIXME : 유저 타입 가져오는 걸로 수정
 
   // useAuthStore에서 isLogin 상태, 닉네임, setLogout 액션을 가져옵니다.
   const { isLogin, nickname, setLogout, user } = useAuthStore()
-  //console.log(111,isLogin)
-
-  // 클라이언트 측에서만 동작하도록 useEffect 사용
+  const currentUserType = user.user_role.name
+  const profileImageUrl = user?.profile_img_url || '/images/user_empty_profile_img.png'
+  console.log('userprofileImage : ', profileImageUrl)
 
   const handleRegionSelect = (region: string) => {
     setSelectedRegion(region)
@@ -79,15 +79,32 @@ const Header: React.FC = () => {
           </a>
         </div>
 
-        {/* 로그인/회원가입 영역 */}
+        {/* 로그인/회원가입 영역 또는 알림/프로필 드롭다운 */}
         <div className={styles.authSection}>
-          {isLogin ? (
+          {isLogin ? ( // isLogin 상태에 따라 조건부 렌더링
             <>
-              <span className={styles.loggedInUser}>안녕하세요, {nickname}님!</span>
+              {/* 알림 아이콘 (로그인 후 헤더의 왼쪽 요소) */}
+              <CircleButton
+                iconSrc="/icons/bell.svg"
+                iconAlt="알림"
+                iconSize={20}
+                bgColor="var(--primary-blue)"
+                size={50}
+                // 알림 아이콘 클릭 시 동작 추가 (예: 알림 페이지로 이동)
+                // onClick={() => console.log('알림 아이콘 클릭')}
+              />
+
+              {/* 사용자 프로필 드롭다운 (로그인 후 헤더의 오른쪽 요소) */}
               <ProfileDropdown
                 trigger={
-                  // 프로필 이미지 대신 종 아이콘을 트리거로 사용
-                  <img src="/images/bell.png" alt="알림" style={{ width: '30px', height: '30px', cursor: 'pointer' }} /> //FIXME
+                  // 프로필 이미지 CircleButton을 ProfileDropdown의 트리거로 사용
+                  <CircleButton
+                    iconSrc={profileImageUrl} // user?.profile_img_url 사용, 비어있으면 대체 이미지
+                    iconAlt="프로필"
+                    iconSize={40} // 프로필 이미지 크기 조정, 필요에 따라
+                    bgColor="transparent" // 프로필 이미지 배경색 (선택 사항)
+                    size={50} // CircleButton의 전체 크기, 필요에 따라 조정
+                  />
                 }
                 userType={currentUserType}
                 onLogout={handleLogoutClick}
@@ -96,11 +113,9 @@ const Header: React.FC = () => {
                 onWishlistClick={handleWishlistClick}
                 onMyActivitiesClick={handleMyActivitiesClick}
               />
-              <Button variant="secondary" size="small" borderRadius="8" onClick={handleLogoutClick}>
-                로그아웃
-              </Button>
             </>
           ) : (
+            // isLogin이 false인 경우 (로그인 전)
             <>
               <a href="http://localhost:3000/auth/signin" className={styles.loginText} onClick={handleLoginClick}>
                 로그인
