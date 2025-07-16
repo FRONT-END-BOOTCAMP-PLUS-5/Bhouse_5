@@ -1,0 +1,52 @@
+.previewContainer {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;       /* ✅ 가로 스크롤 가능 */
+  max-width: 100%;
+  padding-bottom: 8px;
+
+  /* ✅ 가로 너비가 400px 이상일 때만 스크롤 발생 */
+  max-width: 400px;
+}
+
+/* 처음에만 보일 큰 업로드 박스 */
+.dropZoneLarge {
+  width: 100%;
+  height: 300px;
+  background-color: #42a5f5;
+  border: 3px solid #2196f3;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* 썸네일 끝에만 붙는 작은 업로드 박스 */
+.dropZoneSmall {
+  width: 120px;
+  height: 120px;
+  background-color: #42a5f5;
+  border: 3px solid #2196f3;
+  border-radius: 12px;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.previewWrapper {
+  width: 120px;
+  height: 120px;
+  border-radius: 12px;
+  overflow: hidden;
+  flex: 0 0 auto;
+}
+
+.previewImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+}

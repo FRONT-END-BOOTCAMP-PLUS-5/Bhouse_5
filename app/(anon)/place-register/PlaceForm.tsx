@@ -1,15 +1,16 @@
-// app/place-register/PlaceForm.tsx
-
 'use client'
 
+import React, { useState } from 'react'
 import TextInput from '@/_components/TextInput/TextInput'
 import styles from './page.module.css'
 import ImageUploadForm from './ImageUploadForm'
-// import ImageUploader from './ImageUploader'
 
 export default function PlaceForm() {
+  const [mainImage, setMainImage] = useState<File | null>(null)
+
   function handleImageSelect(file: File): void {
-    throw new Error('Function not implemented.')
+    setMainImage(file)
+    console.log('대표 이미지 선택됨:', file)
   }
 
   return (
@@ -17,10 +18,6 @@ export default function PlaceForm() {
       <label>매장명</label>
       <TextInput className="textInput" placeholder="매장 명을 입력해주세요." />
 
-      <label>대표 이미지</label>
-      <ImageUploadForm onImageSelect={handleImageSelect} />
-
-      <label>가격표 이미지</label>
       <ImageUploadForm onImageSelect={handleImageSelect} />
 
       <label>주소</label>

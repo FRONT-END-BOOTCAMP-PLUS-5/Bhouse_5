@@ -1,24 +1,27 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styles from './BoardgameSearch.module.css'
 import TextInput from '@/_components/TextInput/TextInput'
 
-const DUMMY_GAMES = [
-  '벚꽃 내리는 시대의 결투',
-  '오늘은 내가 내향인',
-  '내향인 클럽 보드게임',
-  '깜짝 MBTI 내향인 퀴즈',
-  '스플렌더',
-  '카탄',
-  '티켓 투 라이드',
-]
+interface Boardgame {
+  id: number
+  name: string
+  min_players: number
+  max_players: number
+  img_url: string
+}
 
 interface BoardgameSearchProps {
   onSelect?: (game: string) => void
 }
 
 const BoardgameSearch: React.FC<BoardgameSearchProps> = ({ onSelect }) => {
+  const [inputValue, setInputValue] = useState('')
+  const [showDropdown, setShowDropdown] = useState(false)
+  const [searchResults, setSearchResults] = useState<string[]>([])
+  const [loading, setLoading] = useState(false)
+
   const highlightMatch = (text: string, query: string) => {
     const index = text.toLowerCase().indexOf(query.toLowerCase())
     if (index === -1 || query === '') return text
@@ -36,11 +39,32 @@ const BoardgameSearch: React.FC<BoardgameSearchProps> = ({ onSelect }) => {
     )
   }
 
-  const [inputValue, setInputValue] = useState('')
-  const [showDropdown, setShowDropdown] = useState(false)
+  useEffect(() => {
+    const delayDebounce = setTimeout(() => {
+      if (inputValue.trim() === '') {
+        setSearchResults([])
+        return
+      }
 
-  const filteredGames = DUMMY_GAMES.filter((game) => game.includes(inputValue))
-  console.log('필터링된 게임:', filteredGames)
+      setLoading(true)
+      fetch(`http://localhost:3000/api/boardgames`)
+        .then((res) => res.json())
+        .then((data: Boardgame[]) => {
+          const matchedNames = data
+            .filter((game) => game.name.toLowerCase().includes(inputValue.toLowerCase()))
+            .map((game) => game.name)
+          setSearchResults(matchedNames)
+          setLoading(false)
+        })
+        .catch((err) => {
+          console.error('검색 실패:', err)
+          setSearchResults([])
+          setLoading(false)
+        })
+    }, 300)
+
+    return () => clearTimeout(delayDebounce)
+  }, [inputValue])
 
   const handleSelect = (game: string) => {
     setInputValue(game)
@@ -64,13 +88,18 @@ const BoardgameSearch: React.FC<BoardgameSearchProps> = ({ onSelect }) => {
         className={styles.input}
       />
 
-      {showDropdown && inputValue.trim() !== '' && filteredGames.length > 0 && (
+      {showDropdown && inputValue.trim() !== '' && (
         <ul className={styles.dropdown}>
-          {filteredGames.map((game, idx) => (
-            <li key={idx} className={styles.dropdownItem} onClick={() => handleSelect(game)}>
-              {highlightMatch(game, inputValue)}
-            </li>
-          ))}
+          {loading && <li className={styles.dropdownItem}>검색 중...</li>}
+
+          {!loading &&
+            searchResults.map((game, idx) => (
+              <li key={idx} className={styles.dropdownItem} onClick={() => handleSelect(game)}>
+                {highlightMatch(game, inputValue)}
+              </li>
+            ))}
+
+          {!loading && searchResults.length === 0 && <li className={styles.dropdownItem}>검색 결과 없음</li>}
         </ul>
       )}
     </div>
