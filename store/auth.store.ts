@@ -25,7 +25,10 @@ const INIT = {
     provider_id: '',
     created_at: '',
     updated_at: '',
-    user_role: 13,
+    user_role: {
+      role_id: 0,
+      name: '오잉오잉',
+    },
   },
 }
 

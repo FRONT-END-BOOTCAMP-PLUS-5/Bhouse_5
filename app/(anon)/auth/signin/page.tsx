@@ -15,8 +15,8 @@ import { ErrorMessage } from '@/_components/Message/Message'
 import Link from 'next/link'
 
 function SigninPage() {
-  const { setLogin } = useAuthStore()
-
+  const { setLogin, user } = useAuthStore()
+  console.log(user)
   const [serverError, setServerError] = useState<string>('')
 
   const form = useForm<LoginSchemaType>({

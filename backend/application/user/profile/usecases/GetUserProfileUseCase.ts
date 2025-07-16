@@ -14,7 +14,7 @@ export class GetUserProfileUseCase {
     if (!user) {
       return null
     }
-
+    console.log(user)
     return {
       user_id: user.id,
       username: user.username,
