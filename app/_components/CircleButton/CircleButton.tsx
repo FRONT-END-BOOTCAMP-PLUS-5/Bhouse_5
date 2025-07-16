@@ -17,7 +17,7 @@ const CircleButton: React.FC<CircleButtonProps> = ({
   iconSrc,
   iconAlt,
   iconSize = 20,
-  bgColor = '#90caf9',
+  bgColor,
   size = 40,
   onClick,
 }) => {
