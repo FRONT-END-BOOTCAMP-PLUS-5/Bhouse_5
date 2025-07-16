@@ -1,0 +1,33 @@
+.registerButton {
+    margin-top: 8px;
+    padding: 8px 12px;
+    font-size: 1rem;
+    background-color: #2d8f2d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.registerButton:hover {
+    background-color: #247524;
+}
+
+.townList {
+    margin-top: 24px;
+    padding-left: 0;
+    list-style: none;
+}
+
+.townItem {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 8px;
+    border-bottom: 1px solid #ddd;
+}
+
+.mapContainer {
+    width: 100%;
+    height: 400px;
+    /* 또는 vh 등으로 명확히 */
+}
