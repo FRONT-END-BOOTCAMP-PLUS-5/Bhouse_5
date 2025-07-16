@@ -10,7 +10,9 @@ import TextInput from '../TextInput/TextInput'
 import Divider from '../Divider/Divider'
 import CircleButton from '../CircleButton/CircleButton'
 import ProfileDropdown from '../ProfileDropdown/ProfileDropdown'
-import BellIcon from '@public/icons/bell.svg' // 예시 경로, 실제 프로젝트 구조에 맞게 수정해주세요.
+import NotificationDropdown from '../NotificationDropdown/NotificationDropdown'
+
+import BellIcon from '@public/icons/bell.svg'
 
 import { useAuthStore } from '@store/auth.store' // Auth 스토어 경로
 
@@ -85,15 +87,17 @@ const Header: React.FC = () => {
         <div className={styles.authSection}>
           {isLogin ? (
             <>
-              {/* 알림 아이콘: 이제 BellIcon 컴포넌트를 직접 전달하고 fill 속성으로 색상을 제어합니다. */}
-              <CircleButton
-                icon={<BellIcon width={20} height={20} fill="white" />} // SVG 컴포넌트에 width, height, fill 적용
-                iconAlt="알림" // 이 prop은 이제 CircleButton 내부에서 직접 사용되지 않지만, 명시성을 위해 남겨둠
-                bgColor="var(--primary-blue)"
-                size={50}
-                // onClick 핸들러 추가 가능: 알림 페이지 이동 등
+              {/* 알림 드롭다운 컴포넌트 사용 */}
+              <NotificationDropdown
+                trigger={
+                  <CircleButton
+                    icon={<BellIcon width={30} height={30} fill="white" />}
+                    iconAlt="알림"
+                    bgColor="var(--primary-blue)"
+                    size={50}
+                  />
+                }
               />
-
               {/* 사용자 프로필 드롭다운 */}
               <ProfileDropdown
                 trigger={

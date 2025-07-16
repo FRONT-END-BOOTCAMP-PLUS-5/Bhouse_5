@@ -1,0 +1,170 @@
+/* src/components/common/NotificationDropdown/NotificationDropdown.module.css */
+
+.notificationDropdownContainer {
+  position: relative;
+  display: inline-block;
+}
+
+.triggerWrapper {
+  position: relative;
+  cursor: pointer;
+  display: inline-flex; /* 뱃지 위치 조정을 위해 */
+}
+
+/* 프로필 드롭다운 래퍼 스타일과 동일하게 */
+.notificationDropdownListWrapper {
+  position: absolute;
+  top: calc(100% + 10px); /* 트리거 아래에 10px 간격 두고 표시 */
+  right: 0; /* 오른쪽 정렬 */
+  background-color: var(--secondary-blue-100); /* 요청하신 배경색 */
+  border-radius: 8px; /* 기본 모서리 둥글기 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  padding: 8px; /* 드롭다운 리스트 내부 여백 */
+  min-width: 280px; /* 알림 내용 길이에 맞춰 최소 너비 설정 */
+  max-width: 350px; /* 최대 너비 설정 */
+  box-sizing: border-box;
+  display: flex; /* 내부 요소들을 세로로 정렬하기 위해 */
+  flex-direction: column;
+}
+
+.headerRow {
+  display: flex;
+  justify-content: flex-end; /* "모두 읽기" 버튼을 오른쪽으로 정렬 */
+  align-items: center;
+  padding: 4px 8px; /* 내부 패딩 */
+  margin-bottom: 8px;
+}
+
+
+.readAllText {
+  background: none;
+  border: none;
+  color: var(--dark-gray); /* "모두 읽기" 텍스트 색상 */
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px 0;
+  text-decoration: underline; /* 밑줄 추가 */
+}
+
+.readAllText:hover {
+  color: var(--secondary-blue-700);
+}
+
+.notificationList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  overflow-y: auto; /* 알림이 많을 경우 스크롤 */
+  max-height: 300px; /* 최대 높이 설정 (스크롤 생기도록) */
+}
+
+.notificationItem {
+  display: flex;
+  flex-direction: column; /* 변경: 아이템 내부 내용을 세로로 정렬 */
+  /* justify-content 및 align-items는 더 이상 여기서는 필요 없습니다. */
+  padding: 10px 8px; /* 리스트 아이템 패딩 */
+  cursor: pointer;
+  position: relative; /* 뱃지 위치 지정을 위해 */
+}
+
+.notificationItem:hover {
+  background-color: var(--secondary-blue-50); /* 호버 시 배경색 변경 */
+}
+
+.firstRow {
+  /* 알림 타입이 있는 첫 번째 줄 */
+  margin-bottom: 4px; /* 알림 타입과 메시지/시간 사이의 간격 */
+}
+
+.secondRow {
+  /* 알림 메시지와 시간이 있는 두 번째 줄 */
+  display: flex;
+  justify-content: space-between; /* 메시지와 시간을 양 끝으로 정렬 */
+  align-items: center; /* 텍스트의 기준선을 중앙으로 맞춤 */
+  width: 100%; /* 부모(notificationItem) 너비에 꽉 차도록 */
+}
+
+.notificationType {
+  font-size: 12px;
+  font-weight: 500;
+  /* margin-bottom은 이제 .firstRow에서 관리합니다. */
+}
+
+.notificationMessage {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+  word-break: break-word; /* 긴 텍스트 줄바꿈 */
+  flex-grow: 1; /* 메시지가 가능한 공간을 차지하도록 */
+  margin-right: 10px; /* 메시지와 시간 사이 간격 */
+}
+
+.notificationTime {
+  font-size: 12px;
+  white-space: nowrap; /* 시간은 줄바꿈 안되도록 */
+}
+
+/* 읽지 않은 알림 (검은색) */
+.notificationItem.unread .notificationType,
+.notificationItem.unread .notificationMessage,
+.notificationItem.unread .notificationTime {
+  color: var(--primary-black); /* 검은색 */
+}
+
+/* 읽은 알림 (회색) */
+.notificationItem.read .notificationType,
+.notificationItem.read .notificationMessage,
+.notificationItem.read .notificationTime {
+  color: var(--dark-gray); /* 회색 (Button.module.css에 정의된 --dark-gray 사용) */
+}
+
+/* 붉은 원형 알림 뱃지 (개별 알림 아이템 옆) */
+.unreadBadge {
+  position: absolute;
+  top: 2x; /* 아이템 상단에서 10px 아래 */
+  right: 2px; /* 아이템 오른쪽에서 8px 안쪽 */
+  width: 8px;
+  height: 8px;
+  background-color: var(--primary-alarm);
+  border-radius: 50%;
+}
+
+/* 전체 알림 개수 뱃지 (벨 아이콘 옆에 붙는 뱃지) */
+.unreadCountBadge {
+  position: absolute;
+  top: 0px; /* 벨 아이콘 상단에 위치 */
+  right: 0px; /* 벨 아이콘 오른쪽에 위치 */
+  background-color: var(--primary-alarm); /* 붉은색 */
+  color: var(--primary-white);
+  border-radius: 50%;
+  padding: 2px 6px; /* 텍스트 크기에 따라 조절 */
+  font-size: 12px;
+  font-weight: bold;
+  min-width: 20px; /* 한자리수 숫자에도 원형 유지 */
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  text-align: center;
+  line-height: 1; /* 텍스트 정렬을 위해 */
+}
+
+.noNotifications {
+  padding: 20px;
+  text-align: center;
+  color: var(--dark-gray);
+  font-size: 14px;
+}
+
+.buttonWrapper {
+  padding: 8px; /* 버튼을 감싸는 패딩 */
+  text-align: center;
+}
+
+.settingsButton {
+  width: 100%; /* 버튼이 Wrapper 너비에 꽉 차도록 */
+  font-size: 14px; /* 알림 설정 버튼 크기 조정 */
+  padding: 10px;
+}
