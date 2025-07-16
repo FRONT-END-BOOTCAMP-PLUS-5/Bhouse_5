@@ -1,9 +1,10 @@
 import { UserTownRepository } from '@be/domain/repositories/UserTownRepository'
+import { CreateUserTownDto, UserTownDto } from '../dtos/UserTownDto'
 
 export class CreateUserTownUseCase {
   constructor(private repo: UserTownRepository) {}
 
-  async execute(userId: string, townName: string, lat: number, lng: number) {
-    return await this.repo.create(userId, townName, lat, lng)
+  async execute(dto: CreateUserTownDto): Promise<UserTownDto> {
+    return await this.repo.create(dto)
   }
 }
