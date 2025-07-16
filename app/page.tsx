@@ -35,7 +35,7 @@ export default function Home() {
     <div className={styles.page}>
       <div>
         <CircleButton
-          iconSrc="/file.svg"
+          iconSrc="/icons/file.svg"
           iconAlt="파일"
           iconSize={40}
           bgColor="#ffebee"
