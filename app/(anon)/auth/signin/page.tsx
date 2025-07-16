@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import TextInput from '@/_components/TextInput/TextInput'
@@ -15,8 +15,7 @@ import { ErrorMessage } from '@/_components/Message/Message'
 import Link from 'next/link'
 
 function SigninPage() {
-  const { setLogin, user } = useAuthStore()
-  console.log(user)
+  const { setLogin } = useAuthStore()
   const [serverError, setServerError] = useState<string>('')
 
   const form = useForm<LoginSchemaType>({
