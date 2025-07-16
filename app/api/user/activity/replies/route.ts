@@ -5,28 +5,25 @@ import { NextResponse } from 'next/server'
 import { GetUserRepliesUseCase } from 'backend/application/user/activity/replies/usecases/GetUserRepliesUseCase'
 import { SupabaseCommunityReplyRepository } from 'backend/infrastructure/repositories/SupabaseCommunityReplyRepository'
 import { GetUserRepliesQueryDto } from 'backend/application/user/activity/replies/dtos/GetUserRepliesQueryDto'
+import { verifyToken } from '@be/utils/auth'
 
 /**
  * 특정 사용자의 댓글 목록을 조회하는 API 엔드포인트입니다.
- * GET /api/user/activity/replies?uuid={userId}
+ * GET /api/user/activity/replies
  */
 export async function GET(request: Request) {
-  // URL에서 쿼리 파라미터 추출
-  const { searchParams } = new URL(request.url)
-  const userId = searchParams.get('uuid') // 'uuid' 파라미터로 사용자 ID 가져오기
+  // 토큰 검증
+  const decoded = await verifyToken(request)
 
-  // FIXME: 실제 운영 환경에서는 'uuid' 대신 인증 토큰에서 사용자 ID를 추출해야 합니다.
-  // 예시: const userId = await getUserIdFromAuthToken(request.headers.get('Authorization'));
-  // if (!userId) {
-  //   return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
-  // }
+  if (!decoded) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
 
-  // 필수 파라미터 누락 시 에러 응답
+  // 인증된 사용자 ID를 decoded 토큰에서 가져옵니다.
+  const userId = decoded.userId
   if (!userId) {
-    return NextResponse.json(
-      { success: false, error: 'uuid 파라미터가 누락되었습니다.' },
-      { status: 400 }, // Bad Request
-    )
+    // userId가 토큰에 없으면 에러 처리 (토큰 검증 로직에서 이미 처리될 수 있지만, 한 번 더 확인)
+    return NextResponse.json({ error: 'User ID not found in token' }, { status: 400 })
   }
 
   try {

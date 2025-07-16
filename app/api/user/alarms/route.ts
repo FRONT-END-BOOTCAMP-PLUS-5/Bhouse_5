@@ -8,22 +8,26 @@ import { GetAlarmsByUserIdAndTypeUseCase } from 'backend/application/user/alarms
 import { SupabaseAlarmRepository } from 'backend/infrastructure/repositories/SupabaseAlarmRepository'
 import { GetAlarmsQueryDto } from 'backend/application/user/alarms/dtos/GetAlarmsQueryDto'
 import { AlarmType } from 'backend/domain/entities/Alarm'
+import { verifyToken } from '@be/utils/auth'
 
 /**
  * 특정 사용자의 알람 목록을 조회하는 API 엔드포인트입니다.
- * GET /api/user/alarms?uuid={userId}&type={alarmType}
+ * GET /api/user/alarms&type={alarmType}
  */
 export async function GET(request: Request) {
   // URL에서 쿼리 파라미터 추출
   const { searchParams } = new URL(request.url)
-  const userId = searchParams.get('uuid') // 'uuid' 파라미터로 사용자 ID 가져오기
   const alarmTypeParam = searchParams.get('type') // 'type' 파라미터로 알림 타입 가져오기
 
-  // FIXME: 실제 운영 환경에서는 'uuid' 대신 인증 토큰에서 사용자 ID를 추출해야 합니다.
-  // 예시: const userId = await getUserIdFromAuthToken(request.headers.get('Authorization'));
-  // if (!userId) {
-  //   return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
-  // }
+  // 토큰 검증
+  const decoded = await verifyToken(request)
+
+  if (!decoded) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  // 인증된 사용자 ID를 decoded 토큰에서 가져옵니다.
+  const userId = decoded.userId
 
   // 필수 파라미터 누락 시 에러 응답
   if (!userId || !alarmTypeParam) {
