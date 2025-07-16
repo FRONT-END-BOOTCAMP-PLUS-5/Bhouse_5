@@ -1,64 +1,32 @@
 'use client'
 
-import React, { useState, useRef, ChangeEvent, DragEvent } from 'react'
+import React, { useState } from 'react'
 import styles from './page.module.css'
+import ImageUploader from '@/_components/ImageUpload/ImageUploader'
 
-interface ImageUploadFormProps {
-  onImagesSelect?: (files: File[]) => void
-}
+const ImageUploadForm: React.FC = () => {
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
 
-const ImageUploadForm: React.FC<ImageUploadFormProps> = ({ onImagesSelect }) => {
-  const [previews, setPreviews] = useState<string[]>([])
-  const fileInputRef = useRef<HTMLInputElement>(null)
-
-  const handleFiles = (files: FileList | null) => {
-    if (!files) return
-    const fileArray = Array.from(files)
-    if (onImagesSelect) onImagesSelect(fileArray)
-
-    const previewUrls = fileArray.map((file) => URL.createObjectURL(file))
-    setPreviews((prev) => [...prev, ...previewUrls])
+  const handleImagesSelect = (files: File[]) => {
+    setUploadedFiles(files)
+    console.log('폼에서 받은 이미지:', files)
   }
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    handleFiles(e.target.files)
-  }
-
-  const handleDrop = (e: DragEvent<HTMLDivElement>) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    e.stopPropagation()
-    handleFiles(e.dataTransfer.files)
-  }
-
-  const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
-    e.preventDefault()
-    e.stopPropagation()
+    // 실제 업로드 처리 로직 (예: Supabase, S3, API 호출 등)
+    alert(`${uploadedFiles.length}장의 이미지를 제출했습니다!`)
   }
 
   return (
-    <div className={styles.imgContainer}>
-      <div
-        className={styles.dropZone}
-        onDrop={handleDrop}
-        onDragOver={handleDragOver}
-        onClick={() => fileInputRef.current?.click()}
-      >
-        <p>클릭 또는 드래그해서 이미지를 업로드하세요</p>
-        <input
-          type="file"
-          accept="image/*"
-          multiple
-          ref={fileInputRef}
-          onChange={handleInputChange}
-          style={{ display: 'none' }}
-        />
-      </div>
+    <div onSubmit={handleSubmit} className={styles.imgContainer}>
+      <ImageUploader onImagesSelect={handleImagesSelect} />
 
-      <div className={styles.previewContainer}>
-        {previews.map((src, idx) => (
-          <img key={idx} src={src} alt={`업로드된 이미지 ${idx + 1}`} className={styles.previewImage} />
-        ))}
-      </div>
+      {uploadedFiles.length > 0 && (
+        <div className={styles.info}>
+          <p>{uploadedFiles.length}장의 이미지가 선택되었습니다.</p>
+        </div>
+      )}
     </div>
   )
 }

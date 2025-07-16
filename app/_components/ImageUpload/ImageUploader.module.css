@@ -1,0 +1,39 @@
+
+.imgContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 400px;
+  overflow-x: scroll;
+  
+}
+.dropZone {
+  border-radius: 12px;
+  padding: 40px;
+  text-align: center;
+  cursor: pointer;
+  background-color: var(--secondary-blue-400);
+  transition: background-color 0.2s;
+}
+.dropZone:hover {
+  background-color: '#e0f0ff';
+}
+
+.previewContainer {
+  border: 1px solid black;
+  display: flex;
+  gap: 12px;
+  flex-wrap: nowrap;        /* ✅ 줄바꿈 없애기 */
+  overflow-x: auto;         /* ✅ 가로 스크롤 */
+  max-width: 100%;          /* 또는 원하는 너비 (600px 등) */
+  padding-bottom: 8px;      /* 스크롤바 위 여백 */
+}
+
+.previewImage {
+  flex: 0 0 auto;            /* ✅ 이미지가 줄어들지 않고 고정 */
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}

@@ -2,8 +2,9 @@
 
 import React, { useState } from 'react'
 import styles from './BoardgameSearch.module.css'
+import TextInput from '@/_components/TextInput/TextInput'
 
-const dummyGames = [
+const DUMMY_GAMES = [
   '벚꽃 내리는 시대의 결투',
   '오늘은 내가 내향인',
   '내향인 클럽 보드게임',
@@ -13,38 +14,67 @@ const dummyGames = [
   '티켓 투 라이드',
 ]
 
-export default function BoardgameSearch() {
-  const [inputValue, setInputValue] = useState('')
-  const [selected, setSelected] = useState<string | null>(null)
+interface BoardgameSearchProps {
+  onSelect?: (game: string) => void
+}
 
-  const filtered = dummyGames.filter((game) => game.toLowerCase().includes(inputValue.toLowerCase()))
+const BoardgameSearch: React.FC<BoardgameSearchProps> = ({ onSelect }) => {
+  const highlightMatch = (text: string, query: string) => {
+    const index = text.toLowerCase().indexOf(query.toLowerCase())
+    if (index === -1 || query === '') return text
+
+    const before = text.slice(0, index)
+    const match = text.slice(index, index + query.length)
+    const after = text.slice(index + query.length)
+
+    return (
+      <>
+        {before}
+        <strong>{match}</strong>
+        {after}
+      </>
+    )
+  }
+
+  const [inputValue, setInputValue] = useState('')
+  const [showDropdown, setShowDropdown] = useState(false)
+
+  const filteredGames = DUMMY_GAMES.filter((game) => game.includes(inputValue))
+  console.log('필터링된 게임:', filteredGames)
 
   const handleSelect = (game: string) => {
-    setSelected(game)
     setInputValue(game)
+    setShowDropdown(false)
+    onSelect?.(game)
   }
 
   return (
-    <div className={styles.wrapper}>
-      <input
+    <div className={styles.container}>
+      <TextInput
         type="text"
-        placeholder="보드게임을 검색하세요"
+        placeholder="찾을 보드게임을 입력하세요"
         value={inputValue}
-        onChange={(e) => setInputValue(e.target.value)}
+        onChange={(e) => {
+          setInputValue(e.target.value)
+          setShowDropdown(true)
+        }}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') e.preventDefault()
+        }}
         className={styles.input}
       />
 
-      {inputValue && filtered.length > 0 && (
+      {showDropdown && inputValue.trim() !== '' && filteredGames.length > 0 && (
         <ul className={styles.dropdown}>
-          {filtered.map((game, idx) => (
+          {filteredGames.map((game, idx) => (
             <li key={idx} className={styles.dropdownItem} onClick={() => handleSelect(game)}>
-              {game}
+              {highlightMatch(game, inputValue)}
             </li>
           ))}
         </ul>
       )}
-
-      {selected && <p className={styles.selectedText}>선택됨: {selected}</p>}
     </div>
   )
 }
+
+export default BoardgameSearch
