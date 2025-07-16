@@ -2,8 +2,9 @@ import { UserProfileResponseDto } from '@be/application/user/profile/dtos/UserPr
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
-interface Auth extends UserProfileResponseDto {
+interface Auth {
   isLogin: boolean
+  user: UserProfileResponseDto
 }
 
 interface AuthProps extends Auth {
@@ -13,18 +14,19 @@ interface AuthProps extends Auth {
 
 const INIT = {
   isLogin: false,
-
-  nickname: '',
-  profile: '',
-  user_id: '',
-  username: '',
-  email: '',
-  phone: '',
-  profile_img_url: '',
-  provider: '',
-  provider_id: '',
-  created_at: '',
-  updated_at: '',
+  user: {
+    user_id: '',
+    username: '',
+    email: '',
+    nickname: '',
+    phone: '',
+    profile_img_url: '',
+    provider: '',
+    provider_id: '',
+    created_at: '',
+    updated_at: '',
+    user_role: 13,
+  },
 }
 
 export const useAuthStore = create(
@@ -32,7 +34,7 @@ export const useAuthStore = create(
     (set) => ({
       ...INIT,
       setLogin: (data: UserProfileResponseDto) => {
-        return set(() => ({ isLogin: true, ...data }))
+        return set(() => ({ isLogin: true, user: data }))
       },
       setLogout: () => set(() => ({ ...INIT })),
     }),

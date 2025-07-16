@@ -7,3 +7,12 @@ export const loginSchema = z.object({
 })
 
 export type LoginSchemaType = z.infer<typeof loginSchema>
+
+// 약관 동의 스키마 정의
+export const agreementSchema = z.object({
+  allAgreement: z.boolean(),
+  termsOfService: z.boolean(),
+  privacyPolicy: z.boolean(),
+})
+
+export type AgreementSchemaType = z.infer<typeof agreementSchema>

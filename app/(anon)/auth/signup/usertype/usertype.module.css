@@ -9,11 +9,12 @@
 
 .link {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   width: 100%;
   height: 182px;
-  max-width: 340px;
+  max-width: 240px;
   gap: 8px;
   border-radius: 8px;
   box-sizing: border-box;

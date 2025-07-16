@@ -16,6 +16,7 @@ import Link from 'next/link'
 
 function SigninPage() {
   const { setLogin } = useAuthStore()
+
   const [serverError, setServerError] = useState<string>('')
 
   const form = useForm<LoginSchemaType>({
@@ -29,6 +30,7 @@ function SigninPage() {
       await signinService({ username: data.email, password: data.password })
 
       const res = await getProfileService()
+      console.log('res', res)
       if (res) {
         setLogin(res)
       }
@@ -38,9 +40,6 @@ function SigninPage() {
       console.log(error)
     }
   }
-
-  console.log(form.watch())
-  console.log('form.formState.errors:', form.formState.errors)
 
   return (
     <div className={styles.container}>
