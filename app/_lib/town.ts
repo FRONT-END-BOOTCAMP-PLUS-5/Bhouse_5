@@ -15,43 +15,54 @@ function getCookie(name: string): string | undefined {
 }
 
 export const fetchTowns = async (): Promise<{ name: string; isPrimary: boolean }[]> => {
-  const token = document.cookie
-    .split('; ')
-    .find((c) => c.startsWith('accessToken='))
-    ?.split('=')[1]
+  const token = getCookie('accessToken')
 
-  const res = await fetch('/api/towns', {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  })
+  try {
+    const res = await fetch('/api/user/certify-town', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
 
-  if (!res.ok) throw new Error('동네 목록 조회 실패')
+    if (!res.ok) {
+      // 404, 500 등 오류 시
+      console.warn('동네 목록 조회 실패:', res.status)
+      return []
+    }
 
-  return await res.json()
+    return await res.json()
+  } catch (e) {
+    console.error('동네 목록 요청 중 에러 발생:', e)
+    return []
+  }
 }
 
 export const addTown = async (dto: { townName: string; lat: number; lng: number }): Promise<void> => {
-  const token = getCookie('accessToken')
-  if (!token) throw new Error('토큰 없음')
-
-  const res = await fetch('/api/towns', {
+  const res = await fetch('/api/user/certify-town', {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ town: dto.townName }),
+    credentials: 'include',
+    body: JSON.stringify({
+      townName: dto.townName,
+      latitude: dto.lat,
+      longitude: dto.lng,
+    }), // ❗ lat, lng 빠져 있음?
   })
 
-  if (!res.ok) throw new Error('동네 등록 실패')
+  if (!res.ok) {
+    const errorText = await res.text() // 응답 본문 보기
+    console.error('서버 응답:', res.status, errorText)
+    throw new Error('동네 등록 실패')
+  }
 }
 
 export const removeTown = async (townName: string): Promise<void> => {
   const token = getCookie('accessToken')
   if (!token) throw new Error('토큰 없음')
 
-  const res = await fetch(`/api/towns`, {
+  const res = await fetch(`/api/user/certify-town`, {
     method: 'DELETE',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -67,7 +78,7 @@ export const setPrimaryTown = async (townName: string): Promise<void> => {
   const token = getCookie('accessToken')
   if (!token) throw new Error('토큰 없음')
 
-  const res = await fetch('/api/towns/set-primary', {
+  const res = await fetch('/api/user/certify-town/set-primary', {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`,
