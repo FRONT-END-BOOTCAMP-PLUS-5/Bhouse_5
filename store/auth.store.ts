@@ -4,7 +4,7 @@ import { UserProfileResponseDto } from '@be/application/user/profile/dtos/UserPr
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
-interface Auth extends UserProfileResponseDto {
+interface Auth {
   isLogin: boolean
   user: UserProfileResponseDto
 }
@@ -16,19 +16,21 @@ interface AuthProps extends Auth {
 
 const INIT = {
   isLogin: false,
-
   user: {
-    nickname: '',
-    profile: '',
     user_id: '',
     username: '',
     email: '',
+    nickname: '',
     phone: '',
     profile_img_url: '',
     provider: '',
     provider_id: '',
     created_at: '',
     updated_at: '',
+    user_role: {
+      role_id: 0,
+      name: '오잉오잉',
+    },
   },
 }
 

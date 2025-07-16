@@ -1,4 +1,6 @@
 import { User } from '@domain/entities/User'
+import { UserRole } from '@domain/entities/UserRole'
+import { Role } from '@domain/entities/Role'
 import { UserRepository } from '@domain/repositories/UserRepository'
 import { supabaseClient } from '@be/utils/supabaseClient'
 
@@ -26,7 +28,7 @@ export class UserRepositoryImpl implements UserRepository {
       }
       throw new Error(`사용자 조회 실패: ${error.message}`)
     }
-
+    console.log(111111, data)
     return new User(
       data.user_id,
       data.username,
@@ -37,10 +39,11 @@ export class UserRepositoryImpl implements UserRepository {
       data.updated_at ? new Date(data.updated_at) : null,
       data.is_active,
       data.profile_img_url,
+      undefined, // userAlarms
       data.phone,
       data.provider,
       data.provider_id,
-      data.user_roles ? data.user_roles[0] : undefined, // Assuming user_roles is an array and we need the first element
+      data.user_roles ? new UserRole(new Role(data.user_roles.roles.role_id, data.user_roles.roles.name)) : undefined,
     )
   }
 
