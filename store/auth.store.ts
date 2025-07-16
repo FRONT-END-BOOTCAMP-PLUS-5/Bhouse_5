@@ -5,11 +5,13 @@ import { persist } from 'zustand/middleware'
 interface Auth {
   isLogin: boolean
   user: UserProfileResponseDto
+  hydrated: boolean
 }
 
 interface AuthProps extends Auth {
   setLogin: (data: UserProfileResponseDto) => void
   setLogout: () => void
+  setHydrated: (hydrated: boolean) => void
 }
 
 const INIT = {
@@ -30,6 +32,7 @@ const INIT = {
       name: '오잉오잉',
     },
   },
+  hydrated: false,
 }
 
 export const useAuthStore = create(
@@ -40,7 +43,15 @@ export const useAuthStore = create(
         return set(() => ({ isLogin: true, user: data }))
       },
       setLogout: () => set(() => ({ ...INIT })),
+      setHydrated: (hydrated: boolean) => set(() => ({ hydrated })),
     }),
-    { name: 'auth' },
+    {
+      name: 'auth',
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          state.setHydrated(true)
+        }
+      },
+    },
   ),
 )
