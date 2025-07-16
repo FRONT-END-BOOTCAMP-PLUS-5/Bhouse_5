@@ -13,9 +13,15 @@ import globalStyles from '@/page.module.css'
 import Button from '@/_components/Button/Button'
 import { ErrorMessage } from '@/_components/Message/Message'
 import Link from 'next/link'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 function SigninPage() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const callbackUrl = searchParams.get('callbackUrl')
+
   const { setLogin } = useAuthStore()
+
   const [serverError, setServerError] = useState<string>('')
 
   const form = useForm<LoginSchemaType>({
@@ -25,14 +31,14 @@ function SigninPage() {
 
   const handleSubmit = async (data: LoginSchemaType) => {
     setServerError('') // 에러 초기화
+
     try {
       await signinService({ username: data.email, password: data.password })
 
       const res = await getProfileService()
-      console.log('res', res)
-      if (res) {
-        setLogin(res)
-      }
+      setLogin(res)
+
+      router.replace(callbackUrl || '/')
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || '로그인에 실패했습니다.'
       setServerError(errorMessage)

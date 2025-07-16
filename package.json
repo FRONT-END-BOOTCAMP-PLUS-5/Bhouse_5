@@ -21,6 +21,7 @@
     "jose": "^6.0.12",
     "jsonwebtoken": "^9.0.2",
     "next": "15.3.4",
+    "path-to-regexp": "^8.2.0",
     "qs": "^6.14.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
