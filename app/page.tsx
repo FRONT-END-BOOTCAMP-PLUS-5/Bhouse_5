@@ -6,6 +6,7 @@ import React, { useState } from 'react'
 import Dropdown from './_components/Dropdown/Dropdown'
 import TextInput from './_components/TextInput/TextInput'
 import Divider from './_components/Divider/Divider'
+import CircleButton from './_components/CircleButton/CircleButton'
 
 export default function Home() {
   const [email, setEmail] = React.useState('')
@@ -32,6 +33,17 @@ export default function Home() {
 
   return (
     <div className={styles.page}>
+      <div>
+        <CircleButton
+          iconSrc="/file.svg"
+          iconAlt="파일"
+          iconSize={40}
+          bgColor="#ffebee"
+          size={90}
+          onClick={() => alert('삭제')}
+        />
+      </div>
+      <p className={styles.title48}>보드의 집</p>
       <p className={styles.title48}>보드의 집 title48텍스트입니다.</p>
       <Divider color="#FF0000" thickness="2px" />
       <h1 className={styles.body16}>환영합니다! 이것은 본문 텍스트 body 16입니다.</h1>
