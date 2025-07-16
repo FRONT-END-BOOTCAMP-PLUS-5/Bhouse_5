@@ -7,3 +7,7 @@ export const signinService = async (data: { username: string; password: string }
     auth: data,
   })
 }
+
+export const signoutService = async () => {
+  await instance.delete(`${PATH}/signout`)
+}
