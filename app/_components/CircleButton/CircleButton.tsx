@@ -1,26 +1,24 @@
+// src/components/common/CircleButton/CircleButton.tsx
 'use client'
 
 import React from 'react'
-import Image from 'next/image'
+// next/image는 CircleButton 내부에서 직접 사용하지 않으므로 임포트에서 제거 가능합니다.
+// 하지만 사용자 프로필 이미지와 같이 next/image를 사용할 경우,
+// CircleButton의 icon prop으로 <Image> 컴포넌트를 직접 전달하게 될 것입니다.
 import styles from './CircleButton.module.css'
 
 interface CircleButtonProps {
-  iconSrc: string // 이미지 경로 (/icon.svg 등)
-  iconAlt: string // 접근성용 대체 텍스트
-  iconSize?: number // 아이콘 크기 (기본값 20)
+  // 아이콘을 직접 React 노드로 받습니다.
+  // 이제 <BellIcon fill="white" /> 나 <Image src="..." alt="..." /> 와 같은 형태를 전달할 수 있습니다.
+  icon: React.ReactNode
+  iconAlt?: string
+  // iconSize도 icon prop으로 전달되는 컴포넌트에서 직접 크기를 제어하므로 제거합니다.
   bgColor?: string // 버튼 배경 색상
   size?: number // 버튼 크기 (지름 px)
   onClick?: () => void
 }
 
-const CircleButton: React.FC<CircleButtonProps> = ({
-  iconSrc,
-  iconAlt,
-  iconSize = 20,
-  bgColor,
-  size = 40,
-  onClick,
-}) => {
+const CircleButton: React.FC<CircleButtonProps> = ({ icon, bgColor, size = 40, onClick }) => {
   return (
     <button
       className={styles.button}
@@ -32,20 +30,10 @@ const CircleButton: React.FC<CircleButtonProps> = ({
       onClick={onClick}
       type="button"
     >
-      <Image src={iconSrc} alt={iconAlt} width={iconSize} height={iconSize} />
+      {/* icon prop으로 전달된 요소를 직접 렌더링합니다. */}
+      {icon}
     </button>
   )
 }
 
 export default CircleButton
-
-//<CircleButton
-//   icon={<img src="/icons/trash.svg" width={20} height={20} alt="삭제" />}
-//   bgColor="#bbdefb"
-//   size={40}
-//   onClick={() => console.log('삭제 클릭')}
-// />
-
-{
-  /* <CircleButton icon="🗑️" bgColor="#ffcdd2" size={48} onClick={() => alert('삭제')} /> */
-}

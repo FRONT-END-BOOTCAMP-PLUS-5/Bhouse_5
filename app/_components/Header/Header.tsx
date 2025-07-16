@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react' // useEffect 추가
+import Image from 'next/image' // Image 컴포넌트를 사용하기 위해 임포트합니다.
 
 import styles from './Header.module.css'
 import Button from '../Button/Button'
@@ -9,6 +10,7 @@ import TextInput from '../TextInput/TextInput'
 import Divider from '../Divider/Divider'
 import CircleButton from '../CircleButton/CircleButton'
 import ProfileDropdown from '../ProfileDropdown/ProfileDropdown'
+import BellIcon from '@public/icons/bell.svg' // 예시 경로, 실제 프로젝트 구조에 맞게 수정해주세요.
 
 import { useAuthStore } from '@store/auth.store' // Auth 스토어 경로
 
@@ -81,29 +83,34 @@ const Header: React.FC = () => {
 
         {/* 로그인/회원가입 영역 또는 알림/프로필 드롭다운 */}
         <div className={styles.authSection}>
-          {isLogin ? ( // isLogin 상태에 따라 조건부 렌더링
+          {isLogin ? (
             <>
-              {/* 알림 아이콘 (로그인 후 헤더의 왼쪽 요소) */}
+              {/* 알림 아이콘: 이제 BellIcon 컴포넌트를 직접 전달하고 fill 속성으로 색상을 제어합니다. */}
               <CircleButton
-                iconSrc="/icons/bell.svg"
-                iconAlt="알림"
-                iconSize={20}
+                icon={<BellIcon width={20} height={20} fill="white" />} // SVG 컴포넌트에 width, height, fill 적용
+                iconAlt="알림" // 이 prop은 이제 CircleButton 내부에서 직접 사용되지 않지만, 명시성을 위해 남겨둠
                 bgColor="var(--primary-blue)"
                 size={50}
-                // 알림 아이콘 클릭 시 동작 추가 (예: 알림 페이지로 이동)
-                // onClick={() => console.log('알림 아이콘 클릭')}
+                // onClick 핸들러 추가 가능: 알림 페이지 이동 등
               />
 
-              {/* 사용자 프로필 드롭다운 (로그인 후 헤더의 오른쪽 요소) */}
+              {/* 사용자 프로필 드롭다운 */}
               <ProfileDropdown
                 trigger={
-                  // 프로필 이미지 CircleButton을 ProfileDropdown의 트리거로 사용
+                  // 프로필 이미지: next/image 컴포넌트를 icon prop에 직접 전달합니다.
                   <CircleButton
-                    iconSrc={profileImageUrl} // user?.profile_img_url 사용, 비어있으면 대체 이미지
-                    iconAlt="프로필"
-                    iconSize={40} // 프로필 이미지 크기 조정, 필요에 따라
-                    bgColor="transparent" // 프로필 이미지 배경색 (선택 사항)
-                    size={50} // CircleButton의 전체 크기, 필요에 따라 조정
+                    icon={
+                      <Image
+                        src={profileImageUrl}
+                        alt="프로필 이미지" // Next.js Image 컴포넌트에 alt 텍스트 필수
+                        width={40} // 이미지의 실제 표시 너비
+                        height={40} // 이미지의 실제 표시 높이
+                        style={{ borderRadius: '50%', objectFit: 'cover' }} // 이미지를 원형으로 만들고 버튼에 맞게 채움
+                      />
+                    }
+                    iconAlt="프로필" // 이 prop은 이제 CircleButton 내부에서 직접 사용되지 않음
+                    bgColor="transparent" // 프로필 이미지 배경은 투명하게 설정
+                    size={50} // CircleButton의 전체 크기
                   />
                 }
                 userType={currentUserType}
@@ -115,7 +122,6 @@ const Header: React.FC = () => {
               />
             </>
           ) : (
-            // isLogin이 false인 경우 (로그인 전)
             <>
               <a href="http://localhost:3000/auth/signin" className={styles.loginText} onClick={handleLoginClick}>
                 로그인
