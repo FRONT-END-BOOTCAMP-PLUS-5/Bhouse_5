@@ -2,8 +2,11 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+
 import styles from './AlarmDropdown.module.css'
 import Button from '../Button/Button'
+
 import { useGetAlarms, useMarkAlarmAsRead } from 'models/querys/alarm.query'
 import { AlarmType, Alarm } from 'models/services/alarm.service'
 
@@ -33,9 +36,10 @@ interface AlarmDropdownProps {
 const AlarmDropdown: React.FC<AlarmDropdownProps> = ({ trigger }) => {
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const router = useRouter()
 
   // 'ALL' 타입으로 알림을 가져오도록 useGetAlarms 호출 변경
-  const { data: alarms = [], isLoading, isError, error } = useGetAlarms('ALL') // <-- 여기에 'ALL' 추가
+  const { data: alarms = [], isLoading, isError, error } = useGetAlarms('ALL')
   const { mutate: markAlarmAsRead } = useMarkAlarmAsRead()
 
   const unreadCount = alarms.filter((n) => !n.is_read).length
@@ -64,12 +68,11 @@ const AlarmDropdown: React.FC<AlarmDropdownProps> = ({ trigger }) => {
   const handleAlarmClick = (id: string) => {
     markAlarmAsRead({ alarmId: id })
     console.log(`알림 ${id} 읽음 처리 요청`)
-    // TODO: 알림 클릭 시 해당 상세 페이지로 이동하는 로직 추가
   }
 
   const handleAlarmSettingsClick = () => {
-    console.log('알림 설정 버튼 클릭')
-    // TODO: 알림 설정 페이지로 이동하는 로직 추가
+    router.push('/user/settings')
+    setIsOpen(false) // 알림 설정 버튼 클릭 시 드롭다운 닫기
   }
 
   return (

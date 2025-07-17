@@ -2,6 +2,9 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
+// useRouter는 더 이상 직접적인 페이지 이동을 담당하지 않으므로 제거할 수 있지만,
+// 만약 다른 용도로 필요하다면 유지해도 무방합니다. 여기서는 일단 유지합니다.
+import { useRouter } from 'next/navigation'
 import styles from './ProfileDropdown.module.css'
 import Button from '../Button/Button' // Button 컴포넌트 경로 확인
 
@@ -15,27 +18,12 @@ interface ProfileDropdownProps {
   userType: UserType
   /** 로그아웃 버튼 클릭 시 실행될 함수 */
   onLogout: () => void
-  /** 마이페이지 버튼 클릭 시 실행될 함수 */
-  onMyPageClick: () => void
-  /** 업장 관리 버튼 클릭 시 실행될 함수 (OWNER 전용) */
-  onStoreManagementClick?: () => void
-  /** 찜 목록 보기 버튼 클릭 시 실행될 함수 */
-  onWishlistClick: () => void
-  /** 내 활동 보기 버튼 클릭 시 실행될 함수 */
-  onMyActivitiesClick: () => void
 }
 
-const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
-  trigger,
-  userType,
-  onLogout,
-  onMyPageClick,
-  onStoreManagementClick,
-  onWishlistClick,
-  onMyActivitiesClick,
-}) => {
+const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ trigger, userType, onLogout }) => {
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const router = useRouter() // useRouter 초기화 (다른 용도로 필요할 수 있어 유지)
 
   const toggleDropdown = () => {
     setIsOpen((prev) => !prev)
@@ -69,32 +57,34 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
                 variant="secondaryWhite"
                 fontStyle="fontLight"
                 className={styles.dropdownButton}
-                onClick={onMyPageClick}
+                href="/" // FIXME: 마이페이지 경로로 변경
+                onClick={() => setIsOpen(false)} // 버튼 클릭 시 드롭다운 닫기
               >
                 마이페이지
               </Button>
             </li>
-            {userType === 'OWNER' &&
-              onStoreManagementClick && ( // OWNER일 때만 업장 관리 버튼 렌더링
-                <li>
-                  <Button
-                    borderRadius="8"
-                    variant="secondaryWhite"
-                    fontStyle="fontLight"
-                    className={styles.dropdownButton}
-                    onClick={onStoreManagementClick}
-                  >
-                    업장 관리
-                  </Button>
-                </li>
-              )}
+            {userType === 'OWNER' && ( // OWNER일 때만 업장 관리 버튼 렌더링
+              <li>
+                <Button
+                  borderRadius="8"
+                  variant="secondaryWhite"
+                  fontStyle="fontLight"
+                  className={styles.dropdownButton}
+                  href="/" // FIXME: 업장 관리 페이지 경로로 변경 (OWNER 전용)
+                  onClick={() => setIsOpen(false)} // 버튼 클릭 시 드롭다운 닫기
+                >
+                  업장 관리
+                </Button>
+              </li>
+            )}
             <li>
               <Button
                 borderRadius="8"
                 variant="secondaryWhite"
                 fontStyle="fontLight"
                 className={styles.dropdownButton}
-                onClick={onWishlistClick}
+                href="/" // FIXME: 찜 목록 보기 페이지 경로로 변경
+                onClick={() => setIsOpen(false)} // 버튼 클릭 시 드롭다운 닫기
               >
                 찜 목록 보기
               </Button>
@@ -105,7 +95,8 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
                 variant="secondaryWhite"
                 fontStyle="fontLight"
                 className={styles.dropdownButton}
-                onClick={onMyActivitiesClick}
+                href="/" // FIXME: 내 활동 보기 페이지 경로로 변경
+                onClick={() => setIsOpen(false)} // 버튼 클릭 시 드롭다운 닫기
               >
                 내 활동 보기
               </Button>
@@ -116,7 +107,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
                 variant="secondaryWhite"
                 fontStyle="fontLight"
                 className={styles.logoutButton}
-                onClick={onLogout}
+                onClick={onLogout} // 로그아웃은 여전히 Header에서 처리 (로그인 상태 관리와 관련)
               >
                 로그아웃
               </Button>
