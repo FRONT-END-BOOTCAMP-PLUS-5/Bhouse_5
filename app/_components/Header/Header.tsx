@@ -206,7 +206,7 @@ const Header: React.FC = () => {
       </nav>
 
       {/* 구분선 (헤더 상단과 하단 메뉴 사이) */}
-      <Divider marginY="15px" />
+      <Divider marginY="0px" />
     </header>
   )
 }
