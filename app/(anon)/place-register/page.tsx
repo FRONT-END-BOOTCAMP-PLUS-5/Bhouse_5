@@ -1,7 +1,7 @@
 import Button from '@/_components/Button/Button'
-import BoardgameListForm from './BoardgameListForm'
+import BoardgameListForm from './_components/BoardgameListForm'
 import styles from './page.module.css'
-import PlaceForm from './PlaceForm'
+import PlaceForm from './_components/PlaceForm'
 
 export default function PlaceRegisterPage() {
   return (

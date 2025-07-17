@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import TextInput from '@/_components/TextInput/TextInput'
-import styles from './page.module.css'
+import styles from '../page.module.css'
 import ImageUploadForm from './ImageUploadForm'
 
 export default function PlaceForm() {

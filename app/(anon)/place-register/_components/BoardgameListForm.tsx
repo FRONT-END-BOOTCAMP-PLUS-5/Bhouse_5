@@ -1,8 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import TextInput from '@/_components/TextInput/TextInput'
-import styles from './page.module.css'
+import styles from '../page.module.css'
 import ListingElement from '@/_components/ListingElement/ListingElement'
 import BoardgameSearch from './BoardgameSearch'
 

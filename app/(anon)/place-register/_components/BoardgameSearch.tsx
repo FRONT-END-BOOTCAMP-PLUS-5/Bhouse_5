@@ -1,8 +1,9 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, use } from 'react'
 import styles from './BoardgameSearch.module.css'
 import TextInput from '@/_components/TextInput/TextInput'
+import { useGetBoardgameList } from 'models/querys/boardgame.query'
 
 interface Boardgame {
   id: number
@@ -39,32 +40,28 @@ const BoardgameSearch: React.FC<BoardgameSearchProps> = ({ onSelect }) => {
     )
   }
 
+  const { data: boardgames = [] } = useGetBoardgameList()
+  console.log('Boardgames:', boardgames)
+
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
-      if (inputValue.trim() === '') {
+      const trimmed = inputValue.trim().toLowerCase()
+
+      if (trimmed === '') {
         setSearchResults([])
         return
       }
 
-      setLoading(true)
-      fetch(`http://localhost:3000/api/boardgames`)
-        .then((res) => res.json())
-        .then((data: Boardgame[]) => {
-          const matchedNames = data
-            .filter((game) => game.name.toLowerCase().includes(inputValue.toLowerCase()))
-            .map((game) => game.name)
-          setSearchResults(matchedNames)
-          setLoading(false)
-        })
-        .catch((err) => {
-          console.error('검색 실패:', err)
-          setSearchResults([])
-          setLoading(false)
-        })
+      const boardgameArray: Boardgame[] = Array.isArray(boardgames) ? boardgames : []
+      const matched = boardgameArray
+        .filter((game) => game.name.toLowerCase().includes(trimmed))
+        .map((game) => game.name)
+
+      setSearchResults(matched)
     }, 300)
 
     return () => clearTimeout(delayDebounce)
-  }, [inputValue])
+  }, [inputValue, boardgames])
 
   const handleSelect = (game: string) => {
     setInputValue(game)
