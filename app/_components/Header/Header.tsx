@@ -11,7 +11,9 @@ import Divider from '../Divider/Divider'
 import CircleButton from '../CircleButton/CircleButton'
 import ProfileDropdown from '../ProfileDropdown/ProfileDropdown'
 import NotificationDropdown from '../NotificationDropdown/NotificationDropdown'
-import BellIcon from '@public/icons/bell.svg' // 알림 아이콘 컴포넌트
+import AlarmDropdown from '../AlarmDropdown/AlarmDropdown'
+
+import BellIcon from '@public/icons/bell.svg'
 
 import { useAuthStore } from '@store/auth.store' // Auth 스토어 경로
 
@@ -87,7 +89,7 @@ const Header: React.FC = () => {
           {isLogin ? (
             <>
               {/* 알림 드롭다운 컴포넌트 사용 */}
-              <NotificationDropdown
+              <AlarmDropdown
                 trigger={
                   <CircleButton
                     icon={<BellIcon width={30} height={30} fill="white" />}
