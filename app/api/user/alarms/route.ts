@@ -32,7 +32,7 @@ export async function GET(request: Request) {
 
   // 필수 파라미터 누락 시 에러 응답
   if (!userId || !alarmTypeParam) {
-    return NextResponse.json({ success: false, error: 'uuid 또는 type 파라미터가 누락되었습니다.' }, { status: 400 })
+    return NextResponse.json({ success: false, error: 'type 파라미터가 누락되었습니다.' }, { status: 400 })
   }
 
   // 알림 타입 유효성 검사 및 AlarmType 또는 'ALL'로 변환
