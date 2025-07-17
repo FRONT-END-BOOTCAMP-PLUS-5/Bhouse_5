@@ -2,8 +2,9 @@
 
 import Image from 'next/image'
 import styles from './BoardgameList.module.css'
+import BoardgameCard from '@/_components/BoardgameCard/BoardgameCard'
 
-const boardgames = [
+const games = [
   {
     id: 1,
     title: '헉, 내가 잊어진 천사족의 여왕?',
@@ -23,22 +24,14 @@ const boardgames = [
 
 export default function BoardgameList() {
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <span className={styles.allGamesText}>소장 보드게임</span>
-      </div>
-
-      <div className={styles.list}>
-        {boardgames.map((game) => (
-          <div key={game.id} className={styles.item}>
-            <Image src={game.imgUrl} alt={game.title} width={60} height={60} className={styles.thumbnail} />
-            <span className={styles.title}>{game.title}</span>
-          </div>
+    <div>
+      <div>
+        {games.map((game: { imgUrl: any; title: any }, index: any) => (
+          <BoardgameCard key={index} imageUrl={game.imgUrl} title={game.title} width={40} height={40} />
         ))}
       </div>
-
-      <div className={styles.more}>
-        <span>더보기</span>
+      <div style={{ textAlign: 'right', fontSize: '13px', color: '#007bff', marginTop: '8px', paddingRight: '12px' }}>
+        더보기
       </div>
     </div>
   )

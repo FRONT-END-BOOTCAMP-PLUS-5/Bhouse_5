@@ -1,0 +1,20 @@
+.item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  padding: 8px 0;
+}
+
+.image {
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.title {
+  font-size: 14px;
+  color: #222;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
