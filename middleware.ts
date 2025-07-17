@@ -18,7 +18,7 @@ export async function middleware(request: NextRequest) {
   const refreshToken = request.cookies.get('refreshToken')?.value
 
   // 1. 인증 상태 확인 및 토큰 재발급
-  let isAuth = await verifyAccessToken(accessToken)
+  let isAuth = await verifyAccessToken(accessToken) // true or false
   let newAccessToken: string | undefined
 
   if (!isAuth && refreshToken) {

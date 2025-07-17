@@ -3,6 +3,7 @@
 /* root */
 :root {
   --primary-blue: #2285d5;
+  --primary-alarm: #ff4415;
   --primary-white: #ffffff;
   --primary-black: #000000;
   --light-gray: #ababab;
@@ -17,6 +18,17 @@
   --secondary-blue-800: #134779;
   --secondary-blue-900: #123456;
   --secondary-blue-950: #0e2743;
+
+  --secondary-alarm-50: #fef2f2;
+  --secondary-alarm-100: #fee2e2;
+  --secondary-alarm-200: #fecaca;
+  --secondary-alarm-300: #fca5a5;
+
+  --secondary-warning-50: #fffbeb;
+  --secondary-warning-100: #fef3c7;
+  --secondary-warning-200: #fed7aa;
+  --secondary-warning-300: #fdba74;
+  --secondary-warning-400: #d97706;
 }
 
 /* common */
