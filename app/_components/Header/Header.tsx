@@ -108,8 +108,8 @@ const Header: React.FC = () => {
                       <Image
                         src={profileImageUrl}
                         alt="프로필 이미지" // Next.js Image 컴포넌트에 alt 텍스트 필수
-                        width={30} // 이미지의 실제 표시 너비
-                        height={30} // 이미지의 실제 표시 높이
+                        width={40} // 이미지의 실제 표시 너비
+                        height={40} // 이미지의 실제 표시 높이
                         style={{ borderRadius: '50%', objectFit: 'cover' }} // 이미지를 원형으로 만들고 버튼에 맞게 채움
                       />
                     }
