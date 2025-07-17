@@ -172,4 +172,8 @@ table {
 a {
   text-decoration: none;
   color: inherit;
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
 }
