@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import SocialLoginIcons from '@/_components/SSO/SsoButton'
+import SocialLoginIcons from '@/_components/SSOButton/SsoButton'
 
 export default function LoginPage() {
   const router = useRouter()

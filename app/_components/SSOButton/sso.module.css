@@ -1,0 +1,34 @@
+.socialLoginContainer {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
+
+.socialIconButton {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: #fff;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.socialIconButton:hover {
+  transform: scale(1.05);
+}
+
+/* 카카오 전용 스타일 (노란 배경) */
+.socialIconButton[data-provider='kakao'] {
+  background-color: #FEE500;
+}
+
+/* 구글 전용 스타일 (흰 배경 or 원하는 색) */
+.socialIconButton[data-provider='google'] {
+  background-color: #fff;
+}
