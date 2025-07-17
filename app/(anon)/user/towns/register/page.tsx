@@ -1,9 +1,8 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { addTown, removeTown, fetchTowns, setPrimaryTown } from '@/_lib/town'
+import { addTown, removeTown, fetchTowns, setPrimaryTown, extractDistrictName, normalizeSidoName } from '@/_lib/town'
 import styles from './TownRegister.module.css'
-import { extractDistrictName, normalizeSidoName } from '@utils/constants'
 
 interface TownInfo {
   townName: string
@@ -19,6 +18,7 @@ export default function TownRegisterPage() {
   const [polygon, setPolygon] = useState<any>(null)
   const [primaryMarker, setPrimaryMarker] = useState<window.kakao.maps.Marker | null>(null)
   const [primaryTownName, setPrimaryTownName] = useState<string | null>(null)
+  const [searchOptions, setSearchOptions] = useState<string[]>([])
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -86,6 +86,7 @@ export default function TownRegisterPage() {
       try {
         const towns = await fetchTowns()
         setTownList(towns)
+        setSearchOptions(Array.from(new Set(towns.map((t) => t.townName))))
 
         const primary = towns.find((t) => t.isPrimary)
         if (primary) {
@@ -161,13 +162,11 @@ export default function TownRegisterPage() {
 
       const clean = (str: string) => str.normalize('NFC').replace(/\s+/g, ' ').trim()
       const features = geojson.features.filter((f) => clean(f.properties.adm_nm).startsWith(clean(districtName)))
-
       if (!features || features.length === 0) return
       if (!isPrimary && polygon) polygon.setMap(null)
       if (primaryMarker && isPrimary) primaryMarker.setMap(null)
 
       const paths: window.kakao.maps.LatLng[][] = []
-
       features.forEach((feature) => {
         const coordinatesList = feature.geometry.coordinates
         if (feature.geometry.type === 'Polygon') {
@@ -265,32 +264,102 @@ export default function TownRegisterPage() {
   return (
     <div className={styles.page}>
       <h2>내 동네 등록하기</h2>
+
+      {/* 🔍 검색창, 자동완성, 버튼 */}
+      <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 12 }}>
+        <input
+          type="text"
+          list="townSuggestions"
+          placeholder="동네 이름 검색 (예: 서울 강남구)"
+          onChange={(e) => {
+            const value = e.target.value.trim()
+            if (value) localStorage.setItem('lastSearchTown', value)
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              const query = (e.target as HTMLInputElement).value.trim()
+              if (!query) return
+
+              const geocoder = new window.kakao.maps.services.Geocoder()
+              geocoder.addressSearch(query, function (result: any, status: any) {
+                if (status === window.kakao.maps.services.Status.OK) {
+                  const coords = new window.kakao.maps.LatLng(result[0].y, result[0].x)
+                  const map = markerRef.current.getMap()
+
+                  map.setCenter(coords)
+                  markerRef.current.setPosition(coords)
+
+                  setSelectedTown({
+                    name: query,
+                    lat: coords.getLat(),
+                    lng: coords.getLng(),
+                  })
+                } else {
+                  alert('해당 동네를 찾을 수 없습니다.')
+                }
+              })
+            }
+          }}
+          style={{
+            width: '100%',
+            maxWidth: 300,
+            padding: '8px 12px',
+            borderRadius: 6,
+            border: '1px solid #ccc',
+            fontSize: 14,
+          }}
+        />
+        <datalist id="townSuggestions">
+          {searchOptions.map((town) => (
+            <option key={town} value={town} />
+          ))}
+        </datalist>
+        <button
+          onClick={openAddressSearch}
+          disabled={townList.length >= 3}
+          style={{
+            padding: '8px 16px',
+            borderRadius: 6,
+            backgroundColor: townList.length >= 3 ? '#ccc' : '#007aff',
+            color: '#fff',
+            border: 'none',
+            cursor: townList.length >= 3 ? 'not-allowed' : 'pointer',
+          }}
+        >
+          + 주소 검색
+        </button>
+      </div>
+
+      {typeof window !== 'undefined' && localStorage.getItem('lastSearchTown') && (
+        <div style={{ fontSize: 13, marginBottom: 8, color: '#888' }}>
+          최근 검색어: <strong>{localStorage.getItem('lastSearchTown')}</strong>
+        </div>
+      )}
+
       <div
         ref={mapRef}
         style={{ width: '100%', height: 400, borderRadius: 8, marginBottom: 16, border: '1px solid #ccc' }}
       />
-      <button
-        onClick={openAddressSearch}
-        disabled={townList.length >= 3}
-        style={{
-          padding: '8px 16px',
-          marginBottom: '1rem',
-          borderRadius: 6,
-          backgroundColor: townList.length >= 3 ? '#ccc' : '#007aff',
-          color: '#fff',
-          border: 'none',
-          cursor: townList.length >= 3 ? 'not-allowed' : 'pointer',
-        }}
-      >
-        + 내 동네 추가
-      </button>
 
       {selectedTown && (
-        <div className={styles.townInfo}>
+        <div className={styles.townInfo} style={{ textAlign: 'center', marginTop: 16 }}>
           <p>
             <strong>선택한 위치:</strong> {selectedTown.name}
           </p>
-          <button onClick={handleRegister}>이 위치를 내 동네로 등록</button>
+          <button
+            onClick={handleRegister}
+            style={{
+              padding: '8px 16px',
+              borderRadius: 6,
+              backgroundColor: '#007aff',
+              color: '#fff',
+              border: 'none',
+              cursor: 'pointer',
+              marginTop: 8,
+            }}
+          >
+            이 위치를 내 동네로 등록하기
+          </button>
         </div>
       )}
 
@@ -301,9 +370,14 @@ export default function TownRegisterPage() {
         <ul>
           {townList.map((town) => (
             <li key={town.townName} className={styles.townItem}>
-              {town.townName} {town.isPrimary && <strong>(대표)</strong>}
-              <button onClick={() => handlePrimary(town.townName)}>대표로 설정</button>
-              <button onClick={() => handleDelete(town.townName)}>삭제</button>
+              <span className={styles.townName}>
+                {town.townName}
+                {town.isPrimary && <span className={styles.primaryTag}>(대표)</span>}
+              </span>
+              <div className={styles.buttonGroup}>
+                <button onClick={() => handlePrimary(town.townName)}>대표로 설정</button>
+                <button onClick={() => handleDelete(town.townName)}>삭제</button>
+              </div>
             </li>
           ))}
         </ul>
