@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import TextInput from '@/_components/TextInput/TextInput'
@@ -29,6 +29,7 @@ function SigninPage() {
       await signinService({ username: data.email, password: data.password })
 
       const res = await getProfileService()
+      console.log('res', res)
       if (res) {
         setLogin(res)
       }
@@ -38,9 +39,6 @@ function SigninPage() {
       console.log(error)
     }
   }
-
-  console.log(form.watch())
-  console.log('form.formState.errors:', form.formState.errors)
 
   return (
     <div className={styles.container}>

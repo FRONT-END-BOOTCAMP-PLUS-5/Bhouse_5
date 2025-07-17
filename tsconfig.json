@@ -50,6 +50,9 @@
       ],
       "@public/*": [
         "./public/*"
+      ],
+      "@store/*": [
+        "./store/*"
       ]
     },
     "typeRoots": [

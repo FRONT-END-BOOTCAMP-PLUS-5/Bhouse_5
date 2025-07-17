@@ -1,0 +1,57 @@
+/* src/components/common/ProfileDropdown/ProfileDropdown.module.css */
+
+.profileDropdownContainer {
+  position: relative;
+  display: inline-block;
+}
+
+.profileDropdownTrigger {
+  cursor: pointer;
+  /* 트리거 요소 (예: 프로필 이미지)의 스타일은 여기서 직접 관리하거나,
+     트리거로 전달되는 컴포넌트 자체에서 스타일링 */
+}
+
+.profileDropdownListWrapper {
+  position: absolute;
+  top: calc(100% + 10px); /* 트리거 아래에 10px 간격 두고 표시 */
+  right: 0; /* 오른쪽 정렬 */
+  background-color: var(--secondary-blue-100); /* 요청하신 배경색 */
+  border-radius: 8px; /* 기본 모서리 둥글기 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  padding: 8px; /* 드롭다운 리스트 내부 여백 */
+  min-width: 150px; /* 최소 너비 설정 (버튼 내용에 따라 조절) */
+  box-sizing: border-box;
+}
+
+.profileDropdownList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* 버튼들 사이의 간격 */
+}
+
+.profileDropdownList li {
+  /* 드롭다운 리스트 아이템 자체에는 패딩이나 호버 효과를 주지 않습니다.
+     호버 효과는 내부 Button 컴포넌트가 담당합니다. */
+  padding: 0; /* li 자체 패딩 제거 */
+  margin: 0; /* li 자체 마진 제거 */
+  width: 100%; /* li가 부모 너비 전체를 차지하도록 */
+}
+
+/* 드롭다운 내부 버튼 공통 스타일 */
+.dropdownButton {
+  width: 100%; /* 드롭다운 리스트 아이템 너비에 꽉 차도록 */
+  justify-content: center;
+  padding: 10px 12px; /* 버튼 내부 패딩 */
+}
+
+/* 로그아웃 버튼의 특정 텍스트 색상 */
+.logoutButton {
+  width: 100%; /* */
+  justify-content: center;
+  padding: 10px 12px; /* */
+  color: var(--dark-gray);
+}
