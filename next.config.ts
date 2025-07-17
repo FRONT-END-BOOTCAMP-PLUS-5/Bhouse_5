@@ -34,7 +34,12 @@ const nextConfig: NextConfig = {
     },
   },
   images: {
-    domains: ['images.unsplash.com'], // ✅ 여기에 추가
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+    ], // ✅ 여기에 추가
   },
 }
 

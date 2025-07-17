@@ -61,31 +61,21 @@ export default function Carousel({ items, autoPlay = true, interval = 3000 }: Ca
         className={styles.carouselTrack}
         style={{
           width: `${items.length * 100}%`,
-          transform: `translateX(-${currentIndex * (100 / items.length)}%)`,
+          transform: `translateX(-${currentIndex * 100}%)`,
           transition: 'transform 0.5s ease-in-out',
         }}
       >
-        {items.map((item, index) => {
-          const content = (
-            <div key={index} className={styles.carouselItem} style={{ cursor: item.href ? 'pointer' : 'default' }}>
-              {item.content}
-            </div>
-          )
-
-          return item.href ? (
-            <a
-              href={item.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              key={index}
-              style={{ display: 'block', width: '100%', height: '100%' }}
-            >
-              {content}
-            </a>
-          ) : (
-            content
-          )
-        })}
+        {items.map((item, index) => (
+          <div key={index} className={styles.carouselItemWrapper} style={{ width: '100%' }}>
+            {item.href ? (
+              <a href={item.href} target="_blank" rel="noopener noreferrer" className={styles.carouselItemLink}>
+                <div className={styles.carouselItem}>{item.content}</div>
+              </a>
+            ) : (
+              <div className={styles.carouselItem}>{item.content}</div>
+            )}
+          </div>
+        ))}
       </div>
       <div className={styles.carouselDots}>
         {items.map((_, index) => (
