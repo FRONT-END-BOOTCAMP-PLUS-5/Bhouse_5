@@ -24,7 +24,7 @@ const ImagePreviewList: React.FC<ImagePreviewListProps> = ({ previews, onUploadC
   return (
     <div className={styles.previewContainer}>
       {previews.map((src, idx) => (
-        <div key={idx} className={styles.previewWrapper}>
+        <div key={idx} className={`${styles.previewWrapper} ${idx === 0 ? styles.representative : ''}`}>
           <Image
             src={src}
             alt={`업로드된 이미지 ${idx + 1}`}

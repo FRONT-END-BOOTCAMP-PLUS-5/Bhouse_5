@@ -42,6 +42,10 @@
   border-radius: 12px;
   overflow: hidden;
   flex: 0 0 auto;
+  position: relative;
+  border: 2px solid var(--primary-blue-200);
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .previewImage {
@@ -49,4 +53,8 @@
   height: 100%;
   object-fit: cover;
   border-radius: 12px;
+}
+
+.representative {
+  border: 2px solid #42a5f5; /* 파란색 테두리 */
 }
