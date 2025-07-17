@@ -1,3 +1,5 @@
+import instance from '@utils/instance'
+
 export async function reverseGeocode(lat: number, lon: number): Promise<string> {
   const res = await fetch(`https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=${lon}&y=${lat}`, {
     headers: {
@@ -38,22 +40,14 @@ export const fetchTowns = async (): Promise<{ name: string; isPrimary: boolean }
 }
 
 export const addTown = async (dto: { townName: string; lat: number; lng: number }): Promise<void> => {
-  const res = await fetch('/api/user/certify-town', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    credentials: 'include',
-    body: JSON.stringify({
+  try {
+    await instance.post('/api/user/certify-town', {
       townName: dto.townName,
       latitude: dto.lat,
       longitude: dto.lng,
-    }), // ❗ lat, lng 빠져 있음?
-  })
-
-  if (!res.ok) {
-    const errorText = await res.text() // 응답 본문 보기
-    console.error('서버 응답:', res.status, errorText)
+    })
+  } catch (error: any) {
+    console.error('동네 등록 실패:', error?.response?.data || error.message)
     throw new Error('동네 등록 실패')
   }
 }
