@@ -91,10 +91,10 @@ const Header: React.FC = () => {
               <AlarmDropdown
                 trigger={
                   <CircleButton
-                    icon={<BellIcon width={30} height={30} fill="white" />}
+                    icon={<BellIcon width={25} height={25} fill="white" />}
                     iconAlt="알림"
                     bgColor="var(--primary-blue)"
-                    size={50}
+                    size={40}
                   />
                 }
               />
@@ -107,14 +107,14 @@ const Header: React.FC = () => {
                       <Image
                         src={profileImageUrl}
                         alt="프로필 이미지" // Next.js Image 컴포넌트에 alt 텍스트 필수
-                        width={40} // 이미지의 실제 표시 너비
-                        height={40} // 이미지의 실제 표시 높이
+                        width={30} // 이미지의 실제 표시 너비
+                        height={30} // 이미지의 실제 표시 높이
                         style={{ borderRadius: '50%', objectFit: 'cover' }} // 이미지를 원형으로 만들고 버튼에 맞게 채움
                       />
                     }
                     iconAlt="프로필" // 이 prop은 이제 CircleButton 내부에서 직접 사용되지 않음
                     bgColor="transparent" // 프로필 이미지 배경은 투명하게 설정
-                    size={50} // CircleButton의 전체 크기
+                    size={40} // CircleButton의 전체 크기
                   />
                 }
                 userType={currentUserType}
