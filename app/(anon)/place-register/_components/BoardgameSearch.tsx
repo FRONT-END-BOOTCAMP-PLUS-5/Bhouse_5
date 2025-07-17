@@ -40,28 +40,36 @@ const BoardgameSearch: React.FC<BoardgameSearchProps> = ({ onSelect }) => {
     )
   }
 
-  const { data: boardgames = [] } = useGetBoardgameList()
+  const { data: boardgames = [] } = useGetBoardgameList(inputValue)
   console.log('Boardgames:', boardgames)
 
-  useEffect(() => {
-    const delayDebounce = setTimeout(() => {
-      const trimmed = inputValue.trim().toLowerCase()
+  // const filterdBoardgames = Array.isArray(boardgames)
+  //   ? boardgames.filter((game: Boardgame) => {
+  //       return game.name.toLowerCase().includes(inputValue.toLowerCase())
+  //     })
+  //   : []
 
-      if (trimmed === '') {
-        setSearchResults([])
-        return
-      }
+  // console.log('Filtered Boardgames:', filterdBoardgames)
 
-      const boardgameArray: Boardgame[] = Array.isArray(boardgames) ? boardgames : []
-      const matched = boardgameArray
-        .filter((game) => game.name.toLowerCase().includes(trimmed))
-        .map((game) => game.name)
+  // useEffect(() => {
+  //   const delayDebounce = setTimeout(() => {
+  //     const trimmed = inputValue.trim().toLowerCase()
 
-      setSearchResults(matched)
-    }, 300)
+  //     if (trimmed === '') {
+  //       setSearchResults([])
+  //       return
+  //     }
 
-    return () => clearTimeout(delayDebounce)
-  }, [inputValue, boardgames])
+  //     const boardgameArray: Boardgame[] = Array.isArray(boardgames) ? boardgames : []
+  //     const matched = boardgameArray
+  //       .filter((game) => game.name.toLowerCase().includes(trimmed))
+  //       .map((game) => game.name)
+
+  //     setSearchResults(matched)
+  //   }, 300)
+
+  //   return () => clearTimeout(delayDebounce)
+  // }, [inputValue, boardgames])
 
   const handleSelect = (game: string) => {
     setInputValue(game)
@@ -85,7 +93,7 @@ const BoardgameSearch: React.FC<BoardgameSearchProps> = ({ onSelect }) => {
         className={styles.input}
       />
 
-      {showDropdown && inputValue.trim() !== '' && (
+      {/* {showDropdown && inputValue.trim() !== '' && (
         <ul className={styles.dropdown}>
           {loading && <li className={styles.dropdownItem}>검색 중...</li>}
 
@@ -98,7 +106,7 @@ const BoardgameSearch: React.FC<BoardgameSearchProps> = ({ onSelect }) => {
 
           {!loading && searchResults.length === 0 && <li className={styles.dropdownItem}>검색 결과 없음</li>}
         </ul>
-      )}
+      )} */}
     </div>
   )
 }
