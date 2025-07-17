@@ -46,6 +46,7 @@ export interface AlarmTable {
   alarm_type: AlarmTypeEnum // enum
   // 관계
   user?: UserTable
+  post_id?: number
 }
 
 export interface AdTable {
