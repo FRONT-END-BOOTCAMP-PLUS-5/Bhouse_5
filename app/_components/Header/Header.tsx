@@ -71,8 +71,11 @@ const Header: React.FC = () => {
               <AlarmDropdown
                 trigger={
                   <CircleButton
-                    icon={<BellIcon width={25} height={25} fill="white" />}
-                    iconAlt="알림"
+                    svgComponent={BellIcon} // BellIcon 컴포넌트를 직접 전달
+                    svgWidth={25} // 아이콘 너비
+                    svgHeight={25} // 아이콘 높이
+                    svgFill="white" // 아이콘 색상
+                    imageAlt="알림 아이콘" // 접근성용 대체 텍스트
                     bgColor="var(--primary-blue)"
                     size={40}
                   />
@@ -82,17 +85,10 @@ const Header: React.FC = () => {
               <ProfileDropdown
                 trigger={
                   <CircleButton
-                    icon={
-                      <Image
-                        src={profileImageUrl}
-                        alt="프로필 이미지"
-                        width={40}
-                        height={40}
-                        style={{ borderRadius: '50%', objectFit: 'cover' }}
-                      />
-                    }
-                    iconAlt="프로필"
-                    bgColor="transparent"
+                    imageUrl={profileImageUrl} // 이미지 URL을 직접 전달
+                    imageSize={40} // 이미지 크기
+                    imageAlt="프로필 이미지" // 접근성용 대체 텍스트
+                    bgColor="transparent" // 배경은 투명
                     size={40}
                   />
                 }
