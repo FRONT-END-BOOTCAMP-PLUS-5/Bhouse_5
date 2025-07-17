@@ -17,6 +17,8 @@ export default function TownRegisterPage() {
   const [townList, setTownList] = useState<TownInfo[]>([])
   const [isMapReady, setIsMapReady] = useState(false)
   const [polygon, setPolygon] = useState<any>(null)
+  const [primaryMarker, setPrimaryMarker] = useState<window.kakao.maps.Marker | null>(null)
+  const [primaryTownName, setPrimaryTownName] = useState<string | null>(null)
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -85,10 +87,10 @@ export default function TownRegisterPage() {
         const towns = await fetchTowns()
         setTownList(towns)
 
-        // ⭐ 대표 동네가 있다면 폴리곤 표시
         const primary = towns.find((t) => t.isPrimary)
         if (primary) {
-          await handleDrawDistrictPolygon(primary.townName)
+          setPrimaryTownName(primary.townName)
+          await handleDrawDistrictPolygon(primary.townName, true)
         }
       } catch {
         setTownList([])
@@ -99,7 +101,10 @@ export default function TownRegisterPage() {
 
   useEffect(() => {
     if (selectedTown) {
-      handleDrawDistrictPolygon(extractDistrictName(selectedTown.name))
+      const districtName = extractDistrictName(selectedTown.name)
+      if (districtName !== primaryTownName) {
+        handleDrawDistrictPolygon(districtName, false)
+      }
     }
   }, [selectedTown])
 
@@ -126,7 +131,6 @@ export default function TownRegisterPage() {
     new window.daum.Postcode({
       oncomplete: function (data: any) {
         const regionAddress = `${data.sido} ${data.sigungu}`
-
         const geocoder = new window.kakao.maps.services.Geocoder()
         geocoder.addressSearch(regionAddress, function (result: any, status: any) {
           if (status === window.kakao.maps.services.Status.OK) {
@@ -147,7 +151,7 @@ export default function TownRegisterPage() {
     }).open()
   }
 
-  const handleDrawDistrictPolygon = async (districtName: string) => {
+  const handleDrawDistrictPolygon = async (districtName: string, isPrimary = false) => {
     try {
       const sido = districtName.split(' ')[0]
       const fullSido = normalizeSidoName(sido)
@@ -156,26 +160,16 @@ export default function TownRegisterPage() {
       const geojson = await res.json()
 
       const clean = (str: string) => str.normalize('NFC').replace(/\s+/g, ' ').trim()
-
       const features = geojson.features.filter((f) => clean(f.properties.adm_nm).startsWith(clean(districtName)))
 
-      if (!features || features.length === 0) {
-        console.warn('[DEBUG] districtName:', districtName)
-        console.warn(
-          '[DEBUG] adm_nm candidates:',
-          geojson.features.map((f) => f.properties.adm_nm),
-        )
-        alert(`${districtName} 영역을 찾을 수 없습니다.`)
-        return
-      }
-
-      if (polygon) polygon.setMap(null)
+      if (!features || features.length === 0) return
+      if (!isPrimary && polygon) polygon.setMap(null)
+      if (primaryMarker && isPrimary) primaryMarker.setMap(null)
 
       const paths: window.kakao.maps.LatLng[][] = []
 
       features.forEach((feature) => {
         const coordinatesList = feature.geometry.coordinates
-
         if (feature.geometry.type === 'Polygon') {
           paths.push(coordinatesList[0].map(([lng, lat]: number[]) => new window.kakao.maps.LatLng(lat, lng)))
         } else if (feature.geometry.type === 'MultiPolygon') {
@@ -188,14 +182,42 @@ export default function TownRegisterPage() {
       const kakaoPolygon = new window.kakao.maps.Polygon({
         path: paths,
         strokeWeight: 2,
-        strokeColor: '#007aff',
+        strokeColor: isPrimary ? '#ff8800' : '#007aff',
         strokeOpacity: 0.8,
-        fillColor: '#a3c8ff',
+        fillColor: isPrimary ? '#ffd699' : '#a3c8ff',
         fillOpacity: 0.3,
       })
 
       kakaoPolygon.setMap(markerRef.current.getMap())
-      setPolygon(kakaoPolygon)
+      if (!isPrimary) setPolygon(kakaoPolygon)
+
+      if (isPrimary) {
+        const flat = paths.flat()
+        const center = flat.reduce(
+          (acc, curr) => ({
+            lat: acc.lat + curr.getLat(),
+            lng: acc.lng + curr.getLng(),
+          }),
+          { lat: 0, lng: 0 },
+        )
+
+        const avg = new window.kakao.maps.LatLng(center.lat / flat.length, center.lng / flat.length)
+
+        const image = new window.kakao.maps.MarkerImage(
+          '/icons/primary_marker.svg',
+          new window.kakao.maps.Size(32, 32),
+          { offset: new window.kakao.maps.Point(16, 16) },
+        )
+
+        const starMarker = new window.kakao.maps.Marker({
+          position: avg,
+          image,
+          title: '대표 동네',
+        })
+
+        starMarker.setMap(markerRef.current.getMap())
+        setPrimaryMarker(starMarker)
+      }
     } catch (err) {
       console.error('폴리곤 렌더링 실패:', err)
     }
@@ -214,14 +236,8 @@ export default function TownRegisterPage() {
         return
       }
 
-      await addTown({
-        townName: districtName,
-        lat: selectedTown.lat,
-        lng: selectedTown.lng,
-      })
-
-      await handleDrawDistrictPolygon(districtName)
-
+      await addTown({ townName: districtName, lat: selectedTown.lat, lng: selectedTown.lng })
+      await handleDrawDistrictPolygon(districtName, false)
       const updated = await fetchTowns()
       setTownList(updated)
       alert('동네가 등록되었습니다.')
@@ -234,10 +250,8 @@ export default function TownRegisterPage() {
 
   const handleDelete = async (townName: string) => {
     await removeTown(townName)
-    if (polygon) {
-      polygon.setMap(null)
-      setPolygon(null)
-    }
+    if (polygon) polygon.setMap(null)
+    if (primaryMarker) primaryMarker.setMap(null)
     const updated = await fetchTowns()
     setTownList(updated)
   }
