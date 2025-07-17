@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { addTown, removeTown, fetchTowns, setPrimaryTown, extractDistrictName, normalizeSidoName } from '@/_lib/town'
 import styles from './TownRegister.module.css'
+import Button from '@/_components/Button/Button'
 
 interface TownInfo {
   townName: string
@@ -263,11 +264,11 @@ export default function TownRegisterPage() {
 
   return (
     <div className={styles.page}>
-      <h2>내 동네 등록하기</h2>
+      <h2 className="header48">내 동네 등록하기</h2>
 
       {/* 🔍 검색창, 자동완성, 버튼 */}
       <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 12 }}>
-        <input
+        {/* <input
           type="text"
           list="townSuggestions"
           placeholder="동네 이름 검색 (예: 서울 강남구)"
@@ -313,28 +314,17 @@ export default function TownRegisterPage() {
           {searchOptions.map((town) => (
             <option key={town} value={town} />
           ))}
-        </datalist>
-        <button
-          onClick={openAddressSearch}
-          disabled={townList.length >= 3}
-          style={{
-            padding: '8px 16px',
-            borderRadius: 6,
-            backgroundColor: townList.length >= 3 ? '#ccc' : '#007aff',
-            color: '#fff',
-            border: 'none',
-            cursor: townList.length >= 3 ? 'not-allowed' : 'pointer',
-          }}
-        >
+        </datalist> */}
+        <Button onClick={openAddressSearch} disabled={townList.length >= 3}>
           + 주소 검색
-        </button>
+        </Button>
       </div>
 
-      {typeof window !== 'undefined' && localStorage.getItem('lastSearchTown') && (
+      {/* {typeof window !== 'undefined' && localStorage.getItem('lastSearchTown') && (
         <div style={{ fontSize: 13, marginBottom: 8, color: '#888' }}>
           최근 검색어: <strong>{localStorage.getItem('lastSearchTown')}</strong>
         </div>
-      )}
+      )} */}
 
       <div
         ref={mapRef}

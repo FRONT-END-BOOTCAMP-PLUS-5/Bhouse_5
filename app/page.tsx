@@ -7,6 +7,8 @@ import Dropdown from './_components/Dropdown/Dropdown'
 import TextInput from './_components/TextInput/TextInput'
 import Divider from './_components/Divider/Divider'
 import CircleButton from './_components/CircleButton/CircleButton'
+import Carousel from './_components/Carousel/Carousel'
+import Image from 'next/image'
 
 export default function Home() {
   const [email, setEmail] = React.useState('')
@@ -33,6 +35,36 @@ export default function Home() {
 
   return (
     <div className={styles.page}>
+      <Carousel
+        items={[
+          {
+            content: (
+              <Image
+                src="https://images.unsplash.com/photo-1602524810970-7ea5af66c84a?auto=format&fit=crop&w=800&q=80"
+                alt="Ad 1"
+                width={800}
+                height={300}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            ),
+            href: 'https://naver.com',
+          },
+          {
+            content: (
+              <Image
+                src="https://images.unsplash.com/photo-1526040652367-ac003a0475fe?auto=format&fit=crop&w=800&q=80"
+                alt="Ad 2"
+                width={800}
+                height={300}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            ),
+            href: '/ads/2',
+          },
+        ]}
+        autoPlay
+        interval={10000}
+      />
       <div>
         <CircleButton
           iconSrc="/icons/file.svg"
