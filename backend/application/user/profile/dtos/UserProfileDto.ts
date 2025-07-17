@@ -4,6 +4,12 @@ export interface GetUserProfileQueryDto {
   userId: string
 }
 
+export interface UserTownDto {
+  id: number
+  town_name: string
+  is_primary: boolean
+}
+
 export interface UserProfileResponseDto {
   user_id: string
   username: string
@@ -16,5 +22,6 @@ export interface UserProfileResponseDto {
   created_at: string
   updated_at: string
   user_role?: Role
-  town_name?: string // 추가: 사용자의 등록된 도시명
+  towns: UserTownDto[] // 모든 타운 정보 리스트
+  primary_town_id?: number // primary 타운의 ID
 }
