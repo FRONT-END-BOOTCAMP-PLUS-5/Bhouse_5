@@ -11,6 +11,7 @@ import CircleButton from './_components/CircleButton/CircleButton'
 import ListingElement from './_components/ListingElement/ListingElement'
 
 import FileIcon from '@public/icons/file.svg'
+import Carousel from './_components/Carousel/Carousel'
 
 export default function Home() {
   const [email, setEmail] = React.useState('')
@@ -37,6 +38,36 @@ export default function Home() {
 
   return (
     <div className={styles.page}>
+      <Carousel
+        items={[
+          {
+            content: (
+              <Image
+                src="https://images.unsplash.com/photo-1602524810970-7ea5af66c84a?auto=format&fit=crop&w=800&q=80"
+                alt="Ad 1"
+                width={800}
+                height={300}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            ),
+            href: 'https://naver.com',
+          },
+          {
+            content: (
+              <Image
+                src="https://images.unsplash.com/photo-1526040652367-ac003a0475fe?auto=format&fit=crop&w=800&q=80"
+                alt="Ad 2"
+                width={800}
+                height={300}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            ),
+            href: '/ads/2',
+          },
+        ]}
+        autoPlay
+        interval={10000}
+      />
       <div>
         <CircleButton
           icon={<FileIcon width={40} height={40} fill="red" />} // iconSize 대신 width, height를 직접 지정합니다. 상단에서 import한 아이콘을 가져옵니다.
