@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import styles from '../page.module.css'
+import styles from './BoardgameListForm.module.css'
 import ListingElement from '@/_components/ListingElement/ListingElement'
 import BoardgameSearch from './BoardgameSearch'
 

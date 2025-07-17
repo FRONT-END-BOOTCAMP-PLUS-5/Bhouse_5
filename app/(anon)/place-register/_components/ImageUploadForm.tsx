@@ -16,7 +16,7 @@ export default function ImageUploadForm({ onImageSelect }: ImageUploadFormProps)
 
   return (
     <div>
-      <label htmlFor="">대표이미지</label>
+      <label>대표이미지</label>
       <ImageUploader onImagesSelect={handleSelect} />
       <label htmlFor="">메뉴이미지</label>
       <ImageUploader onImagesSelect={handleSelect} />

@@ -8,6 +8,7 @@ import Dropdown from './_components/Dropdown/Dropdown'
 import TextInput from './_components/TextInput/TextInput'
 import Divider from './_components/Divider/Divider'
 import CircleButton from './_components/CircleButton/CircleButton'
+import ListingElement from './_components/ListingElement/ListingElement'
 
 import FileIcon from '@public/icons/file.svg'
 
@@ -46,6 +47,12 @@ export default function Home() {
           onClick={() => alert('파일 아이콘 클릭')} // onClick 메시지를 더 구체적으로 변경했습니다.
         />
       </div>
+      <ListingElement
+        label={'엘레멘트입니다'}
+        onDelete={function (): void {
+          throw new Error('Function not implemented.')
+        }}
+      />
       <p className={styles.title48}>보드의 집</p>
       <p className={styles.title48}>보드의 집 title48텍스트입니다.</p>
       <Divider thickness="2px" />
