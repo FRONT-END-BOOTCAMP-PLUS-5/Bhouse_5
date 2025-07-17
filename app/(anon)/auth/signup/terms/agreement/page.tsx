@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form'
 import styles from './agreement.module.css'
 import globalStyles from '@/page.module.css'
 import { usePathname } from 'next/navigation'
+import Button from '@/_components/Button/Button'
 
 export default function AgreementPage() {
   const pathname = usePathname()
@@ -97,6 +98,10 @@ export default function AgreementPage() {
           `}
         </pre>
       </div>
+
+      <Button type="submit" variant="gray" size="medium">
+        다음
+      </Button>
     </form>
   )
 }

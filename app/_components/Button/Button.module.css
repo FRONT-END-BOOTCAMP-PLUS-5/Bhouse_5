@@ -21,11 +21,21 @@
 }
 
 /* 둥글기 (Border Radius) variants */
-.borderRadius8 { border-radius: 8px; }
-.borderRadius12 { border-radius: 12px; }
-.borderRadius16 { border-radius: 16px; }
-.borderRadius20 { border-radius: 20px; }
-.borderRadius60 { border-radius: 60px; } /* 또는 큰 값으로 원형에 가깝게 */
+.borderRadius8 {
+  border-radius: 8px;
+}
+.borderRadius12 {
+  border-radius: 12px;
+}
+.borderRadius16 {
+  border-radius: 16px;
+}
+.borderRadius20 {
+  border-radius: 20px;
+}
+.borderRadius60 {
+  border-radius: 60px;
+} /* 또는 큰 값으로 원형에 가깝게 */
 
 /* 버튼 스타일 (Color/Background) variants - 예시 */
 .primary {
@@ -36,7 +46,8 @@
   background-color: var(--secondary-blue-700);
 }
 
-.secondaryBlue100 { /* 새로운 스타일 이름 */
+.secondaryBlue100 {
+  /* 새로운 스타일 이름 */
   background-color: var(--secondary-blue-100);
   color: var(--primary-black); /* 또는 적절한 텍스트 색상 */
 }
@@ -44,7 +55,8 @@
   background-color: var(--secondary-blue-200); /* 호버 색상도 정의 */
 }
 
-.secondaryBlue400 { /* 또 다른 새로운 스타일 이름 */
+.secondaryBlue400 {
+  /* 또 다른 새로운 스타일 이름 */
   background-color: var(--secondary-blue-400);
   color: var(--primary-white); /* 또는 적절한 텍스트 색상 */
 }
@@ -59,6 +71,11 @@
 }
 .ghost:hover {
   background-color: var(--secondary-blue-50);
+}
+
+.gray {
+  background-color: var(--light-gray);
+  color: var(--primary-white);
 }
 
 /* 버튼 크기 variants */
