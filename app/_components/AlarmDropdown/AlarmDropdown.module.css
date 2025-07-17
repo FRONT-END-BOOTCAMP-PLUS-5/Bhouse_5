@@ -1,6 +1,6 @@
-/* src/components/common/NotificationDropdown/NotificationDropdown.module.css */
+/* src/components/common/AlarmDropdown/AlarmDropdown.module.css */
 
-.notificationDropdownContainer {
+.alarmDropdownContainer {
   position: relative;
   display: inline-block;
 }
@@ -12,7 +12,7 @@
 }
 
 /* 프로필 드롭다운 래퍼 스타일과 동일하게 */
-.notificationDropdownListWrapper {
+.alarmDropdownListWrapper {
   position: absolute;
   top: calc(100% + 10px); /* 트리거 아래에 10px 간격 두고 표시 */
   right: 0; /* 오른쪽 정렬 */
@@ -51,7 +51,7 @@
   color: var(--secondary-blue-700);
 }
 
-.notificationList {
+.alarmList {
   list-style: none;
   padding: 0;
   margin: 0;
@@ -59,7 +59,7 @@
   max-height: 300px; /* 최대 높이 설정 (스크롤 생기도록) */
 }
 
-.notificationItem {
+.alarmItem {
   display: flex;
   flex-direction: column; /* 변경: 아이템 내부 내용을 세로로 정렬 */
   /* justify-content 및 align-items는 더 이상 여기서는 필요 없습니다. */
@@ -68,7 +68,7 @@
   position: relative; /* 뱃지 위치 지정을 위해 */
 }
 
-.notificationItem:hover {
+.alarmItem:hover {
   background-color: var(--secondary-blue-50); /* 호버 시 배경색 변경 */
 }
 
@@ -82,16 +82,16 @@
   display: flex;
   justify-content: space-between; /* 메시지와 시간을 양 끝으로 정렬 */
   align-items: center; /* 텍스트의 기준선을 중앙으로 맞춤 */
-  width: 100%; /* 부모(notificationItem) 너비에 꽉 차도록 */
+  width: 100%; /* 부모(alarmItem) 너비에 꽉 차도록 */
 }
 
-.notificationType {
+.alarmType {
   font-size: 12px;
   font-weight: 500;
   /* margin-bottom은 이제 .firstRow에서 관리합니다. */
 }
 
-.notificationMessage {
+.alarmMessage {
   font-size: 15px;
   font-weight: 600;
   line-height: 1.4;
@@ -100,22 +100,22 @@
   margin-right: 10px; /* 메시지와 시간 사이 간격 */
 }
 
-.notificationTime {
+.alarmTime {
   font-size: 12px;
   white-space: nowrap; /* 시간은 줄바꿈 안되도록 */
 }
 
 /* 읽지 않은 알림 (검은색) */
-.notificationItem.unread .notificationType,
-.notificationItem.unread .notificationMessage,
-.notificationItem.unread .notificationTime {
+.alarmItem.unread .alarmType,
+.alarmItem.unread .alarmMessage,
+.alarmItem.unread .alarmTime {
   color: var(--primary-black); /* 검은색 */
 }
 
 /* 읽은 알림 (회색) */
-.notificationItem.read .notificationType,
-.notificationItem.read .notificationMessage,
-.notificationItem.read .notificationTime {
+.alarmItem.read .alarmType,
+.alarmItem.read .alarmMessage,
+.alarmItem.read .alarmTime {
   color: var(--dark-gray); /* 회색 (Button.module.css에 정의된 --dark-gray 사용) */
 }
 
@@ -151,7 +151,7 @@
   line-height: 1; /* 텍스트 정렬을 위해 */
 }
 
-.noNotifications {
+.noAlarms {
   padding: 20px;
   text-align: center;
   color: var(--dark-gray);
