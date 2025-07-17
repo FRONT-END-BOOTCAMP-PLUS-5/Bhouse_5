@@ -8,6 +8,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   borderRadius?: '8' | '12' | '16' | '20' | '60' // 둥글기 variant
   variant?: 'primary' | 'secondary' | 'ghost' | 'gray' // 버튼 스타일 variant (예시)
   size?: 'small' | 'medium' | 'large' // 버튼 크기 (예시)
+  fontStyle?: 'light' | 'bold' // 폰트 스타일
   className?: string // 추가적인 커스텀 스타일을 위한 클래스
 }
 
@@ -16,12 +17,13 @@ const Button: React.FC<ButtonProps> = ({
   borderRadius = '8', // 기본값 설정
   variant = 'primary', // 기본값 설정
   size = 'medium', // 기본값 설정
+  fontStyle = 'bold', // 기본값 설정
   className,
   ...props
 }) => {
   return (
     <button
-      className={`${styles.button} ${styles[`borderRadius${borderRadius}`]} ${styles[variant]} ${styles[size]} ${className || ''}`}
+      className={`${styles.button} ${styles[`borderRadius${borderRadius}`]} ${styles[variant]} ${styles[size]} ${styles[fontStyle]} ${className || ''}`}
       {...props}
     >
       {children}

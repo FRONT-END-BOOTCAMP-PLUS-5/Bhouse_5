@@ -28,7 +28,8 @@
       "@application/*": ["./backend/application/*"],
       "@infrastructure/*": ["./backend/infrastructure/*"],
       "@fonts/*": ["./public/fonts/*"],
-      "@public/*": ["./public/*"]
+      "@public/*": ["./public/*"],
+      "@store/*": ["./store/*"]
     }
   },
   "include": ["svgr.d.ts", "next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

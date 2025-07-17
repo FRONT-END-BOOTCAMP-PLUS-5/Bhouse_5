@@ -6,6 +6,7 @@ import React, { useState } from 'react'
 import Dropdown from './_components/Dropdown/Dropdown'
 import TextInput from './_components/TextInput/TextInput'
 import Divider from './_components/Divider/Divider'
+import CircleButton from './_components/CircleButton/CircleButton'
 
 export default function Home() {
   const [email, setEmail] = React.useState('')
@@ -32,6 +33,17 @@ export default function Home() {
 
   return (
     <div className={styles.page}>
+      <div>
+        <CircleButton
+          iconSrc="/icons/file.svg"
+          iconAlt="파일"
+          iconSize={40}
+          bgColor="#ffebee"
+          size={90}
+          onClick={() => alert('삭제')}
+        />
+      </div>
+      <p className={styles.title48}>보드의 집</p>
       <p className={styles.title48}>보드의 집 title48텍스트입니다.</p>
       <Divider color="#FF0000" thickness="2px" />
       <h1 className={styles.body16}>환영합니다! 이것은 본문 텍스트 body 16입니다.</h1>
@@ -40,7 +52,7 @@ export default function Home() {
       <p className={styles.header48}>이것은 페이지 타이틀을 담당하는 header48입니다. </p>
       <p className={styles.extraBoldText}>이것은 나눔스퀘어 엑스트라볼드 텍스트입니다.</p>
 
-      <Button borderRadius="8" variant="primary">
+      <Button borderRadius="8" variant="secondaryWhite">
         기본 버튼
       </Button>
       <Button variant="primary" onClick={() => console.log('Primary Clicked')}>
@@ -150,6 +162,36 @@ export default function Home() {
         <li onClick={() => handleSmallOptionSelect('옵션 1')}>옵션 1</li>
         <li onClick={() => handleSmallOptionSelect('더 긴 옵션 2')}>더 긴 옵션 2</li>
         <li onClick={() => handleSmallOptionSelect('세 번째 옵션')}>세 번째 옵션</li>
+      </Dropdown>
+
+      <Dropdown
+        label={selectedRegion}
+        borderRadius="8" //
+        size="small" //
+        listBgColor="#FFEEEE" // 예시: 드롭다운 리스트 배경색을 연한 빨강으로
+        listBorderRadius="12" // 예시: 드롭다운 리스트 모서리를 12px로 둥글게
+      >
+        {' '}
+        {/* */}
+        {/*FIXME : 유저 정보 내 town으로 변경하기*/}
+        <li onClick={() => handleRegionSelect('중랑구')}>중랑구</li>
+        <li onClick={() => handleRegionSelect('은평구')}>은평구</li>
+        <li onClick={() => handleRegionSelect('강남구')}>강남구</li>
+        <li onClick={() => handleRegionSelect('서초구')} data-disabled="true">
+          서초구 (선택 불가)
+        </li>
+        <Divider marginY="8px" />
+        <li>
+          <Button
+            onClick={handleAddLocationClick}
+            variant="primary" //
+            size="small" //
+            borderRadius="8" //
+            className={styles.buttonAsListItem} //
+          >
+            내 동네 추가하기
+          </Button>
+        </li>
       </Dropdown>
     </div>
   )

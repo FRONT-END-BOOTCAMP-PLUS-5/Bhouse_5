@@ -148,10 +148,21 @@ export class AuthRepositoryImpl implements AuthRepository {
   async findByProvider(provider: string, providerId: string): Promise<User | null> {
     const { data, error } = await supabaseClient
       .from('users')
-      .select('*')
+      .select(
+        `
+        *,
+        user_roles (
+          role_id,
+          role:roles (
+            role_id,
+            name
+          )
+        )
+      `,
+      )
       .eq('provider', provider)
       .eq('provider_id', providerId)
-      .single()
+      .maybeSingle()
 
     if (error || !data) return null
 

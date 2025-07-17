@@ -64,10 +64,26 @@
   background-color: var(--primary-blue); /* 호버 색상도 정의 */
 }
 
+.secondaryWhite {
+  background-color: var(--primary-white);
+  color: var(--primary-black);
+}
+.secondaryWhite:hover {
+  background-color: var(--light-gray);
+}
+
+
+.fontLight {
+  font-family: 'NanumSquare', sans-serif;
+  font-weight: 400;
+}
+
+
+
 .ghost {
   background-color: transparent;
   color: var(--primary-black);
-  border: 1px solid var(--primary-black);
+  border: 1px solid var(--light-gray);
 }
 .ghost:hover {
   background-color: var(--secondary-blue-50);

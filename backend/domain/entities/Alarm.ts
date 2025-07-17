@@ -7,11 +7,10 @@ import { User } from './User' // User 엔티티가 있다면 임포트 (없다�
  * 도메인 계층에 정의하여 비즈니스 로직의 일관성을 유지합니다.
  */
 export enum AlarmType {
-  KEYWORD = 'KEYWORD',
-  REPLY = 'REPLY',
-  ADMIN = 'ADMIN',
+  TYPE1 = 'KEYWORD',
+  TYPE2 = 'REPLY',
+  TYPE3 = 'ADMIN',
 }
-
 export class Alarm {
   constructor(
     public alarmId: number,

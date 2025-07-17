@@ -1,4 +1,5 @@
 export interface ReadStoreDto {
+  createdBy: string
   storeId: number
   name: string
   address: string

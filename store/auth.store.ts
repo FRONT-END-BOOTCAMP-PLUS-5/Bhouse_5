@@ -1,3 +1,5 @@
+//store/auth.store.ts
+
 import { UserProfileResponseDto } from '@be/application/user/profile/dtos/UserProfileDto'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
