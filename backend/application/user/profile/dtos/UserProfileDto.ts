@@ -16,4 +16,5 @@ export interface UserProfileResponseDto {
   created_at: string
   updated_at: string
   user_role?: Role
+  town_name?: string // 추가: 사용자의 등록된 도시명
 }

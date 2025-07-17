@@ -2,6 +2,7 @@ import './globals.css' // 전역 CSS
 import Header from './_components/Header/Header' // Header 컴포넌트 임포트
 import React from 'react'
 import Footer from './_components/Footer/Footer' // 새로 만든 Footer 컴포넌트 경로
+import { QueryProvider } from 'providers/query.provider'
 
 export const metadata = {
   title: '보드의 집',
@@ -12,9 +13,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ko">
       <body>
-        <Header /> {/* 여기에 Header 컴포넌트 추가 */}
-        <main>{children}</main> {/* 페이지 내용은 main 태그로 감싸는 것이 좋습니다. */}
-        <Footer />
+        <QueryProvider>
+          <Header /> {/* 여기에 Header 컴포넌트 추가 */}
+          <main>{children}</main> {/* 페이지 내용은 main 태그로 감싸는 것이 좋습니다. */}
+          <Footer />
+        </QueryProvider>
       </body>
     </html>
   )

@@ -1,8 +1,8 @@
 'use client'
 
 import { signoutService } from 'models/services/auth.service'
-import { useAuthStore } from 'store/auth.store'
 import styles from './My.module.css'
+import { useAuthStore } from 'store/auth.store'
 
 function My() {
   const { isLogin, setLogout } = useAuthStore()
