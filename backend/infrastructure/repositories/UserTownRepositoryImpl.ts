@@ -35,13 +35,13 @@ export class UserTownRepositoryImpl implements UserTownRepository {
     return data.map((row: UserTownTable) => this.toDto(row))
   }
 
-  async delete(dto: { id: number; userId: string }): Promise<void> {
-    const { error } = await supabase.from('user_towns').delete().match({ id: dto.id, user_id: dto.userId })
+  async delete(dto: { userId: string; townName: string }): Promise<void> {
+    const { error } = await supabase.from('user_towns').delete().match({ user_id: dto.userId, town_name: dto.townName })
 
     if (error) throw new Error(error.message)
   }
 
-  async setPrimary(userId: string, townId: number): Promise<void> {
+  async setPrimary(userId: string, townName: string): Promise<void> {
     const { error: unsetError } = await supabase.from('user_towns').update({ is_primary: false }).eq('user_id', userId)
 
     if (unsetError) throw new Error(unsetError.message)
@@ -49,7 +49,7 @@ export class UserTownRepositoryImpl implements UserTownRepository {
     const { error: setError } = await supabase
       .from('user_towns')
       .update({ is_primary: true })
-      .match({ id: townId, user_id: userId })
+      .match({ user_id: userId, town_name: townName })
 
     if (setError) throw new Error(setError.message)
   }

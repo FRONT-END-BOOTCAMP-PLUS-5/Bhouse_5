@@ -3,6 +3,7 @@ import { verifyToken } from '@be/utils/auth'
 import { GetUserProfileUseCase } from '@be/application/user/profile/usecases/GetUserProfileUseCase'
 import { GetUserProfileQueryDto } from '@be/application/user/profile/dtos/UserProfileDto'
 import { UserRepositoryImpl } from '@be/infrastructure/repositories/UserRepositoryImpl'
+import { UserTownRepositoryImpl } from '@be/infrastructure/repositories/UserTownRepositoryImpl'
 import { UpdateUserProfileUseCase } from '@be/application/user/profile/usecases/UpdateUserProfileUseCase'
 
 export async function GET(request: NextRequest) {
@@ -15,7 +16,7 @@ export async function GET(request: NextRequest) {
     }
 
     // UseCase 실행
-    const usecase = new GetUserProfileUseCase(new UserRepositoryImpl()) // user
+    const usecase = new GetUserProfileUseCase(new UserRepositoryImpl(), new UserTownRepositoryImpl())
     const queryDto: GetUserProfileQueryDto = {
       userId: decoded.userId,
     }
