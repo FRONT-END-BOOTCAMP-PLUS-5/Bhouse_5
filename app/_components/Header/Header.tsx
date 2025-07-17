@@ -10,7 +10,6 @@ import TextInput from '../TextInput/TextInput'
 import Divider from '../Divider/Divider'
 import CircleButton from '../CircleButton/CircleButton'
 import ProfileDropdown from '../ProfileDropdown/ProfileDropdown'
-import NotificationDropdown from '../NotificationDropdown/NotificationDropdown'
 import AlarmDropdown from '../AlarmDropdown/AlarmDropdown'
 
 import BellIcon from '@public/icons/bell.svg'
