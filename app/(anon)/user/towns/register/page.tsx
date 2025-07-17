@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { addTown, removeTown, fetchTowns, setPrimaryTown } from '@/_lib/town'
 import styles from './TownRegister.module.css'
+import { extractDistrictName } from '@utils/constants'
 
 interface TownInfo {
   townName: string
@@ -140,11 +141,14 @@ export default function TownRegisterPage() {
   const handleRegister = async () => {
     if (!selectedTown) return
     try {
+      const districtName = extractDistrictName(selectedTown.name)
+
       await addTown({
-        townName: selectedTown.name,
+        townName: districtName,
         lat: selectedTown.lat,
         lng: selectedTown.lng,
       })
+
       const updated = await fetchTowns()
       setTownList(updated)
       alert('동네가 등록되었습니다.')
