@@ -25,6 +25,10 @@
   cursor: pointer;
 }
 
+.notificationIcon {
+  cursor: pointer;
+}
+
 /* 새로운 래퍼 div를 도입하여 로고를 제외한 나머지 영역을 감쌉니다. */
 /* Header.tsx에 <div className={styles.contentWrapper}></div> 를 추가해야 합니다. */
 .contentWrapper {

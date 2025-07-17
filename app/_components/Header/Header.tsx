@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react' // useEffect 추가
+import React, { useState } from 'react' // useEffect 추가
 
 import styles from './Header.module.css'
 import Button from '../Button/Button'
@@ -10,11 +10,17 @@ import Divider from '../Divider/Divider'
 import ProfileDropdown from '../ProfileDropdown/ProfileDropdown'
 
 import { useAuthStore } from '@store/auth.store' // Auth 스토어 경로
+import { signoutService } from 'models/services/auth.service'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import Image from 'next/image'
 
 const Header: React.FC = () => {
   const [search, setSearch] = useState('')
   const [selectedRegion, setSelectedRegion] = useState('중랑구')
   const currentUserType = 'OWNER' //FIXME : 유저 타입 가져오는 걸로 수정
+
+  const router = useRouter()
 
   // useAuthStore에서 isLogin 상태, 닉네임, setLogout 액션을 가져옵니다.
   const { isLogin, nickname, setLogout, user } = useAuthStore()
@@ -31,20 +37,14 @@ const Header: React.FC = () => {
     console.log('내 동네 추가하기 버튼 클릭')
   }
 
-  const handleLoginClick = () => {
-    console.log('로그인 텍스트 클릭')
-    window.location.href = '/auth/signin'
-  }
-
-  const handleSignUpClick = () => {
-    console.log('회원가입 버튼 클릭')
-    window.location.href = '/auth/signup'
-  }
-
-  const handleLogoutClick = () => {
-    console.log('로그아웃 버튼 클릭')
-    setLogout() // Zustand 스토어의 setLogout 액션을 호출합니다.
-    window.location.href = '/'
+  const handleLogoutClick = async () => {
+    try {
+      await signoutService()
+      setLogout() // Zustand 스토어의 setLogout 액션을 호출합니다.
+      router.push('/')
+    } catch (error) {
+      console.error('로그아웃 실패:', error)
+    }
   }
 
   // ProfileDropdown에 전달할 핸들러 함수들
@@ -73,11 +73,15 @@ const Header: React.FC = () => {
       {/* 상단 섹션: 로고, 로그인/회원가입, 검색창, 드롭다운 */}
       <div className={styles.headerTop}>
         {/* 로고 영역 */}
-        <div className={styles.logoContainer}>
-          <a href="http://localhost:3000/">
-            <img src="/images/rounded_logo.png" alt="보드게임 주사위 로고" className={styles.logo} />
-          </a>
-        </div>
+        <Link href="/" className={styles.logoContainer}>
+          <Image
+            src="/images/rounded_logo.png"
+            alt="보드게임 주사위 로고"
+            className={styles.logo}
+            width={60}
+            height={60}
+          />
+        </Link>
 
         {/* 로그인/회원가입 영역 */}
         <div className={styles.authSection}>
@@ -87,7 +91,7 @@ const Header: React.FC = () => {
               <ProfileDropdown
                 trigger={
                   // 프로필 이미지 대신 종 아이콘을 트리거로 사용
-                  <img src="/images/bell.png" alt="알림" style={{ width: '30px', height: '30px', cursor: 'pointer' }} /> //FIXME
+                  <Image src="/images/bell.png" alt="알림" className={styles.notificationIcon} width={30} height={30} /> //FIXME
                 }
                 userType={currentUserType}
                 onLogout={handleLogoutClick}
@@ -102,10 +106,10 @@ const Header: React.FC = () => {
             </>
           ) : (
             <>
-              <a href="http://localhost:3000/auth/signin" className={styles.loginText} onClick={handleLoginClick}>
+              <Link className={styles.loginText} href="/auth/signin">
                 로그인
-              </a>
-              <Button variant="primary" size="small" borderRadius="8" onClick={handleSignUpClick}>
+              </Link>
+              <Button variant="primary" size="small" borderRadius="8" href="/auth/signup">
                 회원가입
               </Button>
             </>
