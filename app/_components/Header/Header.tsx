@@ -47,6 +47,7 @@ const Header: React.FC = () => {
 
   const handleLogoutClick = () => {
     console.log('로그아웃 버튼 클릭')
+    //FIXME(@채영) : 도와주세요!
     setLogout() // Zustand 스토어의 setLogout 액션을 호출합니다.
     window.location.href = '/'
   }

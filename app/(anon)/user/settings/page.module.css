@@ -1,0 +1,65 @@
+/* src/app/user/setting/page.module.css */
+
+/* global css의 .page는 이미 정의되어 있으므로 여기서는 추가적인 page-level 스타일만 정의 */
+.page {
+  padding: 40px 20px; /* 페이지 전체 패딩 */
+  max-width: 800px; /* 페이지 최대 너비 설정 (중앙 정렬을 위해) */
+  margin: 0 auto; /* 페이지 중앙 정렬 */
+  box-sizing: border-box;
+}
+
+.pageTitle {
+  text-align: center;
+  margin-bottom: 40px;
+  color: var(--primary-black); /* 글자색 */
+}
+
+.notificationSection {
+  background-color: var(--primary-white); /* 흰색 배경 */
+  border-radius: 12px; /* 둥근 모서리 */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); /* 그림자 효과 */
+  padding: 20px 30px;
+  margin-bottom: 40px;
+}
+
+.notificationItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--light-gray-200); /* 구분선 */
+}
+
+.notificationItem:last-child {
+  border-bottom: none; /* 마지막 아이템은 구분선 없음 */
+}
+
+.notificationLabel {
+  color: var(--primary-black); /* 글자색 */
+  font-weight: 500;
+}
+
+.keywordListTitle {
+  margin-bottom: 20px;
+  color: var(--primary-black); /* 글자색 */
+  font-weight: 700;
+}
+
+/* global css에서 정의된 글자모양 클래스 사용 예시 (실제 global.css에 맞게 조정) */
+/* .header48 {
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.header20 {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.body20 {
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.6;
+} */
