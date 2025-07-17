@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { addTown, removeTown, fetchTowns, setPrimaryTown } from '@/_lib/town'
 import styles from './TownRegister.module.css'
-import { extractDistrictName } from '@utils/constants'
+import { extractDistrictName, normalizeSidoName } from '@utils/constants'
 
 interface TownInfo {
   townName: string
@@ -16,8 +16,8 @@ export default function TownRegisterPage() {
   const [selectedTown, setSelectedTown] = useState<{ name: string; lat: number; lng: number } | null>(null)
   const [townList, setTownList] = useState<TownInfo[]>([])
   const [isMapReady, setIsMapReady] = useState(false)
+  const [polygon, setPolygon] = useState<any>(null)
 
-  // 지도 준비되었는지 확인
   useEffect(() => {
     const interval = setInterval(() => {
       if (window.kakao?.maps && mapRef.current) {
@@ -28,7 +28,6 @@ export default function TownRegisterPage() {
     return () => clearInterval(interval)
   }, [])
 
-  // 지도 초기화
   useEffect(() => {
     if (!isMapReady || !mapRef.current) return
 
@@ -61,7 +60,6 @@ export default function TownRegisterPage() {
         })
       },
       () => {
-        // 위치 추적 실패 시 기본값 사용
         const fallback = new window.kakao.maps.LatLng(37.5665, 126.978)
         const map = new window.kakao.maps.Map(mapRef.current, {
           center: fallback,
@@ -81,18 +79,29 @@ export default function TownRegisterPage() {
     )
   }, [isMapReady])
 
-  // 동네 목록 불러오기
   useEffect(() => {
     const initTowns = async () => {
       try {
         const towns = await fetchTowns()
         setTownList(towns)
+
+        // ⭐ 대표 동네가 있다면 폴리곤 표시
+        const primary = towns.find((t) => t.isPrimary)
+        if (primary) {
+          await handleDrawDistrictPolygon(primary.townName)
+        }
       } catch {
         setTownList([])
       }
     }
     initTowns()
   }, [])
+
+  useEffect(() => {
+    if (selectedTown) {
+      handleDrawDistrictPolygon(extractDistrictName(selectedTown.name))
+    }
+  }, [selectedTown])
 
   const getAddressFromCoords = (latlng: any) => {
     const geocoder = new window.kakao.maps.services.Geocoder()
@@ -116,7 +125,7 @@ export default function TownRegisterPage() {
 
     new window.daum.Postcode({
       oncomplete: function (data: any) {
-        const regionAddress = `${data.sido} ${data.sigungu}` // 예: "부산광역시 서구"
+        const regionAddress = `${data.sido} ${data.sigungu}`
 
         const geocoder = new window.kakao.maps.services.Geocoder()
         geocoder.addressSearch(regionAddress, function (result: any, status: any) {
@@ -128,7 +137,7 @@ export default function TownRegisterPage() {
             markerRef.current.setPosition(coords)
 
             setSelectedTown({
-              name: regionAddress, // "구" 단위까지만 저장
+              name: regionAddress,
               lat: coords.getLat(),
               lng: coords.getLng(),
             })
@@ -138,10 +147,72 @@ export default function TownRegisterPage() {
     }).open()
   }
 
+  const handleDrawDistrictPolygon = async (districtName: string) => {
+    try {
+      const sido = districtName.split(' ')[0]
+      const fullSido = normalizeSidoName(sido)
+      const geoJsonUrl = `/geojson/hangjeongdong_${fullSido}.geojson`
+      const res = await fetch(geoJsonUrl)
+      const geojson = await res.json()
+
+      const clean = (str: string) => str.normalize('NFC').replace(/\s+/g, ' ').trim()
+
+      const features = geojson.features.filter((f) => clean(f.properties.adm_nm).startsWith(clean(districtName)))
+
+      if (!features || features.length === 0) {
+        console.warn('[DEBUG] districtName:', districtName)
+        console.warn(
+          '[DEBUG] adm_nm candidates:',
+          geojson.features.map((f) => f.properties.adm_nm),
+        )
+        alert(`${districtName} 영역을 찾을 수 없습니다.`)
+        return
+      }
+
+      if (polygon) polygon.setMap(null)
+
+      const paths: window.kakao.maps.LatLng[][] = []
+
+      features.forEach((feature) => {
+        const coordinatesList = feature.geometry.coordinates
+
+        if (feature.geometry.type === 'Polygon') {
+          paths.push(coordinatesList[0].map(([lng, lat]: number[]) => new window.kakao.maps.LatLng(lat, lng)))
+        } else if (feature.geometry.type === 'MultiPolygon') {
+          coordinatesList.forEach((polygonCoords: number[][][]) => {
+            paths.push(polygonCoords[0].map(([lng, lat]) => new window.kakao.maps.LatLng(lat, lng)))
+          })
+        }
+      })
+
+      const kakaoPolygon = new window.kakao.maps.Polygon({
+        path: paths,
+        strokeWeight: 2,
+        strokeColor: '#007aff',
+        strokeOpacity: 0.8,
+        fillColor: '#a3c8ff',
+        fillOpacity: 0.3,
+      })
+
+      kakaoPolygon.setMap(markerRef.current.getMap())
+      setPolygon(kakaoPolygon)
+    } catch (err) {
+      console.error('폴리곤 렌더링 실패:', err)
+    }
+  }
+
   const handleRegister = async () => {
     if (!selectedTown) return
+
     try {
       const districtName = extractDistrictName(selectedTown.name)
+      const currentTowns = await fetchTowns()
+      const isDuplicate = currentTowns.some((town) => town.townName === districtName)
+
+      if (isDuplicate) {
+        alert('이미 등록된 동네입니다.')
+        return
+      }
 
       await addTown({
         townName: districtName,
@@ -149,10 +220,12 @@ export default function TownRegisterPage() {
         lng: selectedTown.lng,
       })
 
+      await handleDrawDistrictPolygon(districtName)
+
       const updated = await fetchTowns()
       setTownList(updated)
       alert('동네가 등록되었습니다.')
-      setSelectedTown(null) // 등록 후 초기화
+      setSelectedTown(null)
     } catch (error) {
       console.error('동네 등록 에러:', error)
       alert('동네 등록 실패!')
@@ -161,6 +234,10 @@ export default function TownRegisterPage() {
 
   const handleDelete = async (townName: string) => {
     await removeTown(townName)
+    if (polygon) {
+      polygon.setMap(null)
+      setPolygon(null)
+    }
     const updated = await fetchTowns()
     setTownList(updated)
   }
@@ -174,18 +251,10 @@ export default function TownRegisterPage() {
   return (
     <div className={styles.page}>
       <h2>내 동네 등록하기</h2>
-
       <div
         ref={mapRef}
-        style={{
-          width: '100%',
-          height: 400,
-          borderRadius: 8,
-          marginBottom: 16,
-          border: '1px solid #ccc',
-        }}
+        style={{ width: '100%', height: 400, borderRadius: 8, marginBottom: 16, border: '1px solid #ccc' }}
       />
-
       <button
         onClick={openAddressSearch}
         disabled={townList.length >= 3}

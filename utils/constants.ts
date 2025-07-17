@@ -1,16 +1,35 @@
 export const API = '/api/'
-export const extractDistrictName = (fullAddress: string) => {
-  // 예: '대한민국 서울특별시 강남구 역삼동' → ['대한민국', '서울특별시', '강남구', '역삼동']
-  const parts = fullAddress.split(' ')
+const SIDO_NAME_MAP: Record<string, string> = {
+  서울: '서울특별시',
+  부산: '부산광역시',
+  대구: '대구광역시',
+  인천: '인천광역시',
+  광주: '광주광역시',
+  대전: '대전광역시',
+  울산: '울산광역시',
+  세종: '세종특별자치시',
+  경기: '경기도',
+  강원: '강원특별자치도', // 구 강원도
+  충북: '충청북도',
+  충남: '충청남도',
+  전북: '전라북도',
+  전남: '전라남도',
+  경북: '경상북도',
+  경남: '경상남도',
+  제주: '제주특별자치도',
+}
 
-  // '시군구'는 일반적으로 parts[1]과 parts[2]에 위치
-  if (parts.length >= 3) {
-    // 예외처리: 제주도는 시 없이 '제주시', '서귀포시'로 끝남
-    if (parts[1].endsWith('도') && parts[2].endsWith('시')) {
-      return parts[2] // e.g. '제주시'
-    }
-    return `${parts[1]} ${parts[2]}` // e.g. '서울특별시 강남구'
-  }
+export const extractDistrictName = (fullName: string): string => {
+  const parts = fullName.split(' ')
+  if (parts.length < 2) return fullName
 
-  return fullAddress // fallback
+  const sidoShort = parts[0] // 예: 서울
+  const sigungu = parts[1] // 예: 종로구
+
+  const fullSido = SIDO_NAME_MAP[sidoShort] || sidoShort
+  return `${fullSido} ${sigungu}`
+}
+
+export const normalizeSidoName = (sido: string): string => {
+  return SIDO_NAME_MAP[sido] || sido
 }

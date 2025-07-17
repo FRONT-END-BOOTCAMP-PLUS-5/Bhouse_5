@@ -59,31 +59,25 @@ export const addTown = async (dto: { townName: string; lat: number; lng: number 
 }
 
 export const removeTown = async (townName: string): Promise<void> => {
-  const token = getCookie('accessToken')
-  if (!token) throw new Error('토큰 없음')
-
   const res = await fetch(`/api/user/certify-town`, {
     method: 'DELETE',
     headers: {
-      Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ town: townName }),
+    credentials: 'include',
+    body: JSON.stringify({ townName: townName }),
   })
 
   if (!res.ok) throw new Error('동네 삭제 실패')
 }
 
 export const setPrimaryTown = async (townName: string): Promise<void> => {
-  const token = getCookie('accessToken')
-  if (!token) throw new Error('토큰 없음')
-
   const res = await fetch('/api/user/certify-town/set-primary', {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
+    credentials: 'include',
     body: JSON.stringify({ town: townName }),
   })
 

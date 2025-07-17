@@ -1,8 +1,8 @@
 import { UserTownRepository } from '@be/domain/repositories/UserTownRepository'
 
 export interface DeleteUserTownDto {
-  id: number
   userId: string
+  townName: string
 }
 
 export class DeleteUserTownUseCase {
