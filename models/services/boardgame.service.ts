@@ -16,3 +16,11 @@ export const getBoardgamesService = async () => {
   // 안정성 확보: data가 없으면 빈 배열 반환
   return res.data?.data ?? []
 }
+
+export async function getBoardgamesByStoreId(storeId: number) {
+  const response = await fetch(`/api/stores/${storeId}/boardgames`)
+  if (!response.ok) {
+    throw new Error('보드게임 데이터를 불러오는 데 실패했어요')
+  }
+  return await response.json()
+}

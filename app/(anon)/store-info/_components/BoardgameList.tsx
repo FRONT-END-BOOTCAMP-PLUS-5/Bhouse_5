@@ -1,38 +1,52 @@
 'use client'
 
-import Image from 'next/image'
-import styles from './BoardgameList.module.css'
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import BoardgameCard from '@/_components/BoardgameCard/BoardgameCard'
+import styles from './BoardgameList.module.css'
+import { getBoardgamesByStoreId } from 'models/services/boardgame.service'
 
-const games = [
-  {
-    id: 1,
-    title: '헉, 내가 잊어진 천사족의 여왕?',
-    imgUrl: '/images/arknova.jpg', // public 디렉토리에 이미지 있어야 함
-  },
-  {
-    id: 2,
-    title: '헉, 내가 잊어진 천사족의 여왕?',
-    imgUrl: '/images/arknova.jpg',
-  },
-  {
-    id: 3,
-    title: '헉, 내가 잊어진 천사족의 여왕?',
-    imgUrl: '/images/arknova.jpg',
-  },
-]
+interface Boardgame {
+  id: number
+  title: string
+  imgUrl: string
+}
 
 export default function BoardgameList() {
+  const [games, setGames] = useState<Boardgame[]>([])
+  const storeId = 2
+  const router = useRouter()
+
+  useEffect(() => {
+    const fetchGames = async () => {
+      try {
+        const res = await getBoardgamesByStoreId(storeId)
+        if (res.success) {
+          setGames(res.data)
+        }
+      } catch (e) {
+        console.error(e)
+      }
+    }
+
+    fetchGames()
+  }, [])
+
+  const top3 = games.slice(0, 3)
+
+  const handleMoreClick = () => {
+    router.push(`/store-info-gamelist?storeId=${storeId}`)
+  }
+
   return (
     <div>
-      <div>
-        {games.map((game: { imgUrl: any; title: any }, index: any) => (
-          <BoardgameCard key={index} imageUrl={game.imgUrl} title={game.title} width={40} height={40} />
+      <div className={styles.cardList}>
+        {top3.map((game, index) => (
+          <BoardgameCard key={index} imageUrl={game.imgUrl} title={game.title} width={60} height={60} />
         ))}
       </div>
-      <div style={{ textAlign: 'right', fontSize: '13px', color: '#007bff', marginTop: '8px', paddingRight: '12px' }}>
-        더보기
-      </div>
+
+      {games.length > 3 && <div onClick={handleMoreClick}>더보기</div>}
     </div>
   )
 }
