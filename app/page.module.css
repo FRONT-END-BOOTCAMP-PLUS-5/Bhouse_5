@@ -6,7 +6,7 @@
   min-height: 100svh;
   padding: 80px;
   gap: 20px;
-  background-color: var(--secondary-blue-100);
+  background-color: var(--primary-white);
 }
 
 /* TODO: 텍스트 크기 피그마와 동일하게 적용했으나, 화면과 스케일이 상이하여 크기 상세 조정 필요함. */

@@ -14,6 +14,7 @@ interface AlarmTable {
   is_read: boolean
   created_at: string // Supabase에서 가져올 때는 ISO 문자열
   alarm_type: AlarmType
+  post_id: number | null // post_id 속성 추가
 }
 
 /**
@@ -33,6 +34,7 @@ class AlarmMapper {
       data.is_read,
       new Date(data.created_at), // 문자열을 Date 객체로 변환
       data.alarm_type,
+      data.post_id, // postId 매핑
     )
   }
 
@@ -47,6 +49,7 @@ class AlarmMapper {
       message: alarm.message,
       is_read: alarm.isRead,
       alarm_type: alarm.alarmType,
+      post_id: alarm.postId, // postId 매핑
       // created_at은 DB에서 기본값으로 설정되거나, 엔티티의 값을 사용 (insert 시)
       created_at: alarm.createdAt ? alarm.createdAt.toISOString() : undefined,
     }
@@ -58,11 +61,8 @@ class AlarmMapper {
  * 실제 Supabase 데이터베이스와 상호작용합니다.
  */
 export class SupabaseAlarmRepository implements AlarmRepository {
-  // 생성자에서 SupabaseClient를 주입받는 대신, 미리 정의된 인스턴스를 직접 사용
-  // private supabase: SupabaseClient; // 제거
-
   constructor() {
-    // this.supabase = supabaseClient; // 이제 필요 없음
+    // 생성자에서 SupabaseClient를 주입받는 대신, 미리 정의된 인스턴스를 직접 사용
   }
 
   async findAll(relations?: AlarmRelationsOptions): Promise<Alarm[]> {
@@ -136,13 +136,21 @@ export class SupabaseAlarmRepository implements AlarmRepository {
     if (error) throw new Error(`Failed to mark alarm as read: ${error.message}`)
   }
 
+  async markAllAsRead(userId: string): Promise<void> {
+    const { error } = await supabaseClient // supabaseClient 사용
+      .from('alarms')
+      .update({ is_read: true })
+      .eq('user_id', userId) // 사용자 ID에 해당하는 모든 알람을 읽음 처리
+    if (error) throw new Error(`Failed to mark all alarms as read for user ${userId}: ${error.message}`)
+  }
+
   async findByUserIdAndType(
     userId: string,
     alarmType: AlarmType | 'ALL',
   ): Promise<{ alarms: Alarm[]; totalCount: number }> {
     let query = supabaseClient // supabaseClient 사용
       .from('alarms')
-      .select('alarm_id, user_id, alarm_type, message, is_read, created_at', { count: 'exact' })
+      .select('alarm_id, user_id, alarm_type, message, is_read, created_at, post_id', { count: 'exact' }) // <-- post_id 추가
       .eq('user_id', userId)
 
     if (alarmType !== 'ALL') {

@@ -1,0 +1,84 @@
+/* src/components/Toggle/Toggle.module.css */
+
+.toggleContainer {
+  display: inline-block;
+  position: relative; /* 썸 위치 지정을 위한 기준점 */
+  cursor: pointer;
+  border-radius: 9999px; /* 완벽한 타원형 */
+  transition: background-color 0.2s ease-in-out;
+  flex-shrink: 0; /* flex 컨테이너 안에서 크기가 줄어들지 않도록 */
+  box-sizing: border-box; /* 패딩, 보더 포함 크기 계산 */
+
+  /* 기본 색상 (꺼진 상태) */
+  background-color: var(--light-gray, #ababab); /* --light-gray가 정의되지 않았을 경우 #ababab 사용 */
+}
+
+/* 켜진 상태의 배경색 */
+.toggleContainer.checked {
+  background-color: var(--primary-blue, #007bff); /* --primary-blue가 정의되지 않았을 경우 #007bff 사용 */
+}
+
+.toggleThumb {
+  position: absolute;
+  top: var(--toggle-padding); /* 상하 패딩 */
+  left: var(--toggle-padding); /* 좌우 패딩 */
+  background-color: var(--primary-white, #ffffff); /* --primary-white가 정의되지 않았을 경우 #ffffff 사용 */
+  border-radius: 50%; /* 원형 */
+  transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out; /* 이동 애니메이션 */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); /* 썸에 그림자 효과 */
+}
+
+/* 켜진 상태에서 썸 이동 */
+.toggleContainer.checked .toggleThumb {
+  transform: translateX(var(--toggle-slide-distance));
+}
+
+/* --- Sizes --- */
+
+/* Medium (Default) */
+.toggleContainer.medium {
+  --toggle-height: 26px;
+  --toggle-width: 48px;
+  --thumb-size: 20px;
+  --toggle-padding: 3px; /* 중앙 정렬을 위해 패딩을 약간 늘림 */
+
+  height: var(--toggle-height);
+  width: var(--toggle-width);
+  --toggle-slide-distance: calc(var(--toggle-width) - var(--thumb-size) - (2 * var(--toggle-padding)));
+}
+.toggleContainer.medium .toggleThumb {
+  height: var(--thumb-size);
+  width: var(--thumb-size);
+}
+
+/* Small */
+.toggleContainer.small {
+  --toggle-height: 20px;
+  --toggle-width: 36px;
+  --thumb-size: 14px;
+  --toggle-padding: 3px;
+
+  height: var(--toggle-height);
+  width: var(--toggle-width);
+  --toggle-slide-distance: calc(var(--toggle-width) - var(--thumb-size) - (2 * var(--toggle-padding)));
+}
+.toggleContainer.small .toggleThumb {
+  height: var(--thumb-size);
+  width: var(--thumb-size);
+}
+
+/* Large */
+.toggleContainer.large {
+  --toggle-height: 32px;
+  --toggle-width: 60px;
+  --thumb-size: 26px;
+  --toggle-padding: 3px;
+
+  height: var(--toggle-height);
+  width: var(--toggle-width);
+  --toggle-slide-distance: calc(var(--toggle-width) - var(--thumb-size) - (2 * var(--toggle-padding)));
+}
+.toggleContainer.large .toggleThumb {
+  height: var(--thumb-size);
+  width: var(--thumb-size);
+}

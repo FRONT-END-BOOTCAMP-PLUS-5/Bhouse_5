@@ -9,6 +9,7 @@ import TextInput from './_components/TextInput/TextInput'
 import Divider from './_components/Divider/Divider'
 import CircleButton from './_components/CircleButton/CircleButton'
 import ListingElement from './_components/ListingElement/ListingElement'
+import Toggle from './_components/Toggle/Toggle'
 
 import FileIcon from '@public/icons/file.svg'
 
@@ -18,6 +19,7 @@ export default function Home() {
   const [search, setSearch] = React.useState('')
   const [selectedRegion, setSelectedRegion] = useState('중랑구')
   const [smallSelectedOption, setSmallSelectedOption] = React.useState('옵션 1')
+  const [isNotificationsEnabled, setIsNotificationsEnabled] = useState(true)
 
   const handleSmallOptionSelect = (option: string) => {
     setSmallSelectedOption(option)
@@ -61,6 +63,10 @@ export default function Home() {
       <p className={styles.header20}>이것은 본문보다 살짝 큰 header20 텍스트입니다.</p>
       <p className={styles.header48}>이것은 페이지 타이틀을 담당하는 header48입니다. </p>
       <p className={styles.extraBoldText}>이것은 나눔스퀘어 엑스트라볼드 텍스트입니다.</p>
+
+      <h3>알림 설정</h3>
+      <Toggle checked={isNotificationsEnabled} onChange={setIsNotificationsEnabled} size="medium" />
+      <p>알림 {isNotificationsEnabled ? '켜짐' : '꺼짐'}</p>
 
       <Button borderRadius="8" variant="secondaryWhite">
         기본 버튼

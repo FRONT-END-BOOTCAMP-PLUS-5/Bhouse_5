@@ -1,7 +1,9 @@
 'use client'
 
-import React, { useState, useEffect } from 'react' // useEffect 추가
-import Image from 'next/image' // Image 컴포넌트를 사용하기 위해 임포트합니다.
+import React, { useState } from 'react'
+import Link from 'next/link'
+import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 
 import styles from './Header.module.css'
 import Button from '../Button/Button'
@@ -10,20 +12,22 @@ import TextInput from '../TextInput/TextInput'
 import Divider from '../Divider/Divider'
 import CircleButton from '../CircleButton/CircleButton'
 import ProfileDropdown from '../ProfileDropdown/ProfileDropdown'
-import NotificationDropdown from '../NotificationDropdown/NotificationDropdown'
-import BellIcon from '@public/icons/bell.svg' // 알림 아이콘 컴포넌트
+import AlarmDropdown from '../AlarmDropdown/AlarmDropdown'
 
-import { useAuthStore } from '@store/auth.store' // Auth 스토어 경로
+import BellIcon from '@public/icons/bell.svg'
+
+import { useAuthStore } from '@store/auth.store'
+import { signoutService } from 'models/services/auth.service'
 
 const Header: React.FC = () => {
   const [search, setSearch] = useState('')
   const [selectedRegion, setSelectedRegion] = useState('중랑구')
 
-  // useAuthStore에서 isLogin 상태, 닉네임, setLogout 액션을 가져옵니다.
+  const router = useRouter()
+
   const { isLogin, nickname, setLogout, user } = useAuthStore()
   const currentUserType = user.user_role.name
   const profileImageUrl = user?.profile_img_url || '/images/user_empty_profile_img.png'
-  console.log('userprofileImage : ', profileImageUrl)
 
   const handleRegionSelect = (region: string) => {
     setSelectedRegion(region)
@@ -34,41 +38,14 @@ const Header: React.FC = () => {
     console.log('내 동네 추가하기 버튼 클릭')
   }
 
-  const handleLoginClick = () => {
-    console.log('로그인 텍스트 클릭')
-    window.location.href = '/auth/signin'
-  }
-
-  const handleSignUpClick = () => {
-    console.log('회원가입 버튼 클릭')
-    window.location.href = '/auth/signup'
-  }
-
-  const handleLogoutClick = () => {
-    console.log('로그아웃 버튼 클릭')
-    setLogout() // Zustand 스토어의 setLogout 액션을 호출합니다.
-    window.location.href = '/'
-  }
-
-  // ProfileDropdown에 전달할 핸들러 함수들
-  const handleMyPageClick = () => {
-    console.log('마이페이지 클릭')
-    // TODO: 마이페이지로 이동 로직
-  }
-
-  const handleStoreManagementClick = () => {
-    console.log('업장 관리 클릭')
-    // TODO: 업장 관리 페이지로 이동 로직 (OWNER 전용)
-  }
-
-  const handleWishlistClick = () => {
-    console.log('찜 목록 보기 클릭')
-    // TODO: 찜 목록 페이지로 이동 로직
-  }
-
-  const handleMyActivitiesClick = () => {
-    console.log('내 활동 보기 클릭')
-    // TODO: 내 활동 페이지로 이동 로직
+  const handleLogoutClick = async () => {
+    try {
+      await signoutService()
+      setLogout()
+      router.push('/')
+    } catch (error) {
+      console.error('로그아웃 실패:', error)
+    }
   }
 
   return (
@@ -76,60 +53,55 @@ const Header: React.FC = () => {
       {/* 상단 섹션: 로고, 로그인/회원가입, 검색창, 드롭다운 */}
       <div className={styles.headerTop}>
         {/* 로고 영역 */}
-        <div className={styles.logoContainer}>
-          <a href="http://localhost:3000/">
-            <img src="/images/rounded_logo.png" alt="보드게임 주사위 로고" className={styles.logo} />
-          </a>
-        </div>
+        <Link href="/" className={styles.logoContainer}>
+          <Image
+            src="/images/rounded_logo.png"
+            alt="보드게임 주사위 로고"
+            className={styles.logo}
+            width={60}
+            height={60}
+          />
+        </Link>
 
         {/* 로그인/회원가입 영역 또는 알림/프로필 드롭다운 */}
         <div className={styles.authSection}>
           {isLogin ? (
             <>
               {/* 알림 드롭다운 컴포넌트 사용 */}
-              <NotificationDropdown
+              <AlarmDropdown
                 trigger={
                   <CircleButton
-                    icon={<BellIcon width={30} height={30} fill="white" />}
-                    iconAlt="알림"
+                    svgComponent={BellIcon} // BellIcon 컴포넌트를 직접 전달
+                    svgWidth={25} // 아이콘 너비
+                    svgHeight={25} // 아이콘 높이
+                    svgFill="white" // 아이콘 색상
+                    imageAlt="알림 아이콘" // 접근성용 대체 텍스트
                     bgColor="var(--primary-blue)"
-                    size={50}
+                    size={40}
                   />
                 }
               />
               {/* 사용자 프로필 드롭다운 */}
               <ProfileDropdown
                 trigger={
-                  // 프로필 이미지: next/image 컴포넌트를 icon prop에 직접 전달합니다.
                   <CircleButton
-                    icon={
-                      <Image
-                        src={profileImageUrl}
-                        alt="프로필 이미지" // Next.js Image 컴포넌트에 alt 텍스트 필수
-                        width={40} // 이미지의 실제 표시 너비
-                        height={40} // 이미지의 실제 표시 높이
-                        style={{ borderRadius: '50%', objectFit: 'cover' }} // 이미지를 원형으로 만들고 버튼에 맞게 채움
-                      />
-                    }
-                    iconAlt="프로필" // 이 prop은 이제 CircleButton 내부에서 직접 사용되지 않음
-                    bgColor="transparent" // 프로필 이미지 배경은 투명하게 설정
-                    size={50} // CircleButton의 전체 크기
+                    imageUrl={profileImageUrl} // 이미지 URL을 직접 전달
+                    imageSize={40} // 이미지 크기
+                    imageAlt="프로필 이미지" // 접근성용 대체 텍스트
+                    bgColor="transparent" // 배경은 투명
+                    size={40}
                   />
                 }
                 userType={currentUserType}
                 onLogout={handleLogoutClick}
-                onMyPageClick={handleMyPageClick}
-                onStoreManagementClick={handleStoreManagementClick}
-                onWishlistClick={handleWishlistClick}
-                onMyActivitiesClick={handleMyActivitiesClick}
               />
             </>
           ) : (
             <>
-              <a href="http://localhost:3000/auth/signin" className={styles.loginText} onClick={handleLoginClick}>
+              <Link className={styles.loginText} href="/auth/signin">
                 로그인
-              </a>
-              <Button variant="primary" size="small" borderRadius="8" onClick={handleSignUpClick}>
+              </Link>
+              <Button variant="primary" size="small" borderRadius="8" href="/auth/signup">
                 회원가입
               </Button>
             </>
@@ -173,8 +145,6 @@ const Header: React.FC = () => {
           </Dropdown>
         </div>
       ) : (
-        // 드롭다운이 있어야 할 자리에 레이아웃 유지를 위한 빈 공간을 만듭니다.
-        // 필요에 따라 이 부분도 로딩 스피너 등으로 대체할 수 있습니다.
         <div className={styles.searchAndDropdown} style={{ justifyContent: 'flex-end' /* 기존 정렬 유지 */ }}>
           <TextInput
             type="text"
@@ -205,7 +175,7 @@ const Header: React.FC = () => {
       </nav>
 
       {/* 구분선 (헤더 상단과 하단 메뉴 사이) */}
-      <Divider marginY="15px" />
+      <Divider marginY="0px" />
     </header>
   )
 }
