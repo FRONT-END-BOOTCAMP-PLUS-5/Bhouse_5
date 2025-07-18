@@ -1,0 +1,64 @@
+.carouselContainer {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: 300px;
+    border-radius: 12px;
+    touch-action: pan-y;
+    /* 모바일 터치 스크롤 충돌 방지 */
+}
+
+.carouselTrack {
+    display: flex;
+    height: 100%;
+    transition: transform 0.5s ease-in-out;
+    will-change: transform;
+}
+
+.carouselItemWrapper {
+    flex: 0 0 100%;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.carouselItem {
+    flex: 0 0 100%;
+    /* ✅ 정확히 한 슬라이드만 보이도록 설정 */
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.carouselItem :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.carouselDots {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.5rem;
+    z-index: 10;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #ccc;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.active {
+    background-color: #007aff;
+}
