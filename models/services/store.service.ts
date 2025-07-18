@@ -18,8 +18,8 @@ export interface StoreResponse {
   ownerName: string
 }
 
-export const getStoreByIdService = async (storeId: number) => {
+export const getStoreByIdService = async (storeId: number): Promise<StoreResponse> => {
   const res = await instance.get(`/api/stores/${storeId}`)
   console.log('응답:', res.data)
-  return res.data
+  return res.data as StoreResponse
 }

@@ -6,8 +6,9 @@ import { verifyToken } from '@be/utils/auth' // ✅ JWT 검증 유틸 (Decodes +
 const repo = new AdRepositoryImpl()
 const getAdUseCase = new GetAdUseCase(repo)
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
-  const id = parseInt(params.id)
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id: idParam } = await params
+  const id = parseInt(idParam)
   if (isNaN(id)) {
     return NextResponse.json({ message: 'Invalid ID' }, { status: 400 })
   }

@@ -43,10 +43,9 @@ const KeywordListForm: React.FC = () => {
           value={newKeyword}
           onChange={(e) => setNewKeyword(e.target.value)}
           placeholder="게시글 알림 받을 키워드 추가하기"
-          size="medium" // 적절한 크기
           className={styles.keywordInput}
         />
-        <Button type="submit" variant="primary" size="medium" borderRadius="8">
+        <Button type="submit" variant="primary" size="small" borderRadius="8">
           등록
         </Button>
       </form>

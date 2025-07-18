@@ -43,9 +43,9 @@ export class PostRepositoryImpl implements PostRepository {
       new Date(data.created_at),
       data.town,
       data.hits,
-      data.users?.nickname ?? null,
-      data.users?.profile_img_url ?? null,
-    )
+      (data.users as any)?.[0]?.nickname ?? null,
+      (data.users as any)?.[0]?.profile_img_url ?? null,
+    ) as any
   }
 
   async deletePost(postId: number, userId: string): Promise<void> {
