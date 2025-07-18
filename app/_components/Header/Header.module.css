@@ -3,12 +3,12 @@
 .header {
   width: 100%;
   padding: 15px 20px; /* 전체 헤더의 패딩 */
+  padding-bottom: 0;
   box-sizing: border-box;
   background-color: var(--primary-white);
   position: relative; /* 로고의 absolute 위치 지정을 위한 기준점 */
   display: flex; /* 자식 요소들을 세로로 쌓기 위해 flex column */
   flex-direction: column;
-  /* align-items: center; // 이 부분이 전체 너비를 줄이고 중앙 정렬해서 오른쪽 여백이 생긴 원인일 수 있습니다. 제거합니다. */
 }
 
 /* logoContainer는 그대로 absolute로 유지 */
@@ -51,13 +51,13 @@
   align-items: center;
   width: 100%; /* contentWrapper 내에서 100% */
   /* padding-left는 contentWrapper가 담당하므로 여기서는 제거 */
-  margin-bottom: 5px;
 }
 
 .authSection {
   display: flex;
   align-items: center;
   gap: 10px;
+  margin-bottom: 7px;
 }
 
 .loginText {
@@ -85,7 +85,7 @@
   justify-content: flex-end; /* 검색창과 드롭다운을 오른쪽 정렬 */
   width: 100%; /* contentWrapper 내에서 100% */
   /* padding-left는 contentWrapper가 담당하므로 여기서는 제거 */
-  margin-bottom: 15px;
+  margin-bottom: 8px;
 }
 
 .searchInput {
@@ -100,7 +100,7 @@
   width: 100%; /* contentWrapper 내에서 100% */
   /* contentWrapper에서 이미 좌측 마진을 주었으므로, 여기서는 패딩을 0으로 합니다. */
   padding-left: 0;
-  margin-top: 5px;
+  margin-bottom: 8;
 }
 
 /* Dropdown 내부의 버튼을 위한 스타일 (ListItem처럼 보이도록) */

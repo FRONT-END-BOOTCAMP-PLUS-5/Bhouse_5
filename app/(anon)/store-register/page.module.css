@@ -1,0 +1,91 @@
+.container {
+  padding: 2rem;
+  font-family: 'NanumSquare', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pageContainer {
+  padding: 24px;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 24px;
+}
+
+.form label {
+  font-weight: 600;
+  font-size:16px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.textInput {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  margin-left:auto;
+  margin-right:auto;
+  border-radius: 6px;
+
+}
+
+.gallery {
+  display: flex;
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.singleUploader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  background-color: var(--secondary-blue-400);
+  border-radius: 12px;
+  margin: 12px 0;
+  position: relative;
+}
+
+.uploadBox {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--secondary-blue-400);
+  border-radius: 12px;
+  width: 80px;
+  height: 80px;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.plus {
+  font-size: 24px;
+  color: white;
+}
+
+.imagePreview {
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 2px solid #ccc;
+}
+
+
+
+.searchBoardgameInput{
+  width: 100%;
+}
+
+
+.submitButton{
+  margin:10px;
+}

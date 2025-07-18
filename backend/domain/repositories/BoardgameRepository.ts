@@ -8,4 +8,5 @@ export default interface BoardgameRepository {
     minPlayers?: number
     maxPlayers?: number
   }): Boardgame[] | PromiseLike<Boardgame[]>
+  findByStoreId(storeId: number): Promise<Boardgame[]>
 }

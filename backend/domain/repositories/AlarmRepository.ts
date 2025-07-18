@@ -54,6 +54,12 @@ export default interface AlarmRepository {
   markAsRead(alarmId: number): Promise<void>
 
   /**
+   * 특정 사용자의 모든 알람을 읽음 상태로 표시합니다.
+   * @param userId 모든 알람을 읽음 처리할 사용자 ID
+   */
+  markAllAsRead(userId: string): Promise<void> // 모든 알람 읽음 처리 메서드 추가
+
+  /**
    * 사용자 ID와 알람 타입으로 알람 목록 및 총 개수를 조회합니다.
    * 기존 route.ts의 `GET` 요청 로직에 맞춰 추가된 메서드입니다.
    * @param userId 사용자 ID (UUID)

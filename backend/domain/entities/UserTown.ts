@@ -6,6 +6,6 @@ export class UserTown {
     public readonly latitude: number | null,
     public readonly longitude: number | null,
     public readonly createdAt: Date,
-    public readonly isPrimary: boolean = false, // 추가: 주요 도시 여부
+    public readonly isPrimary: boolean,
   ) {}
 }

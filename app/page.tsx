@@ -1,12 +1,18 @@
 'use client'
+import React, { useState } from 'react'
+import Image from 'next/image' // Image 컴포넌트를 사용하기 위해 임포트합니다.
 
 import styles from './page.module.css'
 import Button from './_components/Button/Button'
-import React, { useState } from 'react'
 import Dropdown from './_components/Dropdown/Dropdown'
 import TextInput from './_components/TextInput/TextInput'
 import Divider from './_components/Divider/Divider'
 import CircleButton from './_components/CircleButton/CircleButton'
+import ListingElement from './_components/ListingElement/ListingElement'
+import Toggle from './_components/Toggle/Toggle'
+
+import FileIcon from '@public/icons/file.svg'
+import Carousel from './_components/Carousel/Carousel'
 
 export default function Home() {
   const [email, setEmail] = React.useState('')
@@ -14,6 +20,7 @@ export default function Home() {
   const [search, setSearch] = React.useState('')
   const [selectedRegion, setSelectedRegion] = useState('중랑구')
   const [smallSelectedOption, setSmallSelectedOption] = React.useState('옵션 1')
+  const [isNotificationsEnabled, setIsNotificationsEnabled] = useState(true)
 
   const handleSmallOptionSelect = (option: string) => {
     setSmallSelectedOption(option)
@@ -33,24 +40,64 @@ export default function Home() {
 
   return (
     <div className={styles.page}>
+      <Carousel
+        items={[
+          {
+            content: (
+              <Image
+                src="https://images.unsplash.com/photo-1602524810970-7ea5af66c84a?auto=format&fit=crop&w=800&q=80"
+                alt="Ad 1"
+                width={800}
+                height={300}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            ),
+            href: 'https://naver.com',
+          },
+          {
+            content: (
+              <Image
+                src="https://images.unsplash.com/photo-1526040652367-ac003a0475fe?auto=format&fit=crop&w=800&q=80"
+                alt="Ad 2"
+                width={800}
+                height={300}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            ),
+            href: '/ads/2',
+          },
+        ]}
+        autoPlay
+        interval={10000}
+      />
       <div>
         <CircleButton
-          iconSrc="/icons/file.svg"
-          iconAlt="파일"
-          iconSize={40}
+          icon={<FileIcon width={40} height={40} fill="red" />} // iconSize 대신 width, height를 직접 지정합니다. 상단에서 import한 아이콘을 가져옵니다.
+          //사용할 svg아이콘의 파일에서 fill값을 "currentColor"로 지정해야 색상을 바꿀 수 있습니다. (예시 파일 : bell, file, trash 수정하였음.)
+          iconAlt="파일" // iconAlt는 CircleButton 인터페이스에는 있지만, FileIcon 컴포넌트 자체에서 alt를 관리할 수도 있습니다.
           bgColor="#ffebee"
           size={90}
-          onClick={() => alert('삭제')}
+          onClick={() => alert('파일 아이콘 클릭')} // onClick 메시지를 더 구체적으로 변경했습니다.
         />
       </div>
+      <ListingElement
+        label={'엘레멘트입니다'}
+        onDelete={function (): void {
+          throw new Error('Function not implemented.')
+        }}
+      />
       <p className={styles.title48}>보드의 집</p>
       <p className={styles.title48}>보드의 집 title48텍스트입니다.</p>
-      <Divider color="#FF0000" thickness="2px" />
+      <Divider thickness="2px" />
       <h1 className={styles.body16}>환영합니다! 이것은 본문 텍스트 body 16입니다.</h1>
       <Divider marginY="8px" />
       <p className={styles.header20}>이것은 본문보다 살짝 큰 header20 텍스트입니다.</p>
       <p className={styles.header48}>이것은 페이지 타이틀을 담당하는 header48입니다. </p>
       <p className={styles.extraBoldText}>이것은 나눔스퀘어 엑스트라볼드 텍스트입니다.</p>
+
+      <h3>알림 설정</h3>
+      <Toggle checked={isNotificationsEnabled} onChange={setIsNotificationsEnabled} size="medium" />
+      <p>알림 {isNotificationsEnabled ? '켜짐' : '꺼짐'}</p>
 
       <Button borderRadius="8" variant="secondaryWhite">
         기본 버튼
