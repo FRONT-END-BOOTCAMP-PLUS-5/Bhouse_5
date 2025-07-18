@@ -32,6 +32,7 @@ export class GetAlarmsByUserIdAndTypeUseCase {
         type: alarm.alarmType,
         is_read: alarm.isRead,
         created_at: alarm.createdAt.toISOString(), // Date 객체를 ISO 문자열로 변환
+        post_id: alarm.postId, // postId 속성 추가
       }
 
       // 'reply' 타입인 경우 'message' 필드를 'title'로 변경

@@ -1,23 +1,26 @@
-'use client'
-
-import { Roboto } from 'next/font/google'
-import { QueryProvider } from 'providers/query.provider'
+// app/layout.tsx
 import './globals.css'
-import { ReactNode } from 'react'
+import Header from './_components/Header/Header'
+import Footer from './_components/Footer/Footer'
+import ScriptLoader from './_components/ScriptLoader/ScriptLoader'
+import React from 'react'
+import { QueryProvider } from 'providers/query.provider'
 
-const roboto = Roboto({
-  weight: '400',
-  subsets: ['latin'],
-})
+export const metadata = {
+  title: 'My App',
+  description: 'A boardgame platform',
+}
 
-const RootLayout = ({ children }: { children: ReactNode }) => {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={roboto.className}>
+    <html lang="ko">
       <body>
-        <QueryProvider>{children}</QueryProvider>
+        <QueryProvider>
+          <Header /> {/* 여기에 Header 컴포넌트 추가 */}
+          <main>{children}</main> {/* 페이지 내용은 main 태그로 감싸는 것이 좋습니다. */}
+          <Footer />
+        </QueryProvider>
       </body>
     </html>
   )
 }
-
-export default RootLayout

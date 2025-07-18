@@ -1,6 +1,6 @@
 import { Boardgame } from '../entities/Boardgame'
 
-export interface BoardgameRepository {
+export default interface BoardgameRepository {
   findBoardgameById(id: number): Promise<Boardgame | null>
   searchBoardgames(params: {
     name?: string
@@ -8,4 +8,5 @@ export interface BoardgameRepository {
     minPlayers?: number
     maxPlayers?: number
   }): Boardgame[] | PromiseLike<Boardgame[]>
+  findByStoreId(storeId: number): Promise<Boardgame[]>
 }

@@ -1,0 +1,51 @@
+/* TextInput.module.css */
+
+.inputBase {
+  /* 기본 스타일 */
+  border: 1px solid var(--dark-gray); /* 테두리 색: --dark-gray */
+  border-radius: 8px; /* 테두리 라운드: 8px */
+  padding: 10px 12px; /* 내부 여백 */
+  font-size: 16px; /* 내부 글씨 크기: 16 */
+  color: var(--primary-black); /* 입력하면 검은색: --primary-black */
+  outline: none; /* 포커스 시 기본 아웃라인 제거 */
+  box-sizing: border-box; /* padding이 width에 포함되도록 */
+
+  /* 가로 길이 고정 (예: 250px), 필요시 100% 등으로 조절 가능 */
+  /* 가로 길이 비율에 맞춰 늘어나게 하려면 */
+  /* width: 100%; */ 
+  /* max-width를 사용하여 특정 크기 이상 커지지 않게 할 수 있음 */
+  /* max-width: 400px; */
+
+  /* 입력 많아도 세로로 늘어나지 않게 */
+  resize: none; /* textarea에만 적용되는 속성, 가로/세로 크기 조절 방지 */
+  /* height: 40px; */ /* 특정 높이를 고정하고 싶을 때 (텍스트 인풋) */
+}
+
+/* small 사이즈 추가 (글자크기 14, 세로 길이 짧음)*/
+.small {
+  padding: 8px 16px; /* small 사이즈의 패딩 */
+  font-size: 14px; /* small 사이즈의 폰트 크기 */
+}
+
+/* placeholder 색상 */
+.inputBase::placeholder {
+  color: var(--dark-gray); /* placeholder 색상: --dark-gray */
+  opacity: 1; /* 일부 브라우저에서 투명도를 적용하는 경우가 있어 1로 설정 */
+}
+
+/* 포커스 시 스타일 */
+.inputBase:focus {
+  border-color: var(--primary-blue); /* 포커스 시 테두리 색상 변경 (예시) */
+}
+
+/* textarea 특정 스타일 */
+.textarea {
+  min-height: 80px; /* textarea의 최소 높이 (원하는 만큼 조절) */
+  vertical-align: top; /* 텍스트가 상단부터 시작하도록 */
+  overflow-y: auto; /* 내용이 많아지면 스크롤바 생성 */
+}
+
+/* 입력 많아도 세로로 늘어나지 않게 (단일 라인 input의 경우) */
+/* overflow: hidden; */ /* 단일 라인 input에서 텍스트가 넘치면 숨김 */
+/* white-space: nowrap; */ /* 텍스트를 한 줄에 강제 */
+/* text-overflow: ellipsis; */ /* 텍스트가 넘치면 ...으로 표시 */

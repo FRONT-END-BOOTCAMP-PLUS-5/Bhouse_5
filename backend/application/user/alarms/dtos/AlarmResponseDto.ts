@@ -13,6 +13,7 @@ export interface AlarmResponseDto {
   created_at: string // 생성 시간 (ISO 8601 문자열)
   message?: string // 'reply' 타입이 아닐 경우 사용
   title?: string // 'reply' 타입일 경우 사용
+  post_id?: number // postId 속성 추가
 }
 
 /**

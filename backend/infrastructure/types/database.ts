@@ -46,6 +46,7 @@ export interface AlarmTable {
   alarm_type: AlarmTypeEnum // enum
   // 관계
   user?: UserTable
+  post_id?: number
 }
 
 export interface AdTable {
@@ -109,6 +110,7 @@ export interface UserTownTable {
   town_name: string
   latitude: number | null
   longitude: number | null
+  is_primary: boolean
   created_at: Date // 또는 Date (string인 경우 new Date()로 변환)
 }
 

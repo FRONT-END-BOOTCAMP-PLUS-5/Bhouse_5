@@ -1,5 +1,5 @@
 // backend/domain/repositories/LikeRepository.ts
-import { BoardGame } from '@domain/entities/Boardgame'
+import { BoardGame } from '@be/domain/entities/Boardgame'
 
 export interface LikeRepository {
   addLikedBoardgame(userId: string, boardgameId: number): Promise<void>

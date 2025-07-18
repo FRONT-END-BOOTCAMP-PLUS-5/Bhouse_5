@@ -1,4 +1,6 @@
 import { User } from '@domain/entities/User'
+import { UserRole } from '@domain/entities/UserRole'
+import { Role } from '@domain/entities/Role'
 import { UserRepository } from '@domain/repositories/UserRepository'
 import { supabaseClient } from '@be/utils/supabaseClient'
 
@@ -26,7 +28,7 @@ export class UserRepositoryImpl implements UserRepository {
       }
       throw new Error(`사용자 조회 실패: ${error.message}`)
     }
-
+    console.log(111111, data)
     return new User(
       data.user_id,
       data.username,
@@ -35,24 +37,43 @@ export class UserRepositoryImpl implements UserRepository {
       data.nickname,
       new Date(data.created_at),
       data.updated_at ? new Date(data.updated_at) : null,
-      data.deleted_at ? new Date(data.deleted_at) : null,
+      data.is_active,
       data.profile_img_url,
+      undefined, // userAlarms
       data.phone,
       data.provider,
       data.provider_id,
-      data.user_roles, // ← userRole 객체로 전달
+      data.user_roles ? new UserRole(new Role(data.user_roles.roles.role_id, data.user_roles.roles.name)) : undefined,
     )
   }
 
-  // 다른 메서드들은 차차 구현
-  // async findAll(): Promise<User[]> {
-  //   throw new Error('Not implemented')
-  // }
-  // async save(user: User): Promise<User> {
-  //   throw new Error('Not implemented')
-  // }
+  // 닉네임 중복 체크 메서드 추가
+  async checkNicknameExists(nickname: string, excludeUserId?: string): Promise<boolean> {
+    let query = supabaseClient.from('users').select('user_id').eq('nickname', nickname)
+
+    if (excludeUserId) {
+      query = query.neq('user_id', excludeUserId)
+    }
+
+    const { data, error } = await query.maybeSingle()
+
+    if (error) {
+      throw new Error(`닉네임 중복 체크 실패: ${error.message}`)
+    }
+
+    return !!data
+  }
+
   async update(user: User): Promise<User> {
-    const { data, error } = await supabaseClient
+    // 닉네임이 변경되는 경우 중복 체크
+    if (user.nickname) {
+      const nicknameExists = await this.checkNicknameExists(user.nickname, user.id)
+      if (nicknameExists) {
+        throw new Error('이미 사용 중인 닉네임입니다.')
+      }
+    }
+
+    const { error } = await supabaseClient
       .from('users')
       .update({
         username: user.username,
@@ -68,7 +89,4 @@ export class UserRepositoryImpl implements UserRepository {
 
     return user
   }
-  // async delete(id: string): Promise<void> {
-  //   throw new Error('Not implemented')
-  // }
 }

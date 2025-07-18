@@ -1,30 +1,36 @@
 // app/api/admin/boardgames/route.ts
 
 import { NextResponse } from 'next/server'
-// import { supabase } from 'backend/utils/supabaseClient'; // 기존 파일과 동일하게 supabaseClient 임포트
 import { supabaseClient } from '@be/utils/supabaseClient' // 미리 정의된 클라이언트 임포트
 
 import { CreateBoardgameUseCase } from '@application/admin/boardgames/usecases/CreateBoardgameUseCase'
 import { SupabaseBoardgameRepository } from '@infrastructure/repositories/SupabaseBoardgameRepository'
 import { CreateBoardgameDto } from '@application/admin/boardgames/dtos/CreateBoardgameDto'
+import { verifyToken } from '@be/utils/auth'
 
-/**
- * 새로운 보드게임을 등록하는 API 엔드포인트입니다.
- * POST /api/admin/boardgames/create
- */
 export async function POST(request: Request) {
-  // FIXME: 이 부분에 관리자 인증/인가 로직을 추가해야 합니다.
-  // 예시: Bearer 토큰 검증, 세션 확인, 또는 특정 사용자 역할 확인 등
-  // if (!isAdmin(request)) {
-  //   return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
-  // }
+  // 토큰 검증
+  const decoded = await verifyToken(request)
+
+  // 관리자 권한 확인 및 userId 추출
+  // decoded가 없거나, roleId가 없거나, roleId가 '1'이 아니면 권한 없음
+  if (!decoded || !decoded.roleId || decoded.roleId !== '1') {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  // 인증된 사용자 ID를 decoded 토큰에서 가져옵니다.
+  const userId = decoded.userId
+  if (!userId) {
+    // userId가 토큰에 없으면 에러 처리 (토큰 검증 로직에서 이미 처리될 수 있지만, 한 번 더 확인)
+    return NextResponse.json({ error: 'User ID not found in token' }, { status: 400 })
+  }
 
   try {
     const boardgameData = await request.json()
 
     // 필수 필드 유효성 검사 (프레젠테이션 계층의 책임)
+    // user_id는 이제 body에서 받지 않고 decoded.userId를 사용하므로 제거합니다.
     const {
-      user_id, // created_by, updated_by
       kor_name, // name
       description,
       min_players,
@@ -36,18 +42,19 @@ export async function POST(request: Request) {
       genre_id,
     } = boardgameData
 
-    // `name`, `user_id`, `genre_id`는 NOT NULL 제약 조건이 있으므로 필수입니다.
-    // FIXME: user_id는 실제 인증 시스템에서 가져와야 합니다. 현재는 요청 바디에서 받음.
-    if (!kor_name || !user_id || !genre_id) {
+    // `kor_name`, `genre_id`는 NOT NULL 제약 조건이 있으므로 필수입니다.
+    // user_id는 이제 body에서 받지 않으므로 유효성 검사에서 제거합니다.
+    if (!kor_name || !genre_id) {
       return NextResponse.json(
-        { success: false, error: '필수 필드(kor_name, user_id, genre_id)가 누락되었습니다.' },
+        { success: false, error: '필수 필드(kor_name, genre_id)가 누락되었습니다.' },
         { status: 400 },
       )
     }
 
     // 1. 애플리케이션 계층으로 전달할 DTO 생성
     const createDto: CreateBoardgameDto = {
-      userId: user_id,
+      // userId를 decoded 토큰에서 가져온 값으로 설정합니다.
+      userId: userId, // decoded.userId를 사용
       korName: kor_name,
       description: description,
       minPlayers: min_players,

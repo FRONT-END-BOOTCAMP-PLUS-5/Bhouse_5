@@ -9,16 +9,20 @@ import { SupabaseUserSettingRepository } from '@infrastructure/repositories/Supa
 import { GetUserSettingQueryDto } from '@application/user/settings/dtos/GetUserSettingQueryDto'
 import { UpdateUserSettingDto } from '@application/user/settings/dtos/UpdateUserSettingDto'
 
+import { verifyToken } from '@be/utils/auth'
+
 /**
  * 유저 알림 설정을 조회하는 GET 요청 핸들러
- * GET /api/user/settings?user_id={userId}
+ * GET /api/user/settings
  */
 export async function GET(request: Request) {
-  // FIXME: 실제 운영 환경에서는 사용자 인증/인가 로직이 필요합니다.
-  // user_id는 인증된 사용자로부터 안전하게 얻어야 합니다.
-  // 현재는 테스트를 위해 쿼리 파라미터에서 user_id를 받는 것으로 가정합니다.
-  const { searchParams } = new URL(request.url)
-  const userId = searchParams.get('user_id')
+  const decoded = await verifyToken(request)
+
+  if (!decoded) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const userId = decoded.userId
 
   // 필수 필드 유효성 검사
   if (!userId) {
@@ -62,15 +66,19 @@ export async function GET(request: Request) {
  * PATCH /api/user/settings
  */
 export async function PATCH(request: Request) {
-  // FIXME: 실제 운영 환경에서는 사용자 인증/인가 로직이 필요합니다.
-  // user_id는 인증된 사용자로부터 안전하게 얻어야 합니다.
-  // 현재는 테스트를 위해 요청 본문에서 user_id를 직접 받는 것으로 가정합니다.
-
   try {
-    const { user_id, reply, keyword } = await request.json()
+    const decoded = await verifyToken(request)
+
+    if (!decoded) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const userId = decoded.userId
+
+    const { reply, keyword } = await request.json()
 
     // 필수 필드 유효성 검사
-    if (!user_id) {
+    if (!userId) {
       return NextResponse.json(
         { success: false, error: 'user_id가 누락되었습니다.' },
         { status: 400 }, // Bad Request
@@ -100,7 +108,7 @@ export async function PATCH(request: Request) {
     const updateUserSettingUseCase = new UpdateUserSettingUseCase(userSettingRepository)
 
     // 3. 유즈케이스 실행
-    const updateDto: UpdateUserSettingDto = { userId: user_id, reply, keyword }
+    const updateDto: UpdateUserSettingDto = { userId: userId, reply, keyword }
     const updatedSettings = await updateUserSettingUseCase.execute(updateDto)
 
     return NextResponse.json(

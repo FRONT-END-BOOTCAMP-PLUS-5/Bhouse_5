@@ -1,0 +1,82 @@
+.errorMessage {
+  display: flex;
+  gap: 8px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px dashed transparent;
+  transition: all 0.2s ease-in-out;
+}
+
+.error {
+  background-color: var(--secondary-alarm-50);
+  border-color: var(--secondary-alarm-200);
+  color: var(--primary-alarm);
+}
+
+.warning {
+  background-color: var(--secondary-warning-50);
+  border-color: var(--secondary-warning-200);
+  color: var(--secondary-warning-400);
+}
+
+.info {
+  background-color: var(--secondary-blue-50);
+  border-color: var(--secondary-blue-200);
+  color: var(--secondary-blue-700);
+}
+
+.icon {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.text {
+  flex: 1;
+  line-height: 1.4;
+}
+
+/* Hover effects */
+.error:hover {
+  background-color: var(--secondary-alarm-100);
+  border-color: var(--secondary-alarm-200);
+}
+
+.warning:hover {
+  background-color: var(--secondary-warning-100);
+  border-color: var(--secondary-warning-200);
+}
+
+.info:hover {
+  background-color: var(--secondary-blue-100);
+  border-color: var(--secondary-blue-200);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .errorMessage {
+    padding: 10px 12px;
+    font-size: 13px;
+    gap: 6px;
+  }
+
+  .icon {
+    font-size: 14px;
+  }
+}
+
+/* Animation for new error messages */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.errorMessage {
+  animation: slideIn 0.3s ease-out;
+}

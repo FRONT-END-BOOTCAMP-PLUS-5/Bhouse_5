@@ -1,7 +1,8 @@
-import { UserTown } from '../entities/UserTown'
+import { CreateUserTownDto, UserTownDto } from '@be/application/user/certify-town/dtos/UserTownDto'
 
 export interface UserTownRepository {
-  create(userId: string, townName: string, lat: number, lng: number): Promise<UserTown>
-  findByUserId(userId: string): Promise<UserTown[]>
-  delete(id: number, userId: string): Promise<void>
+  create(dto: CreateUserTownDto): Promise<UserTownDto>
+  delete(dto: { userId: string; townName: string }): Promise<void>
+  findByUserId(userId: string): Promise<UserTownDto[]>
+  setPrimary(userId: string, townName: string): Promise<void>
 }

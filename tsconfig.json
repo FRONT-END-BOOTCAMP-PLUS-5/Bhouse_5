@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "ES2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -20,15 +24,51 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./app/*"],
-      "@utils/*": ["./utils/*"],
-      "@bUtils/*": ["./backend/utils/*"],
-      "@be/*": ["./backend/*"],
-      "@domain/*": ["./backend/domain/*"],
-      "@application/*": ["./backend/application/*"],
-      "@infrastructure/*": ["./backend/infrastructure/*"]
-    }
+      "@/*": [
+        "./app/*"
+      ],
+      "@utils/*": [
+        "./utils/*"
+      ],
+      "@bUtils/*": [
+        "./backend/utils/*"
+      ],
+      "@be/*": [
+        "./backend/*"
+      ],
+      "@domain/*": [
+        "./backend/domain/*"
+      ],
+      "@application/*": [
+        "./backend/application/*"
+      ],
+      "@infrastructure/*": [
+        "./backend/infrastructure/*"
+      ],
+      "@fonts/*": [
+        "./public/fonts/*"
+      ],
+      "@public/*": [
+        "./public/*"
+      ],
+      "@store/*": [
+        "./store/*"
+      ]
+    },
+    "typeRoots": [
+      "./types",
+      "./node_modules/@types"
+    ]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "types/**/*.d.ts",
+    "svgr.d.ts",
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

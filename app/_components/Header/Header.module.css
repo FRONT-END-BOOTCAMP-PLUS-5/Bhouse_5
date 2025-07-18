@@ -1,0 +1,111 @@
+/* Header.module.css */
+
+.header {
+  width: 100%;
+  padding: 15px 20px; /* 전체 헤더의 패딩 */
+  padding-bottom: 0;
+  box-sizing: border-box;
+  background-color: var(--primary-white);
+  position: relative; /* 로고의 absolute 위치 지정을 위한 기준점 */
+  display: flex; /* 자식 요소들을 세로로 쌓기 위해 flex column */
+  flex-direction: column;
+}
+
+/* logoContainer는 그대로 absolute로 유지 */
+.logoContainer {
+  position: absolute;
+  top: 15px; /* header의 padding-top과 동일 */
+  left: 20px; /* header의 padding-left와 동일 */
+  z-index: 10;
+}
+
+.logo {
+  height: 60px;
+  width: auto;
+  cursor: pointer;
+}
+
+.notificationIcon {
+  cursor: pointer;
+}
+
+/* 새로운 래퍼 div를 도입하여 로고를 제외한 나머지 영역을 감쌉니다. */
+/* Header.tsx에 <div className={styles.contentWrapper}></div> 를 추가해야 합니다. */
+.contentWrapper {
+  width: 100%; /* 부모(header)의 남은 너비를 모두 사용 */
+  display: flex;
+  flex-direction: column;
+  /* 로고의 너비와 좌측 여백만큼의 공간을 확보하기 위해 margin-left를 추가합니다. */
+  /* 로고 너비(70px) + 로고와 내용 사이의 여백 (예: 20px) = 90px */
+  margin-left: 90px;
+  /* header의 padding-right(20px)를 고려하여, contentWrapper의 실제 사용 가능 너비를 확보합니다. */
+  /* margin-right: 20px; 또는 width: calc(100% - 90px - 20px); */
+  width: calc(100% - 90px); /* 로고 영역 (90px)만큼의 공간을 제외한 100% */
+  box-sizing: border-box; /* 패딩 포함 너비 계산 */
+  padding-right: 20px; /* header의 오른쪽 패딩에 맞춥니다. */
+}
+
+.headerTop {
+  display: flex;
+  justify-content: flex-end; /* 로그인/회원가입을 오른쪽 끝으로 정렬 */
+  align-items: center;
+  width: 100%; /* contentWrapper 내에서 100% */
+  /* padding-left는 contentWrapper가 담당하므로 여기서는 제거 */
+}
+
+.authSection {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 7px;
+}
+
+.loginText {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--primary-black);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.loginText:hover {
+  color: var(--secondary-blue-700); /* 호버 시 색상 변경 */
+}
+
+/* 추가: 방문한 링크의 색상을 기본 색상과 동일하게 유지 */
+.loginText:visited {
+  color: var(--primary-black); /* 방문 후에도 검정색 유지 */
+}
+
+.searchAndDropdown {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-end; /* 검색창과 드롭다운을 오른쪽 정렬 */
+  width: 100%; /* contentWrapper 내에서 100% */
+  /* padding-left는 contentWrapper가 담당하므로 여기서는 제거 */
+  margin-bottom: 8px;
+}
+
+.searchInput {
+  flex-grow: 1; /* 검색 입력창이 가능한 공간을 차지하도록 */
+  max-width: 170px; /* 검색창 최대 너비를 200px로 줄임 (원하는 크기로 조정) */
+}
+
+.navigation {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-start;
+  width: 100%; /* contentWrapper 내에서 100% */
+  /* contentWrapper에서 이미 좌측 마진을 주었으므로, 여기서는 패딩을 0으로 합니다. */
+  padding-left: 0;
+  margin-bottom: 8;
+}
+
+/* Dropdown 내부의 버튼을 위한 스타일 (ListItem처럼 보이도록) */
+.buttonAsListItem {
+  width: 100%; /* 드롭다운 메뉴 너비에 맞춤 */
+  text-align: center; /* 텍스트 가운데 정렬 */
+  /* Dropdown 내부의 Button에 추가적인 스타일이 필요하다면 여기에 정의 */
+}
