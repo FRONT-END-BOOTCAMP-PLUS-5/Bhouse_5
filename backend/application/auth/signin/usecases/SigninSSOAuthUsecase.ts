@@ -1,22 +1,15 @@
-// backend/application/auth/signin/usecases/LoginSSOAuthUsecase.ts
-
+import { SignJWT } from 'jose'
+import { cookies } from 'next/headers'
 import { AuthRepository } from '@be/domain/repositories/AuthRepository'
 import { LoginSSOAuthDto } from '../dtos/SigninSSOAuthDto'
 import { SigninAuthResponseDto } from '../dtos/SigninAuthResponseDto'
-import jwt from 'jsonwebtoken'
-import { cookies } from 'next/headers'
 
 export class LoginSSOAuthUsecase {
   constructor(private readonly authRepo: AuthRepository) {}
 
   async execute(dto: LoginSSOAuthDto): Promise<SigninAuthResponseDto> {
     try {
-      console.log('[SSO Login] provider:', dto.provider)
-      console.log('[SSO Login] providerId:', dto.providerId)
-
       const user = await this.authRepo.findByProvider(dto.provider, dto.providerId)
-      console.log('[SSO Login] user:', user)
-
       if (!user) {
         return {
           message: '등록된 사용자가 없습니다.',
@@ -25,7 +18,6 @@ export class LoginSSOAuthUsecase {
         }
       }
 
-      const cookieStore = cookies()
       const jwtSecret = process.env.ACCESS_TOKEN_SECRET
       const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET
 
@@ -38,32 +30,38 @@ export class LoginSSOAuthUsecase {
       }
 
       const now = Math.floor(Date.now() / 1000)
-      const accessTokenMaxAge = 60 * 60 // 1시간
-      const refreshTokenMaxAge = 2 * 24 * 60 * 60 // 2일
+      const accessTokenMaxAge = 60 * 60
+      const refreshTokenMaxAge = 2 * 24 * 60 * 60
 
-      const accessTokenPayload = {
+      const encoder = new TextEncoder()
+      const accessSecret = encoder.encode(jwtSecret)
+      const refreshSecret = encoder.encode(refreshTokenSecret)
+
+      const accessToken = await new SignJWT({
         userId: user.id,
         email: user.email,
         roleId: user.userRole?.roles.role_id.toString(),
-        exp: now + accessTokenMaxAge,
-      }
+      })
+        .setProtectedHeader({ alg: 'HS256' })
+        .setIssuedAt()
+        .setExpirationTime(`${accessTokenMaxAge}s`)
+        .sign(accessSecret)
 
-      const refreshTokenPayload = {
+      const refreshToken = await new SignJWT({
         userId: user.id,
         type: 'refresh',
-        iat: now,
-        exp: now + refreshTokenMaxAge,
-      }
+      })
+        .setProtectedHeader({ alg: 'HS256' })
+        .setIssuedAt()
+        .setExpirationTime(`${refreshTokenMaxAge}s`)
+        .sign(refreshSecret)
 
-      const accessToken = jwt.sign(accessTokenPayload, jwtSecret)
-      const refreshToken = jwt.sign(refreshTokenPayload, refreshTokenSecret)
-
+      const cookieStore = cookies()
       ;(await cookieStore).set('accessToken', accessToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         maxAge: accessTokenMaxAge,
       })
-
       ;(await cookieStore).set('refreshToken', refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
