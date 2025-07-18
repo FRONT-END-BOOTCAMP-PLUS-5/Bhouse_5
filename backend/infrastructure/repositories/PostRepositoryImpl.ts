@@ -180,12 +180,12 @@ export class PostRepositoryImpl implements PostRepository {
       data.title,
       data.content,
       new Date(data.created_at),
-      data.updated_at ? new Date(data.updated_at) : undefined,
-      data.category_id ?? undefined,
       data.town ?? undefined,
       data.hits ?? undefined,
       data.users?.nickname ?? undefined,
       data.users?.profile_img_url ?? undefined,
+      data.updated_at ? new Date(data.updated_at) : undefined,
+      data.category_id ?? undefined,
     )
   }
 }

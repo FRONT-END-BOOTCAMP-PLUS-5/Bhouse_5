@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import BoardgameCard from '@/_components/BoardgameCard/BoardgameCard'
 import styles from './BoardgameList.module.css'
 import { getBoardgamesByStoreId } from 'models/services/boardgame.service'
@@ -16,8 +16,10 @@ interface BoardgameListProps {
   storeId: number
 }
 
-export default function BoardgameList({ storeId }: BoardgameListProps) {
+export default function BoardgameList() {
   const [games, setGames] = useState<Boardgame[]>([])
+  const searchParams = useSearchParams()
+  const storeId = searchParams.get('storeId')
   const params = useParams()
   const router = useRouter()
   useEffect(() => {
