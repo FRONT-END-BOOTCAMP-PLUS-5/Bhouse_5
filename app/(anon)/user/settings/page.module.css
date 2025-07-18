@@ -1,0 +1,50 @@
+/* src/app/user/setting/page.module.css */
+
+/* global css의 .page는 이미 정의되어 있으므로 여기서는 추가적인 page-level 스타일만 정의 */
+.page {
+  padding: 40px 20px; /* 페이지 전체 패딩 */
+  max-width: 800px; /* 페이지 최대 너비 설정 (중앙 정렬을 위해) */
+  margin: 0 auto; /* 페이지 중앙 정렬 */
+  box-sizing: border-box;
+}
+
+.pageTitle {
+  text-align: center;
+  margin-bottom: 40px;
+  color: var(--primary-black); /* 글자색 */
+}
+
+.notificationSection {
+  padding: 20px 30px;
+  margin-bottom: 0px;
+  display: grid;
+  gap: 10px;
+}
+
+.notificationItem {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  gap: 10px;
+  padding: 15px 0;
+}
+
+.notificationItem > :first-child {
+  display: flex;
+  align-items: center;
+  margin: 0 auto;
+}
+
+.notificationLabel {
+  color: var(--primary-black); /* 글자색 */
+  font-weight: 500;
+  text-align: left;
+}
+
+.keywordListTitle {
+  margin-bottom: 20px;
+  color: var(--primary-black); /* 글자색 */
+  font-weight: 700;
+}

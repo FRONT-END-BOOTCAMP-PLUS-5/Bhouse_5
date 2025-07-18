@@ -1,11 +1,14 @@
-import { UserRepository } from '@domain/repositories/UserRepository'
-import { GetUserProfileQueryDto, UserProfileResponseDto } from '../dtos/UserProfileDto'
+import { UserRepository } from '@be/domain/repositories/UserRepository'
+import { UserTownRepository } from '@be/domain/repositories/UserTownRepository'
+import { GetUserProfileQueryDto, UserProfileResponseDto, UserTownDto } from '../dtos/UserProfileDto'
 
 export class GetUserProfileUseCase {
   private userRepository: UserRepository
+  private userTownRepository: UserTownRepository
 
-  constructor(userRepository: UserRepository) {
+  constructor(userRepository: UserRepository, userTownRepository: UserTownRepository) {
     this.userRepository = userRepository
+    this.userTownRepository = userTownRepository
   }
 
   async execute(queryDto: GetUserProfileQueryDto): Promise<UserProfileResponseDto | null> {
@@ -14,6 +17,22 @@ export class GetUserProfileUseCase {
     if (!user) {
       return null
     }
+
+    // 사용자의 등록된 도시 정보 가져오기
+    const userTowns = await this.userTownRepository.findByUserId(queryDto.userId)
+    console.log('User Towns:', userTowns) // 콘솔 로그 추가
+
+    // 모든 타운 정보를 DTO로 변환
+    const towns: UserTownDto[] = userTowns.map((town) => ({
+      id: town.id,
+      town_name: town.townName,
+      is_primary: town.isPrimary,
+    }))
+
+    // primary 타운의 ID 찾기
+    const primaryTown = userTowns.find((town) => town.isPrimary)
+    const primaryTownId = primaryTown?.id
+
     console.log(user)
     return {
       user_id: user.id,
@@ -27,6 +46,8 @@ export class GetUserProfileUseCase {
       created_at: user.createdAt.toISOString(),
       updated_at: user.updatedAt?.toISOString() || user.createdAt.toISOString(),
       user_role: user.userRole?.roles,
+      towns: towns, // 모든 타운 정보 리스트
+      primary_town_id: primaryTownId, // primary 타운의 ID
     }
   }
 }

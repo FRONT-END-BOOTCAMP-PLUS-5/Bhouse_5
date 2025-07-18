@@ -3,6 +3,7 @@ import { verifyToken } from '@be/utils/auth'
 import { GetUserProfileUseCase } from '@be/application/user/profile/usecases/GetUserProfileUseCase'
 import { GetUserProfileQueryDto } from '@be/application/user/profile/dtos/UserProfileDto'
 import { UserRepositoryImpl } from '@be/infrastructure/repositories/UserRepositoryImpl'
+import { UserTownRepositoryImpl } from '@be/infrastructure/repositories/UserTownRepositoryImpl'
 import { UpdateUserProfileUseCase } from '@be/application/user/profile/usecases/UpdateUserProfileUseCase'
 
 export async function GET(request: NextRequest) {
@@ -15,7 +16,7 @@ export async function GET(request: NextRequest) {
     }
 
     // UseCase 실행
-    const usecase = new GetUserProfileUseCase(new UserRepositoryImpl()) // user
+    const usecase = new GetUserProfileUseCase(new UserRepositoryImpl(), new UserTownRepositoryImpl())
     const queryDto: GetUserProfileQueryDto = {
       userId: decoded.userId,
     }
@@ -44,13 +45,11 @@ export async function PATCH(request: NextRequest) {
     }
     const userId = decoded.userId
 
-    //TODO:로케이션 추가 필요
-
     const updateData = {
       nickname: body.nickname,
       profileImgUrl: body.profile_img_url,
       password: body.password,
-      // 필요한 필드 추가
+      // location 정보는 별도 API에서 처리 (UserTown 관련)
     }
 
     const usecase = new UpdateUserProfileUseCase(new UserRepositoryImpl())

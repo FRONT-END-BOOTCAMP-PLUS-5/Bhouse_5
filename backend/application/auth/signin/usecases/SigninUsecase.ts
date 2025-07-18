@@ -2,7 +2,7 @@
 import { AuthRepository } from '@be/domain/repositories/AuthRepository'
 import { SigninAuthResponseDto } from '../dtos/SigninAuthResponseDto'
 import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
+import { SignJWT } from 'jose'
 import { User } from '@be/domain/entities/User'
 import { cookies } from 'next/headers'
 
@@ -139,25 +139,29 @@ export class SigninUsecase {
     const accessTokenMaxAge = 1 * 60 * 60
     const refreshTokenMaxAge = 2 * 24 * 60 * 60
 
-    console.log('user', user)
-    // Access Token (1시간) - 토큰 검증 함수와 호환되도록 수정
+    // Access Token (1시간)
     const accessTokenPayload = {
       userId: user.id,
       email: user.email,
-      roleId: user.userRole?.toString() || '3', // roleId로 변경
-      exp: now + accessTokenMaxAge, // 1시간
+      roleId: user.userRole?.toString() || '3',
+      exp: now + accessTokenMaxAge,
     }
+    const accessToken = await new SignJWT(accessTokenPayload)
+      .setProtectedHeader({ alg: 'HS256' })
+      .setExpirationTime(`${accessTokenMaxAge}s`)
+      .sign(new TextEncoder().encode(jwtSecret))
 
     // Refresh Token (2일)
     const refreshTokenPayload = {
       userId: user.id,
       type: 'refresh',
       iat: now,
-      exp: now + refreshTokenMaxAge, // 2일
+      exp: now + refreshTokenMaxAge,
     }
-
-    const accessToken = jwt.sign(accessTokenPayload, jwtSecret)
-    const refreshToken = jwt.sign(refreshTokenPayload, refreshTokenSecret)
+    const refreshToken = await new SignJWT(refreshTokenPayload)
+      .setProtectedHeader({ alg: 'HS256' })
+      .setExpirationTime(`${refreshTokenMaxAge}s`)
+      .sign(new TextEncoder().encode(refreshTokenSecret))
 
     if (accessToken && refreshToken) {
       cookieStore.set('accessToken', accessToken, {

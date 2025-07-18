@@ -19,6 +19,7 @@ export class Alarm {
     public isRead: boolean = false, // 기본값 설정
     public createdAt: Date = new Date(), // 기본값 설정
     public alarmType: AlarmType,
+    public postId?: number,
     public user?: User, // N:1 관계 (User 엔티티가 있다면)
   ) {}
 
