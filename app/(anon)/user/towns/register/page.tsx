@@ -1,208 +1,387 @@
 'use client'
 
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { addTown, removeTown, fetchTowns, setPrimaryTown, extractDistrictName, normalizeSidoName } from '@/_lib/town'
 import styles from './TownRegister.module.css'
-import { addTown, removeTown, setPrimaryTown, fetchTowns } from '@/_lib/town'
 
 interface TownInfo {
-  name: string
+  townName: string
   isPrimary: boolean
 }
 
 export default function TownRegisterPage() {
   const mapRef = useRef<HTMLDivElement>(null)
-  const mapInstance = useRef<any>(null)
-  const markerInstance = useRef<any>(null)
-
-  const [keyword, setKeyword] = useState('')
-  const [town, setTown] = useState<string | null>(null)
+  const markerRef = useRef<any>(null)
+  const [selectedTown, setSelectedTown] = useState<{ name: string; lat: number; lng: number } | null>(null)
   const [townList, setTownList] = useState<TownInfo[]>([])
+  const [isMapReady, setIsMapReady] = useState(false)
+  const [polygon, setPolygon] = useState<any>(null)
+  const [primaryMarker, setPrimaryMarker] = useState<window.kakao.maps.Marker | null>(null)
+  const [primaryTownName, setPrimaryTownName] = useState<string | null>(null)
+  const [searchOptions, setSearchOptions] = useState<string[]>([])
 
-  // 🧭 지도 초기화 공통 함수
-  const initMap = (lat: number, lng: number) => {
-    if (!window.kakao || !mapRef.current) return
-
-    const map = new window.kakao.maps.Map(mapRef.current, {
-      center: new window.kakao.maps.LatLng(lat, lng),
-      level: 3,
-    })
-    mapInstance.current = map
-
-    const marker = new window.kakao.maps.Marker({
-      map,
-      position: new window.kakao.maps.LatLng(lat, lng),
-    })
-    markerInstance.current = marker
-
-    const geocoder = new window.kakao.maps.services.Geocoder()
-    geocoder.coord2RegionCode(lng, lat, (result, status) => {
-      if (status === window.kakao.maps.services.Status.OK) {
-        const townName = result[0].region_3depth_name
-        setTown(townName)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (window.kakao?.maps && mapRef.current) {
+        clearInterval(interval)
+        setIsMapReady(true)
       }
-    })
-
-    // 지도 클릭 이벤트 → 마커 이동 및 주소 업데이트
-    window.kakao.maps.event.addListener(map, 'click', (mouseEvent: any) => {
-      const latlng = mouseEvent.latLng
-      marker.setPosition(latlng)
-
-      geocoder.coord2RegionCode(latlng.getLng(), latlng.getLat(), (result, status) => {
-        if (status === window.kakao.maps.services.Status.OK) {
-          const townName = result[0].region_3depth_name
-          setTown(townName)
-        }
-      })
-    })
-  }
-
-  // ✅ 지도 및 현재 위치 설정
-  useEffect(() => {
-    const loadMap = () => {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => initMap(pos.coords.latitude, pos.coords.longitude),
-        () => initMap(37.5665, 126.978), // 서울시청 기본값
-        { enableHighAccuracy: true, timeout: 5000 },
-      )
-    }
-
-    if (window.kakao?.maps?.load) {
-      window.kakao.maps.load(loadMap)
-    } else {
-      const intv = setInterval(() => {
-        if (window.kakao?.maps?.load) {
-          clearInterval(intv)
-          window.kakao.maps.load(loadMap)
-        }
-      }, 100)
-    }
+    }, 100)
+    return () => clearInterval(interval)
   }, [])
 
-  // 🔄 등록된 동네 불러오기
   useEffect(() => {
-    fetchTowns()
-      .then(setTownList)
-      .catch((err) => console.error('동네 불러오기 실패:', err))
+    if (!isMapReady || !mapRef.current) return
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords
+        const map = new window.kakao.maps.Map(mapRef.current, {
+          center: new window.kakao.maps.LatLng(latitude, longitude),
+          level: 3,
+        })
+
+        const marker = new window.kakao.maps.Marker({
+          position: map.getCenter(),
+          draggable: true,
+        })
+
+        marker.setMap(map)
+        markerRef.current = marker
+
+        getAddressFromCoords(marker.getPosition())
+
+        window.kakao.maps.event.addListener(marker, 'dragend', () => {
+          getAddressFromCoords(marker.getPosition())
+        })
+
+        window.kakao.maps.event.addListener(map, 'click', (mouseEvent: any) => {
+          const latlng = mouseEvent.latLng
+          marker.setPosition(latlng)
+          getAddressFromCoords(latlng)
+        })
+      },
+      () => {
+        const fallback = new window.kakao.maps.LatLng(37.5665, 126.978)
+        const map = new window.kakao.maps.Map(mapRef.current, {
+          center: fallback,
+          level: 3,
+        })
+
+        const marker = new window.kakao.maps.Marker({
+          position: fallback,
+          draggable: true,
+        })
+
+        marker.setMap(map)
+        markerRef.current = marker
+
+        getAddressFromCoords(fallback)
+      },
+    )
+  }, [isMapReady])
+
+  useEffect(() => {
+    const initTowns = async () => {
+      try {
+        const towns = await fetchTowns()
+        setTownList(towns)
+        setSearchOptions(Array.from(new Set(towns.map((t) => t.townName))))
+
+        const primary = towns.find((t) => t.isPrimary)
+        if (primary) {
+          setPrimaryTownName(primary.townName)
+          await handleDrawDistrictPolygon(primary.townName, true)
+        }
+      } catch {
+        setTownList([])
+      }
+    }
+    initTowns()
   }, [])
 
-  // 🔍 주소 키워드 검색
   useEffect(() => {
-    if (!keyword || !mapInstance.current || !markerInstance.current) return
+    if (selectedTown) {
+      const districtName = extractDistrictName(selectedTown.name)
+      if (districtName !== primaryTownName) {
+        handleDrawDistrictPolygon(districtName, false)
+      }
+    }
+  }, [selectedTown])
 
-    const ps = new window.kakao.maps.services.Places()
+  const getAddressFromCoords = (latlng: any) => {
     const geocoder = new window.kakao.maps.services.Geocoder()
-
-    ps.keywordSearch(keyword, (data, status) => {
+    geocoder.coord2Address(latlng.getLng(), latlng.getLat(), (result: any, status: any) => {
       if (status === window.kakao.maps.services.Status.OK) {
-        const first = data[0]
-        const latlng = new window.kakao.maps.LatLng(Number(first.y), Number(first.x))
-
-        mapInstance.current?.setCenter(latlng)
-        markerInstance.current?.setPosition(latlng)
-
-        geocoder.coord2RegionCode(first.x, first.y, (result, status) => {
-          if (status === window.kakao.maps.services.Status.OK) {
-            const townName = result[0].region_3depth_name
-            setTown(townName)
-          }
+        const address = result[0].address.address_name
+        setSelectedTown({
+          name: address,
+          lat: latlng.getLat(),
+          lng: latlng.getLng(),
         })
       }
     })
-  }, [keyword])
+  }
 
-  useEffect(() => {
-    console.log(window, window.kakao) // 여기에 자동완성 떠야 정상
-  }, [])
-
-  // ➕ 동네 등록
-  const handleRegister = () => {
+  const openAddressSearch = () => {
     if (townList.length >= 3) {
-      alert('최대 3개까지 등록 가능합니다.')
+      alert('동네는 최대 3개까지 등록할 수 있습니다.')
       return
     }
 
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const lat = pos.coords.latitude
-        const lng = pos.coords.longitude
+    new window.daum.Postcode({
+      oncomplete: function (data: any) {
+        const regionAddress = `${data.sido} ${data.sigungu}`
         const geocoder = new window.kakao.maps.services.Geocoder()
-
-        geocoder.coord2RegionCode(lng, lat, async (result, status) => {
+        geocoder.addressSearch(regionAddress, function (result: any, status: any) {
           if (status === window.kakao.maps.services.Status.OK) {
-            const townName = result[0].region_3depth_name
-            try {
-              await addTown({ townName, lat, lng })
-              setTownList((prev) => [...prev, { name: townName, isPrimary: false }])
-              setTown(townName)
-              alert('등록 완료!')
-            } catch (err) {
-              alert('등록 실패: ' + (err as Error).message)
-            }
+            const coords = new window.kakao.maps.LatLng(result[0].y, result[0].x)
+            const map = markerRef.current.getMap()
+
+            map.setCenter(coords)
+            markerRef.current.setPosition(coords)
+
+            setSelectedTown({
+              name: regionAddress,
+              lat: coords.getLat(),
+              lng: coords.getLng(),
+            })
           }
         })
       },
-      () => alert('위치 정보를 가져올 수 없습니다.'),
-      { enableHighAccuracy: true },
-    )
+    }).open()
   }
 
-  const handleDelete = async (name: string) => {
+  const handleDrawDistrictPolygon = async (districtName: string, isPrimary = false) => {
     try {
-      await removeTown(name)
-      setTownList((prev) => prev.filter((t) => t.name !== name))
+      const sido = districtName.split(' ')[0]
+      const fullSido = normalizeSidoName(sido)
+      const geoJsonUrl = `/geojson/hangjeongdong_${fullSido}.geojson`
+      const res = await fetch(geoJsonUrl)
+      const geojson = await res.json()
+
+      const clean = (str: string) => str.normalize('NFC').replace(/\s+/g, ' ').trim()
+      const features = geojson.features.filter((f) => clean(f.properties.adm_nm).startsWith(clean(districtName)))
+      if (!features || features.length === 0) return
+      if (!isPrimary && polygon) polygon.setMap(null)
+      if (primaryMarker && isPrimary) primaryMarker.setMap(null)
+
+      const paths: window.kakao.maps.LatLng[][] = []
+      features.forEach((feature) => {
+        const coordinatesList = feature.geometry.coordinates
+        if (feature.geometry.type === 'Polygon') {
+          paths.push(coordinatesList[0].map(([lng, lat]: number[]) => new window.kakao.maps.LatLng(lat, lng)))
+        } else if (feature.geometry.type === 'MultiPolygon') {
+          coordinatesList.forEach((polygonCoords: number[][][]) => {
+            paths.push(polygonCoords[0].map(([lng, lat]) => new window.kakao.maps.LatLng(lat, lng)))
+          })
+        }
+      })
+
+      const kakaoPolygon = new window.kakao.maps.Polygon({
+        path: paths,
+        strokeWeight: 2,
+        strokeColor: isPrimary ? '#ff8800' : '#007aff',
+        strokeOpacity: 0.8,
+        fillColor: isPrimary ? '#ffd699' : '#a3c8ff',
+        fillOpacity: 0.3,
+      })
+
+      kakaoPolygon.setMap(markerRef.current.getMap())
+      if (!isPrimary) setPolygon(kakaoPolygon)
+
+      if (isPrimary) {
+        const flat = paths.flat()
+        const center = flat.reduce(
+          (acc, curr) => ({
+            lat: acc.lat + curr.getLat(),
+            lng: acc.lng + curr.getLng(),
+          }),
+          { lat: 0, lng: 0 },
+        )
+
+        const avg = new window.kakao.maps.LatLng(center.lat / flat.length, center.lng / flat.length)
+
+        const image = new window.kakao.maps.MarkerImage(
+          '/icons/primary_marker.svg',
+          new window.kakao.maps.Size(32, 32),
+          { offset: new window.kakao.maps.Point(16, 16) },
+        )
+
+        const starMarker = new window.kakao.maps.Marker({
+          position: avg,
+          image,
+          title: '대표 동네',
+        })
+
+        starMarker.setMap(markerRef.current.getMap())
+        setPrimaryMarker(starMarker)
+      }
     } catch (err) {
-      alert('삭제 실패: ' + (err as Error).message)
+      console.error('폴리곤 렌더링 실패:', err)
     }
   }
 
-  const handlePrimary = async (name: string) => {
+  const handleRegister = async () => {
+    if (!selectedTown) return
+
     try {
-      await setPrimaryTown(name)
-      setTownList((prev) =>
-        prev.map((t) => ({
-          ...t,
-          isPrimary: t.name === name,
-        })),
-      )
-    } catch (err) {
-      alert('대표 동네 설정 실패: ' + (err as Error).message)
+      const districtName = extractDistrictName(selectedTown.name)
+      const currentTowns = await fetchTowns()
+      const isDuplicate = currentTowns.some((town) => town.townName === districtName)
+
+      if (isDuplicate) {
+        alert('이미 등록된 동네입니다.')
+        return
+      }
+
+      await addTown({ townName: districtName, lat: selectedTown.lat, lng: selectedTown.lng })
+      await handleDrawDistrictPolygon(districtName, false)
+      const updated = await fetchTowns()
+      setTownList(updated)
+      alert('동네가 등록되었습니다.')
+      setSelectedTown(null)
+    } catch (error) {
+      console.error('동네 등록 에러:', error)
+      alert('동네 등록 실패!')
     }
+  }
+
+  const handleDelete = async (townName: string) => {
+    await removeTown(townName)
+    if (polygon) polygon.setMap(null)
+    if (primaryMarker) primaryMarker.setMap(null)
+    const updated = await fetchTowns()
+    setTownList(updated)
+  }
+
+  const handlePrimary = async (townName: string) => {
+    await setPrimaryTown(townName)
+    const updated = await fetchTowns()
+    setTownList(updated)
   }
 
   return (
-    <main className={styles.townRegisterPage}>
-      <h1 className={styles.title}>내 동네 등록하기</h1>
+    <div className={styles.page}>
+      <h2>내 동네 등록하기</h2>
 
-      <input
-        type="text"
-        placeholder="주소 검색 (예: 서울 강남역)"
-        value={keyword}
-        onChange={(e) => setKeyword(e.target.value)}
-        className={styles.searchInput}
+      {/* 🔍 검색창, 자동완성, 버튼 */}
+      <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 12 }}>
+        <input
+          type="text"
+          list="townSuggestions"
+          placeholder="동네 이름 검색 (예: 서울 강남구)"
+          onChange={(e) => {
+            const value = e.target.value.trim()
+            if (value) localStorage.setItem('lastSearchTown', value)
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              const query = (e.target as HTMLInputElement).value.trim()
+              if (!query) return
+
+              const geocoder = new window.kakao.maps.services.Geocoder()
+              geocoder.addressSearch(query, function (result: any, status: any) {
+                if (status === window.kakao.maps.services.Status.OK) {
+                  const coords = new window.kakao.maps.LatLng(result[0].y, result[0].x)
+                  const map = markerRef.current.getMap()
+
+                  map.setCenter(coords)
+                  markerRef.current.setPosition(coords)
+
+                  setSelectedTown({
+                    name: query,
+                    lat: coords.getLat(),
+                    lng: coords.getLng(),
+                  })
+                } else {
+                  alert('해당 동네를 찾을 수 없습니다.')
+                }
+              })
+            }
+          }}
+          style={{
+            width: '100%',
+            maxWidth: 300,
+            padding: '8px 12px',
+            borderRadius: 6,
+            border: '1px solid #ccc',
+            fontSize: 14,
+          }}
+        />
+        <datalist id="townSuggestions">
+          {searchOptions.map((town) => (
+            <option key={town} value={town} />
+          ))}
+        </datalist>
+        <button
+          onClick={openAddressSearch}
+          disabled={townList.length >= 3}
+          style={{
+            padding: '8px 16px',
+            borderRadius: 6,
+            backgroundColor: townList.length >= 3 ? '#ccc' : '#007aff',
+            color: '#fff',
+            border: 'none',
+            cursor: townList.length >= 3 ? 'not-allowed' : 'pointer',
+          }}
+        >
+          + 주소 검색
+        </button>
+      </div>
+
+      {typeof window !== 'undefined' && localStorage.getItem('lastSearchTown') && (
+        <div style={{ fontSize: 13, marginBottom: 8, color: '#888' }}>
+          최근 검색어: <strong>{localStorage.getItem('lastSearchTown')}</strong>
+        </div>
+      )}
+
+      <div
+        ref={mapRef}
+        style={{ width: '100%', height: 400, borderRadius: 8, marginBottom: 16, border: '1px solid #ccc' }}
       />
 
-      <div ref={mapRef} className={styles.mapContainer} />
-
-      {town && (
-        <div>
-          <p className={styles.selectedTown}>선택된 동네: {town}</p>
-          <button onClick={handleRegister} className={styles.registerButton}>
-            등록하기
+      {selectedTown && (
+        <div className={styles.townInfo} style={{ textAlign: 'center', marginTop: 16 }}>
+          <p>
+            <strong>선택한 위치:</strong> {selectedTown.name}
+          </p>
+          <button
+            onClick={handleRegister}
+            style={{
+              padding: '8px 16px',
+              borderRadius: 6,
+              backgroundColor: '#007aff',
+              color: '#fff',
+              border: 'none',
+              cursor: 'pointer',
+              marginTop: 8,
+            }}
+          >
+            이 위치를 내 동네로 등록하기
           </button>
         </div>
       )}
 
-      <ul className={styles.townList}>
-        {townList.map((t) => (
-          <li key={t.name} className={styles.townItem}>
-            <span className={t.isPrimary ? styles.primary : ''}>{t.name}</span>
-            <div>
-              {!t.isPrimary && <button onClick={() => handlePrimary(t.name)}>⭐ 대표</button>}
-              <button onClick={() => handleDelete(t.name)}>❌</button>
-            </div>
-          </li>
-        ))}
-      </ul>
-    </main>
+      <h3>📌 등록된 내 동네</h3>
+      {townList.length === 0 ? (
+        <p>아직 등록된 동네가 없습니다.</p>
+      ) : (
+        <ul>
+          {townList.map((town) => (
+            <li key={town.townName} className={styles.townItem}>
+              <span className={styles.townName}>
+                {town.townName}
+                {town.isPrimary && <span className={styles.primaryTag}>(대표)</span>}
+              </span>
+              <div className={styles.buttonGroup}>
+                <button onClick={() => handlePrimary(town.townName)}>대표로 설정</button>
+                <button onClick={() => handleDelete(town.townName)}>삭제</button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   )
 }

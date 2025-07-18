@@ -5,6 +5,7 @@ import { GetUserTownListUseCase } from '@be/application/user/certify-town/usecas
 import { VerifyUserTownUseCase } from '@be/application/user/certify-town/usecases/VerifyUSerTownUseCase'
 import { verifyToken } from '@bUtils/auth'
 
+// ✅ 의존성 초기화 (공통 repo 재사용)
 const repo = new UserTownRepositoryImpl()
 const verifyUseCase = new VerifyUserTownUseCase(repo)
 const deleteUseCase = new DeleteUserTownUseCase(repo)
@@ -15,15 +16,15 @@ export async function GET(req: NextRequest) {
   try {
     const decoded = verifyToken(req)
     if (!decoded) {
+      console.error('GET 인증 실패')
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
     }
-    const userId = decoded.userId
 
-    const towns = await getListUseCase.execute(userId)
+    const towns = await getListUseCase.execute(decoded.userId)
     return NextResponse.json(towns)
   } catch (e) {
     console.error('GET user towns error:', e)
-    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
+    return NextResponse.json({ message: '서버 에러' }, { status: 500 })
   }
 }
 
@@ -32,9 +33,9 @@ export async function POST(req: NextRequest) {
   try {
     const decoded = verifyToken(req)
     if (!decoded) {
+      console.error('POST 인증 실패')
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
     }
-    const userId = decoded.userId
 
     const { townName, latitude, longitude } = await req.json()
     if (!townName || latitude == null || longitude == null) {
@@ -42,7 +43,7 @@ export async function POST(req: NextRequest) {
     }
 
     const result = await verifyUseCase.execute({
-      userId,
+      userId: decoded.userId,
       townName,
       lat: latitude,
       lng: longitude,
@@ -51,7 +52,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(result)
   } catch (e: any) {
     console.error('POST user town error:', e)
-    return NextResponse.json({ message: e.message || 'Unauthorized' }, { status: 401 })
+    return NextResponse.json({ message: e.message || '서버 에러' }, { status: 500 })
   }
 }
 
@@ -60,16 +61,20 @@ export async function DELETE(req: NextRequest) {
   try {
     const decoded = verifyToken(req)
     if (!decoded) {
+      console.error('DELETE 인증 실패')
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
     }
-    const userId = decoded.userId
 
-    const { id } = await req.json()
-    await deleteUseCase.execute({ id, userId })
+    const { townName } = await req.json()
+    if (!townName) {
+      return NextResponse.json({ message: 'Missing town name' }, { status: 400 })
+    }
 
-    return NextResponse.json({ message: 'Deleted' }, { status: 200 })
-  } catch (e: any) {
-    console.error('DELETE user town error:', e)
-    return NextResponse.json({ message: e.message || 'Unauthorized' }, { status: 401 })
+    await deleteUseCase.execute({ userId: decoded.userId, townName })
+
+    return NextResponse.json({ message: '동네 삭제 완료' })
+  } catch (err: any) {
+    console.error('DELETE user town error:', err)
+    return NextResponse.json({ message: '삭제 실패' }, { status: 500 })
   }
 }
