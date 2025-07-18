@@ -1,0 +1,48 @@
+.container {
+  padding: 16px;
+  border-top: 1px solid #ddd;
+}
+
+.header {
+  margin-bottom: 12px;
+}
+
+.allGamesText {
+  color: var(--primary-blue);
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.thumbnail {
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.more {
+  margin-top: 16px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.more span {
+  color: var(--secondary-blue-800);
+  font-weight: 500;
+  cursor: pointer;
+}

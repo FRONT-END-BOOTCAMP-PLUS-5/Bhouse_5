@@ -5,11 +5,11 @@ export class Post {
     public title: string,
     public content: string,
     public createdAt: Date,
-    public updatedAt?: Date,
-    public categoryId?: number,
     public town?: string,
     public hits?: number,
     public nickname?: string,
     public profileImgUrl?: string | null,
+    public updatedAt?: Date,
+    public categoryId?: number,
   ) {}
 }

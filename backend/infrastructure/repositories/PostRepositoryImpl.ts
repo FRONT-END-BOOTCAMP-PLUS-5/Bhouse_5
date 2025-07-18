@@ -32,7 +32,7 @@ export class PostRepositoryImpl implements PostRepository {
       `,
       )
       .single()
-
+    console.log('INSERT 응답:', data)
     if (error) throw new Error(error.message)
 
     return new Post(
@@ -43,8 +43,8 @@ export class PostRepositoryImpl implements PostRepository {
       new Date(data.created_at),
       data.town,
       data.hits,
-      data.users[0]?.nickname,
-      data.users[0]?.profile_img_url,
+      data.users?.nickname ?? null,
+      data.users?.profile_img_url ?? null,
     )
   }
 

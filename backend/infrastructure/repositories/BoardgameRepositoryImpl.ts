@@ -2,8 +2,6 @@ import { Boardgame } from '@be/domain/entities/Boardgame'
 import { supabaseClient } from '@bUtils/supabaseClient'
 import BoardgameRepository from '@domain/repositories/BoardgameRepository'
 
-//TODO: supabase에서 store_own_boardgames 테이블 더미데이터 넣기
-
 export class BoardgameRepositoryImpl implements BoardgameRepository {
   async findBoardgameById(id: number): Promise<Boardgame | null> {
     console.log('Trying to find boardgame id:', id)
@@ -84,6 +82,35 @@ export class BoardgameRepositoryImpl implements BoardgameRepository {
           b.created_at,
           b.updated_at,
           b.updated_by,
+        ),
+    )
+  }
+
+  async findByStoreId(storeId: number): Promise<Boardgame[]> {
+    const { data, error } = await supabaseClient
+      .from('store_own_boardgames')
+      .select('boardgame_id, boardgames(name, img_url)')
+      .eq('store_id', storeId)
+
+    if (error) throw new Error(error.message)
+
+    return data.map(
+      (row: any) =>
+        new Boardgame(
+          row.boardgame_id,
+          row.boardgames.name,
+          'unknown', // createdBy, updatedBy 등은 null or placeholder
+          0,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          row.boardgames.img_url,
+          new Date(),
+          new Date(),
+          'unknown',
         ),
     )
   }
