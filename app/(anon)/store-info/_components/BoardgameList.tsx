@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import BoardgameCard from '@/_components/BoardgameCard/BoardgameCard'
 import styles from './BoardgameList.module.css'
 import { getBoardgamesByStoreId } from 'models/services/boardgame.service'
@@ -12,11 +12,14 @@ interface Boardgame {
   imgUrl: string
 }
 
-export default function BoardgameList() {
-  const [games, setGames] = useState<Boardgame[]>([])
-  const storeId = 2
-  const router = useRouter()
+interface BoardgameListProps {
+  storeId: number
+}
 
+export default function BoardgameList({ storeId }: BoardgameListProps) {
+  const [games, setGames] = useState<Boardgame[]>([])
+  const params = useParams()
+  const router = useRouter()
   useEffect(() => {
     const fetchGames = async () => {
       try {
@@ -35,6 +38,7 @@ export default function BoardgameList() {
   const top3 = games.slice(0, 3)
 
   const handleMoreClick = () => {
+    const storeId = params?.id
     router.push(`/store-info-gamelist?storeId=${storeId}`)
   }
 
