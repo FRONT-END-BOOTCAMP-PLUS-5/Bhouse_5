@@ -1,23 +1,24 @@
+// /components/ImageUploader/ImageUploader.tsx
 'use client'
 
 import React, { useState, useRef, ChangeEvent, DragEvent } from 'react'
-import styles from './page.module.css'
+import styles from './ImageUploader.module.css'
+import ImagePreviewList from './ImagePreviewList'
 
-interface ImageUploadFormProps {
+interface ImageUploaderProps {
   onImagesSelect?: (files: File[]) => void
 }
 
-const ImageUploadForm: React.FC<ImageUploadFormProps> = ({ onImagesSelect }) => {
+const ImageUploader: React.FC<ImageUploaderProps> = ({ onImagesSelect }) => {
   const [previews, setPreviews] = useState<string[]>([])
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleFiles = (files: FileList | null) => {
     if (!files) return
     const fileArray = Array.from(files)
-    if (onImagesSelect) onImagesSelect(fileArray)
-
-    const previewUrls = fileArray.map((file) => URL.createObjectURL(file))
-    setPreviews((prev) => [...prev, ...previewUrls])
+    onImagesSelect?.(fileArray)
+    const urls = fileArray.map((file) => URL.createObjectURL(file))
+    setPreviews((prev) => [...prev, ...urls])
   }
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -26,24 +27,20 @@ const ImageUploadForm: React.FC<ImageUploadFormProps> = ({ onImagesSelect }) => 
 
   const handleDrop = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault()
-    e.stopPropagation()
     handleFiles(e.dataTransfer.files)
   }
 
   const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault()
-    e.stopPropagation()
+  }
+
+  const openFileDialog = () => {
+    fileInputRef.current?.click()
   }
 
   return (
     <div className={styles.imgContainer}>
-      <div
-        className={styles.dropZone}
-        onDrop={handleDrop}
-        onDragOver={handleDragOver}
-        onClick={() => fileInputRef.current?.click()}
-      >
-        <p>클릭 또는 드래그해서 이미지를 업로드하세요</p>
+      <div className={styles.dropZone} onDrop={handleDrop} onDragOver={handleDragOver} onClick={openFileDialog}>
         <input
           type="file"
           accept="image/*"
@@ -54,13 +51,9 @@ const ImageUploadForm: React.FC<ImageUploadFormProps> = ({ onImagesSelect }) => 
         />
       </div>
 
-      <div className={styles.previewContainer}>
-        {previews.map((src, idx) => (
-          <img key={idx} src={src} alt={`업로드된 이미지 ${idx + 1}`} className={styles.previewImage} />
-        ))}
-      </div>
+      <ImagePreviewList previews={previews} onUploadClick={openFileDialog} />
     </div>
   )
 }
 
-export default ImageUploadForm
+export default ImageUploader
