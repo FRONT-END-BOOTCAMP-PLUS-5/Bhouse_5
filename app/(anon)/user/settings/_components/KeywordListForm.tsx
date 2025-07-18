@@ -40,15 +40,16 @@ const KeywordListForm: React.FC = () => {
     <div className={styles.keywordListFormContainer}>
       <form onSubmit={handleAddKeyword} className={styles.keywordInputSection}>
         <TextInput
+          type="text"
+          placeholder="게시글 알림 받을 키워드 추가하기"
           value={newKeyword}
           onChange={(e) => setNewKeyword(e.target.value)}
-          placeholder="게시글 알림 받을 키워드 추가하기"
           size="medium" // 적절한 크기
           className={styles.keywordInput}
+          hasButton={true} // ★ 버튼을 활성화합니다.
+          buttonLabel="등록" // ★ 버튼에 표시될 텍스트입니다.
+          onButtonClick={handleAddKeyword} // ★ 버튼 클릭 시 실행될 함수입니다.
         />
-        <Button type="submit" variant="primary" size="medium" borderRadius="8">
-          등록
-        </Button>
       </form>
 
       <div className={styles.keywordList}>
