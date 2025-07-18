@@ -1,3 +1,4 @@
+// ✅ 수정된 BoardgameList.tsx
 'use client'
 
 import { useEffect, useState } from 'react'
@@ -13,35 +14,45 @@ interface Boardgame {
 }
 
 interface BoardgameListProps {
-  storeId: number
+  storeId?: string // ✅ 선택적 prop로 받되 fallback 사용
 }
 
-export default function BoardgameList() {
+export default function BoardgameList({ storeId }: BoardgameListProps) {
   const [games, setGames] = useState<Boardgame[]>([])
   const searchParams = useSearchParams()
-  const storeId = searchParams.get('storeId')
-  const params = useParams()
   const router = useRouter()
+  const params = useParams()
+
+  // ✅ storeId 우선순위: props → query string
+  const resolvedStoreId = storeId ?? searchParams.get('storeId')
+
   useEffect(() => {
     const fetchGames = async () => {
+      if (!resolvedStoreId) {
+        console.warn('storeId가 없습니다.')
+        return
+      }
+
       try {
-        const res = await getBoardgamesByStoreId(storeId)
+        const res = await getBoardgamesByStoreId(resolvedStoreId)
         if (res.success) {
           setGames(res.data)
+        } else {
+          console.error('API 실패 응답:', res)
         }
       } catch (e) {
-        console.error(e)
+        console.error('보드게임 데이터를 불러오는 데 실패했어요', e)
       }
     }
 
     fetchGames()
-  }, [])
+  }, [resolvedStoreId])
 
   const top3 = games.slice(0, 3)
 
   const handleMoreClick = () => {
-    const storeId = params?.id
-    router.push(`/store-info-gamelist?storeId=${storeId}`)
+    const id = params?.id ?? resolvedStoreId
+    router.push(`/store-info-gamelist?storeId=${id}`)
   }
 
   return (
