@@ -19,7 +19,8 @@ export class GetUserKeywordsUseCase {
 
     return userKeywords.map((keyword) => ({
       keywordId: keyword.keywordId,
-      keyword: keyword.keyword, // UserKeyword 엔티티에서 이미 string | null로 처리됨
+      userId: keyword.userId,
+      keyword: keyword.keyword || '', // UserKeyword 엔티티에서 이미 string | null로 처리됨
       createdAt: keyword.createdAt.toISOString(),
     }))
   }

@@ -26,7 +26,7 @@ export class CreatePostUseCase {
       userId: post.userId,
       title: post.title,
       content: post.content,
-      createdAt: post.createdAt,
+      createdAt: post.createdAt.toISOString(),
       town: post.town ?? null,
       hits: post.hits ?? 0,
       nickname: post.nickname ?? null,

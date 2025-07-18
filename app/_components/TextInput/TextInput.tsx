@@ -9,9 +9,9 @@ type CommonInputProps = {
   placeholder?: string
   className?: string // 외부에서 추가 스타일을 위한 클래스
   /**
-   * TextInput의 크기를 정의합니다. 'small' 또는 기본 크기 (undefined)를 가집니다.
+   * TextInput의 크기를 정의합니다. 'small', 'medium' 또는 기본 크기 (undefined)를 가집니다.
    */
-  size?: 'small' // size prop 추가
+  size?: 'small' | 'medium' // size prop 추가
   // Add more common props like value, onChange, etc. if needed
 } & InputHTMLAttributes<HTMLInputElement> &
   TextareaHTMLAttributes<HTMLTextAreaElement> // 기본 HTML 속성 상속
@@ -25,7 +25,8 @@ const TextInput: React.FC<CommonInputProps> = ({
   // inputBase 클래스, size에 따른 클래스, 외부 className을 조합
   const inputClasses = [
     styles.inputBase,
-    size === 'small' ? styles.small : '', // small prop이 있을 때 small 클래스 추가
+    size === 'small' ? styles.small : '',
+    size === 'medium' ? styles.medium : '', // medium prop이 있을 때 medium 클래스 추가
     className, // 외부에서 전달된 className
   ]
     .filter(Boolean)

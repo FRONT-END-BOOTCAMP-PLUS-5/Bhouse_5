@@ -1,6 +1,6 @@
 // app/api/user/activity/replies/route.ts
 
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 
 import { GetUserRepliesUseCase } from 'backend/application/user/activity/replies/usecases/GetUserRepliesUseCase'
 import { SupabaseCommunityReplyRepository } from 'backend/infrastructure/repositories/SupabaseCommunityReplyRepository'
@@ -11,7 +11,7 @@ import { verifyToken } from '@be/utils/auth'
  * 특정 사용자의 댓글 목록을 조회하는 API 엔드포인트입니다.
  * GET /api/user/activity/replies
  */
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   // 토큰 검증
   const decoded = await verifyToken(request)
 

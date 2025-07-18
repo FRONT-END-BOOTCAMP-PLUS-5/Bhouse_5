@@ -118,6 +118,52 @@ export class SupabaseBoardgameRepository implements BoardgameRepository {
 
     const { data, error } = await query
     if (error) throw new Error(`Failed to fetch all boardgames: ${error.message}`)
-    return (data ?? []).map((item: BoardgameTable) => BoardgameMapper.toBoardgame(item))
+    return (data ?? []).map((item) => BoardgameMapper.toBoardgame(item as any))
+  }
+
+  async findBoardgameById(id: number): Promise<Boardgame | null> {
+    const { data, error } = await supabaseClient.from('boardgames').select('*').eq('boardgame_id', id).single()
+
+    if (error) {
+      if (error.code === 'PGRST116') return null
+      throw new Error(`Failed to fetch boardgame by ID: ${error.message}`)
+    }
+
+    return data ? BoardgameMapper.toBoardgame(data) : null
+  }
+
+  async searchBoardgames(params: {
+    name?: string
+    genre?: string
+    minPlayers?: number
+    maxPlayers?: number
+  }): Promise<Boardgame[]> {
+    let query = supabaseClient.from('boardgames').select('*')
+
+    if (params.name) query = query.ilike('name', `%${params.name}%`)
+    if (params.genre) query = query.eq('genre', params.genre)
+    if (params.minPlayers) query = query.gte('min_players', params.minPlayers)
+    if (params.maxPlayers) query = query.lte('max_players', params.maxPlayers)
+
+    const { data, error } = await query
+    if (error) throw new Error(`Failed to search boardgames: ${error.message}`)
+
+    return (data ?? []).map((item) => BoardgameMapper.toBoardgame(item))
+  }
+
+  async findByStoreId(storeId: number): Promise<Boardgame[]> {
+    const { data, error } = await supabaseClient
+      .from('store_own_boardgames')
+      .select(
+        `
+        boardgame_id,
+        boardgames (*)
+      `,
+      )
+      .eq('store_id', storeId)
+
+    if (error) throw new Error(`Failed to fetch boardgames by store ID: ${error.message}`)
+
+    return (data ?? []).filter((item) => item.boardgames).map((item) => BoardgameMapper.toBoardgame(item.boardgames[0]))
   }
 }
