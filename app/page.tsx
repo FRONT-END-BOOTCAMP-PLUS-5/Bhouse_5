@@ -21,10 +21,18 @@ export default function Home() {
   const [selectedRegion, setSelectedRegion] = useState('중랑구')
   const [smallSelectedOption, setSmallSelectedOption] = React.useState('옵션 1')
   const [isNotificationsEnabled, setIsNotificationsEnabled] = useState(true)
+  const [keyword, setKeyword] = useState('')
 
   const handleSmallOptionSelect = (option: string) => {
     setSmallSelectedOption(option)
     console.log(`${option} 선택됨`)
+  }
+
+  const handleKeywordRegister = () => {
+    // 여기에 키워드 등록 로직을 구현합니다.
+    console.log(`등록할 키워드: ${keyword}`)
+    alert(`'${keyword}' 키워드가 등록되었습니다!`)
+    setKeyword('') // 등록 후 입력 필드 초기화
   }
 
   const handleRegionSelect = (region: string) => {
@@ -81,6 +89,17 @@ export default function Home() {
           size={90}
         />
       </div>
+      <h3>버튼이 포함된 TextInput (피그마 이미지처럼)</h3>
+      <TextInput
+        type="text"
+        placeholder="게시글 알림 받을 키워드 추가하기"
+        value={keyword}
+        onChange={(e) => setKeyword(e.target.value)}
+        hasButton={true} // ★ 버튼을 활성화합니다.
+        buttonLabel="등록" // ★ 버튼에 표시될 텍스트입니다.
+        onButtonClick={handleKeywordRegister} // ★ 버튼 클릭 시 실행될 함수입니다.
+      />
+      <p style={{ fontSize: '14px', color: '#666' }}>버튼이 포함된 TextInput의 현재 키워드: {keyword}</p>
       <ListingElement
         label={'엘레멘트입니다'}
         onDelete={function (): void {

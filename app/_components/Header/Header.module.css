@@ -105,7 +105,7 @@
 
 /* Dropdown 내부의 버튼을 위한 스타일 (ListItem처럼 보이도록) */
 .buttonAsListItem {
-  width: 100%; /* 드롭다운 메뉴 너비에 맞춤 */
+  width: 80%; /* 드롭다운 메뉴 너비에 맞춤 */
   text-align: center; /* 텍스트 가운데 정렬 */
   /* Dropdown 내부의 Button에 추가적인 스타일이 필요하다면 여기에 정의 */
 }

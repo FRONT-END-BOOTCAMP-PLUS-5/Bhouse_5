@@ -65,7 +65,6 @@
 .dropdownListWrapper {
   position: absolute; /* */
   top: 100%; /* */
-  left: 0; /* */
   width: var(--dropdown-list-calculated-width); /* JavaScript에서 계산된 너비 적용 */
   background-color: var(--dropdown-list-bg-color); /* 배경색 변수 사용 */
   border: 1px solid #ddd; /* */
