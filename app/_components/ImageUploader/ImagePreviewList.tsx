@@ -4,6 +4,7 @@ import React from 'react'
 import Image from 'next/image'
 import CircleButton from '../CircleButton/CircleButton'
 import styles from './ImageUploader.module.css'
+import PlusIcon from '@public/icons/plus.svg'
 
 interface ImagePreviewListProps {
   previews: string[]
@@ -15,7 +16,15 @@ const ImagePreviewList: React.FC<ImagePreviewListProps> = ({ previews, onUploadC
     return (
       <div className={styles.dropZoneLarge} onClick={onUploadClick}>
         <div className={styles.uploadIcon}>
-          <CircleButton iconSrc={'/icons/plus.svg'} iconAlt={'추가'} size={48} iconSize={32} bgColor="#fff" />
+          <CircleButton
+            svgComponent={PlusIcon} // BellIcon 컴포넌트를 직접 전달
+            svgWidth={48} // 아이콘 너비
+            svgHeight={48} // 아이콘 높이
+            svgFill="black" // 아이콘 색상
+            imageAlt="추가 아이콘" // 접근성용 대체 텍스트
+            bgColor="#fff"
+            size={32}
+          />
         </div>
       </div>
     )
@@ -38,7 +47,15 @@ const ImagePreviewList: React.FC<ImagePreviewListProps> = ({ previews, onUploadC
 
       <div className={styles.dropZoneSmall} onClick={onUploadClick}>
         <div className={styles.uploadIcon}>
-          <CircleButton iconSrc={'/icons/plus.svg'} iconAlt={'추가'} size={36} iconSize={24} bgColor="#fff" />
+          <CircleButton
+            svgComponent={PlusIcon} // BellIcon 컴포넌트를 직접 전달
+            svgWidth={48} // 아이콘 너비
+            svgHeight={48} // 아이콘 높이
+            svgFill="black" // 아이콘 색상
+            imageAlt="추가 아이콘" // 접근성용 대체 텍스트
+            bgColor="#fff"
+            size={32}
+          />
         </div>
       </div>
     </div>

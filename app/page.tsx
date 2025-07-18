@@ -12,7 +12,6 @@ import ListingElement from './_components/ListingElement/ListingElement'
 import Toggle from './_components/Toggle/Toggle'
 
 import FileIcon from '@public/icons/file.svg'
-
 export default function Home() {
   const [email, setEmail] = React.useState('')
   const [description, setDescription] = React.useState('')
@@ -41,12 +40,13 @@ export default function Home() {
     <div className={styles.page}>
       <div>
         <CircleButton
-          icon={<FileIcon width={40} height={40} fill="red" />} // iconSize 대신 width, height를 직접 지정합니다. 상단에서 import한 아이콘을 가져옵니다.
-          //사용할 svg아이콘의 파일에서 fill값을 "currentColor"로 지정해야 색상을 바꿀 수 있습니다. (예시 파일 : bell, file, trash 수정하였음.)
-          iconAlt="파일" // iconAlt는 CircleButton 인터페이스에는 있지만, FileIcon 컴포넌트 자체에서 alt를 관리할 수도 있습니다.
+          svgComponent={FileIcon} // BellIcon 컴포넌트를 직접 전달
+          svgWidth={40} // 아이콘 너비
+          svgHeight={40} // 아이콘 높이
+          svgFill="red" // 아이콘 색상
+          imageAlt="파일 아이콘" // 접근성용 대체 텍스트
           bgColor="#ffebee"
           size={90}
-          onClick={() => alert('파일 아이콘 클릭')} // onClick 메시지를 더 구체적으로 변경했습니다.
         />
       </div>
       <ListingElement
