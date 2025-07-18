@@ -12,6 +12,8 @@ import ListingElement from './_components/ListingElement/ListingElement'
 import Toggle from './_components/Toggle/Toggle'
 
 import FileIcon from '@public/icons/file.svg'
+import Carousel from './_components/Carousel/Carousel'
+
 export default function Home() {
   const [email, setEmail] = React.useState('')
   const [description, setDescription] = React.useState('')
@@ -38,6 +40,36 @@ export default function Home() {
 
   return (
     <div className={styles.page}>
+      <Carousel
+        items={[
+          {
+            content: (
+              <Image
+                src="https://images.unsplash.com/photo-1602524810970-7ea5af66c84a?auto=format&fit=crop&w=800&q=80"
+                alt="Ad 1"
+                width={800}
+                height={300}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            ),
+            href: 'https://naver.com',
+          },
+          {
+            content: (
+              <Image
+                src="https://images.unsplash.com/photo-1526040652367-ac003a0475fe?auto=format&fit=crop&w=800&q=80"
+                alt="Ad 2"
+                width={800}
+                height={300}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            ),
+            href: '/ads/2',
+          },
+        ]}
+        autoPlay
+        interval={10000}
+      />
       <div>
         <CircleButton
           svgComponent={FileIcon} // BellIcon 컴포넌트를 직접 전달

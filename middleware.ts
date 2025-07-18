@@ -10,6 +10,12 @@ export const config = {
   matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
 }
 
+//TODO: 토큰 재발급 로직 추가
+// api 검증 로직 추가(토큰 재발급 제외)
+// 프론트 -> 미들웨어 -> 백엔드(401 에러)
+
+//미들웨어 선언, 백엔드 요청 (토큰검증해달라) -> 리다이랙트
+
 export async function middleware(request: NextRequest) {
   const response = NextResponse.next()
 

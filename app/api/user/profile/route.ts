@@ -45,13 +45,11 @@ export async function PATCH(request: NextRequest) {
     }
     const userId = decoded.userId
 
-    //TODO:로케이션 추가 필요
-
     const updateData = {
       nickname: body.nickname,
       profileImgUrl: body.profile_img_url,
       password: body.password,
-      // 필요한 필드 추가
+      // location 정보는 별도 API에서 처리 (UserTown 관련)
     }
 
     const usecase = new UpdateUserProfileUseCase(new UserRepositoryImpl())

@@ -45,6 +45,14 @@ const nextConfig: NextConfig = {
       },
     },
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+    ], // ✅ 여기에 추가
+  },
 }
 
 export default nextConfig

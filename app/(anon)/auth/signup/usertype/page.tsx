@@ -2,8 +2,8 @@
 import Link from 'next/link'
 import styles from './usertype.module.css'
 import globalStyles from '@/page.module.css'
-import ShopIcon from '@public/shop.svg'
-import UserIcon from '@public/user.svg'
+import ShopIcon from '@public/icons/shop.svg'
+import UserIcon from '@public/icons/user.svg'
 
 export default function UserTypePage() {
   return (
