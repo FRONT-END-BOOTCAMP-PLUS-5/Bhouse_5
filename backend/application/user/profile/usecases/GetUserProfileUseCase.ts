@@ -1,5 +1,5 @@
-import { UserRepository } from '@domain/repositories/UserRepository'
-import { UserTownRepository } from '@domain/repositories/UserTownRepository'
+import { UserRepository } from '@be/domain/repositories/UserRepository'
+import { UserTownRepository } from '@be/domain/repositories/UserTownRepository'
 import { GetUserProfileQueryDto, UserProfileResponseDto, UserTownDto } from '../dtos/UserProfileDto'
 
 export class GetUserProfileUseCase {
