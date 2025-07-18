@@ -76,29 +76,16 @@ export default function AgreementPage() {
   })
   const { errors, isValid } = form.formState
 
-  const allAgreement = form.watch('allAgreement')
-  const termsOfService = form.watch('termsOfService')
-  const privacyPolicy = form.watch('privacyPolicy')
-
-  useEffect(() => {
-    if (allAgreement) {
-      agreements.forEach((item) => {
-        form.setValue(item.id as keyof AgreementSchemaType, true, { shouldValidate: true })
-      })
-    }
-  }, [allAgreement, form])
-
-  useEffect(() => {
-    if (termsOfService && privacyPolicy) {
-      form.setValue('allAgreement', true, { shouldValidate: true })
-    } else {
-      form.setValue('allAgreement', false, { shouldValidate: true })
-    }
-  }, [termsOfService, privacyPolicy, form])
+  const isAllChecked = useMemo(
+    () => agreements.every((item) => form.watch(item.id as keyof AgreementSchemaType)),
+    [agreements, form.watch('termsOfService'), form.watch('privacyPolicy')],
+  )
 
   const handleSelectAll = () => {
-    const newValue = !allAgreement
-    form.setValue('allAgreement', newValue, { shouldValidate: true })
+    const newValue = !isAllChecked
+    agreements.forEach((item) => {
+      form.setValue(item.id as keyof AgreementSchemaType, newValue, { shouldValidate: true })
+    })
   }
 
   const handleSubmit = (data: AgreementSchemaType) => {
@@ -109,7 +96,7 @@ export default function AgreementPage() {
     <form onSubmit={form.handleSubmit(handleSubmit)} className={styles.form}>
       <label className={styles.allAgreementLabel}>
         전체 동의합니다
-        <input type="checkbox" className={styles.checkbox} checked={allAgreement} onClick={handleSelectAll} />
+        <input type="checkbox" className={styles.checkbox} checked={isAllChecked} onClick={handleSelectAll} />
       </label>
 
       {agreements.map((item) => (
