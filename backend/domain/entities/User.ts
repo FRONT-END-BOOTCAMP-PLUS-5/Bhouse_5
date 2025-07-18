@@ -1,4 +1,4 @@
-import { Alarm } from './Alarms'
+import { Alarm } from './Alarm'
 import { UserRole } from './UserRole'
 
 export class User {

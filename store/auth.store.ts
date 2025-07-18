@@ -33,6 +33,7 @@ const INIT = {
       role_id: 0,
       name: '오잉오잉',
     },
+    towns: [],
   },
   hydrated: false,
 }
