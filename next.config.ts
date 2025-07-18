@@ -11,6 +11,12 @@ const nextConfig: NextConfig = {
       // 필요하다면 여기에 다른 이미지 호스팅 도메인들을 추가할 수 있습니다.
       // 예: 'your-cdn-domain.com', 'another-image-service.com'
     ],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+    ], // ✅ 여기에 추가
   },
 
   webpack(config) {
@@ -44,14 +50,6 @@ const nextConfig: NextConfig = {
         },
       },
     },
-  },
-  images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
-      },
-    ], // ✅ 여기에 추가
   },
 }
 
