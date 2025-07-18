@@ -28,7 +28,7 @@ const Header: React.FC = () => {
   const { isLogin, nickname, setLogout, user } = useAuthStore()
   const currentUserType = user.user_role.name
   const profileImageUrl = user?.profile_img_url || '/images/user_empty_profile_img.png'
-
+  console.log(profileImageUrl)
   const handleRegionSelect = (region: string) => {
     setSelectedRegion(region)
     console.log(`${region} 선택됨`)

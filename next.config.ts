@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
     domains: [
       'znusrbdqiaopjrrwikqt.supabase.co', // 제공해주신 이미지 URL의 도메인 추가
       'example.com',
+      'images.unsplash.com', // Unsplash 이미지 도메인 추가
       // 필요하다면 여기에 다른 이미지 호스팅 도메인들을 추가할 수 있습니다.
       // 예: 'your-cdn-domain.com', 'another-image-service.com'
     ],
@@ -44,14 +45,6 @@ const nextConfig: NextConfig = {
         },
       },
     },
-  },
-  images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
-      },
-    ], // ✅ 여기에 추가
   },
 }
 
