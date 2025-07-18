@@ -3,9 +3,10 @@ import { StoreRepositoryImpl } from '@be/infrastructure/repositories/StoreReposi
 
 const repo = new StoreRepositoryImpl()
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const id = Number(params.id)
+    const { id: idParam } = await params
+    const id = Number(idParam)
     if (isNaN(id)) {
       return NextResponse.json({ error: '유효한 ID가 아닙니다.' }, { status: 400 })
     }

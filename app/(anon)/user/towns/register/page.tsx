@@ -6,7 +6,7 @@ import styles from './TownRegister.module.css'
 import Button from '@/_components/Button/Button'
 
 interface TownInfo {
-  townName: string
+  name: string
   isPrimary: boolean
 }
 
@@ -18,7 +18,7 @@ export default function TownRegisterPage() {
   const [isMapReady, setIsMapReady] = useState(false)
   const [polygon, setPolygon] = useState<any>(null)
   const [polygonList, setPolygonList] = useState<window.kakao.maps.Polygon[]>([])
-  const [primaryMarker, setPrimaryMarker] = useState<window.kakao.maps.Marker | null>(null)
+  const [primaryMarker, setPrimaryMarker] = useState<any>(null)
   const [primaryTownName, setPrimaryTownName] = useState<string | null>(null)
   const [primaryPolygon, setPrimaryPolygon] = useState<window.kakao.maps.Polygon | null>(null)
   const [searchOptions, setSearchOptions] = useState<string[]>([])
@@ -89,12 +89,12 @@ export default function TownRegisterPage() {
       try {
         const towns = await fetchTowns()
         setTownList(towns)
-        setSearchOptions(Array.from(new Set(towns.map((t) => t.townName))))
+        setSearchOptions(Array.from(new Set(towns.map((t) => t.name))))
 
         const primary = towns.find((t) => t.isPrimary)
         if (primary) {
-          setPrimaryTownName(primary.townName)
-          await handleDrawDistrictPolygon(primary.townName, true)
+          setPrimaryTownName(primary.name)
+          await handleDrawDistrictPolygon(primary.name, true)
         }
       } catch {
         setTownList([])
@@ -170,7 +170,7 @@ export default function TownRegisterPage() {
       const geojson = await res.json()
 
       const clean = (str: string) => str.normalize('NFC').replace(/\s+/g, ' ').trim()
-      const features = geojson.features.filter((f) => clean(f.properties.adm_nm).startsWith(clean(districtName)))
+      const features = geojson.features.filter((f: any) => clean(f.properties.adm_nm).startsWith(clean(districtName)))
       if (!features || features.length === 0) return
 
       if (isPrimary) {
@@ -247,7 +247,7 @@ export default function TownRegisterPage() {
     try {
       const districtName = extractDistrictName(selectedTown.name)
       const currentTowns = await fetchTowns()
-      const isDuplicate = currentTowns.some((town) => town.townName === districtName)
+      const isDuplicate = currentTowns.some((town) => town.name === districtName)
 
       if (isDuplicate) {
         alert('이미 등록된 동네입니다.')
@@ -282,7 +282,7 @@ export default function TownRegisterPage() {
 
   return (
     <div className={styles.page}>
-      <h2 className="header48">내 동네 등록하기</h2>
+      <h2 className={styles.header48}>내 동네 등록하기</h2>
 
       {/* 🔍 검색창, 자동완성, 버튼 */}
       <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 12 }}>
@@ -377,14 +377,14 @@ export default function TownRegisterPage() {
       ) : (
         <ul>
           {townList.map((town) => (
-            <li key={town.townName} className={styles.townItem}>
+            <li key={town.name} className={styles.townItem}>
               <span className={styles.townName}>
-                {town.townName}
+                {town.name}
                 {town.isPrimary && <span className={styles.primaryTag}>(대표)</span>}
               </span>
               <div className={styles.buttonGroup}>
-                <button onClick={() => handlePrimary(town.townName)}>대표로 설정</button>
-                <button onClick={() => handleDelete(town.townName)}>삭제</button>
+                <button onClick={() => handlePrimary(town.name)}>대표로 설정</button>
+                <button onClick={() => handleDelete(town.name)}>삭제</button>
               </div>
             </li>
           ))}

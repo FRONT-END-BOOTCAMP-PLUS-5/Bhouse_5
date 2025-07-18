@@ -1,9 +1,9 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 
-export default function KakaoCallbackPage() {
+function KakaoCallbackForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const code = searchParams.get('code')
@@ -45,7 +45,15 @@ export default function KakaoCallbackPage() {
     }
 
     handleKakaoLogin()
-  }, [code]) // ✅ router 제외!
+  }, [code, router]) // ✅ router 포함!
 
   return <p>카카오 로그인 처리 중...</p>
+}
+
+export default function KakaoCallbackPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <KakaoCallbackForm />
+    </Suspense>
+  )
 }

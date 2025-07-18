@@ -1,6 +1,6 @@
 // app/api/user/activity/posts/route.ts
 
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 // import { supabaseClient } from 'backend/utils/supabaseClient'; // 이 파일에서는 직접 사용하지 않음
 
 import { GetUserPostsUseCase } from '@application/user/activity/posts/usecases/GetUserPostsUseCase'
@@ -12,7 +12,7 @@ import { verifyToken } from '@be/utils/auth'
  * 특정 사용자의 게시글 목록을 조회하는 API 엔드포인트입니다.
  * GET /api/user/activity/posts
  */
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   // 토큰 검증
   const decoded = await verifyToken(request)
 
@@ -43,7 +43,7 @@ export async function GET(request: Request) {
       { success: true, data: result.data, total: result.total },
       { status: 200 }, // OK
     )
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('사용자 게시글 조회 중 에러 발생:', error.message)
     return NextResponse.json({ success: false, error: error.message }, { status: 500 }) // Internal Server Error
   }

@@ -1,6 +1,6 @@
 // backend/application/boardgames/usecases/SearchBoardgamesUseCase.ts
 
-import { BoardgameRepository } from '@domain/repositories/BoardgameRepository'
+import BoardgameRepository from '@domain/repositories/BoardgameRepository'
 import { SearchBoardgamesDto } from '../dtos/SearchBoardgamesDto'
 import { BoardGameResponseDto } from '../dtos/BoardGameResponseDto'
 

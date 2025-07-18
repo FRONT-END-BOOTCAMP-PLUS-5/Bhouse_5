@@ -1,4 +1,4 @@
-import { BoardgameRepository } from '@domain/repositories/BoardgameRepository'
+import BoardgameRepository from '@domain/repositories/BoardgameRepository'
 import { BoardgameDetailDto } from '../dtos/BoardgameDetailDto'
 import { Boardgame } from '@be/domain/entities/Boardgame'
 

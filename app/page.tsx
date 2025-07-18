@@ -72,12 +72,13 @@ export default function Home() {
       />
       <div>
         <CircleButton
-          icon={<FileIcon width={40} height={40} fill="red" />} // iconSize 대신 width, height를 직접 지정합니다. 상단에서 import한 아이콘을 가져옵니다.
-          //사용할 svg아이콘의 파일에서 fill값을 "currentColor"로 지정해야 색상을 바꿀 수 있습니다. (예시 파일 : bell, file, trash 수정하였음.)
-          iconAlt="파일" // iconAlt는 CircleButton 인터페이스에는 있지만, FileIcon 컴포넌트 자체에서 alt를 관리할 수도 있습니다.
+          svgComponent={FileIcon} // BellIcon 컴포넌트를 직접 전달
+          svgWidth={40} // 아이콘 너비
+          svgHeight={40} // 아이콘 높이
+          svgFill="red" // 아이콘 색상
+          imageAlt="파일 아이콘" // 접근성용 대체 텍스트
           bgColor="#ffebee"
           size={90}
-          onClick={() => alert('파일 아이콘 클릭')} // onClick 메시지를 더 구체적으로 변경했습니다.
         />
       </div>
       <ListingElement
@@ -88,7 +89,7 @@ export default function Home() {
       />
       <p className={styles.title48}>보드의 집</p>
       <p className={styles.title48}>보드의 집 title48텍스트입니다.</p>
-      <Divider thickness="2px" />
+      <Divider />
       <h1 className={styles.body16}>환영합니다! 이것은 본문 텍스트 body 16입니다.</h1>
       <Divider marginY="8px" />
       <p className={styles.header20}>이것은 본문보다 살짝 큰 header20 텍스트입니다.</p>
@@ -112,12 +113,12 @@ export default function Home() {
       </Button>
 
       {/* 새로운 secondaryBlue100 스타일 버튼 */}
-      <Button variant="secondaryBlue100" onClick={() => console.log('Secondary Blue 100 Clicked')}>
+      <Button variant="secondary" onClick={() => console.log('Secondary Blue 100 Clicked')}>
         다른 기능
       </Button>
 
       {/* 새로운 secondaryBlue400 스타일 버튼 */}
-      <Button variant="secondaryBlue400" onClick={() => console.log('Secondary Blue 400 Clicked')}>
+      <Button variant="secondary" onClick={() => console.log('Secondary Blue 400 Clicked')}>
         강조 기능
       </Button>
       <Button borderRadius="60" variant="ghost" size="small">
@@ -161,7 +162,7 @@ export default function Home() {
       </div>
 
       {/* small 크기 텍스트 입력창 */}
-      <TextInput type="text" size="small" placeholder="작은 입력" style={{ marginTop: '10px' }} />
+      <TextInput type="text" placeholder="작은 입력" style={{ marginTop: '10px' }} />
 
       {/* 드롭다운 (회색 배경, round 8) */}
       <Dropdown label={selectedRegion}>

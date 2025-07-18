@@ -7,7 +7,7 @@ import styles from './Button.module.css'
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode
   borderRadius?: '8' | '12' | '16' | '20' | '60' // 둥글기 variant
-  variant?: 'primary' | 'secondary' | 'ghost' | 'gray' // 버튼 스타일 variant (예시)
+  variant?: 'primary' | 'secondary' | 'secondaryWhite' | 'ghost' | 'gray' // 버튼 스타일 variant (예시)
   size?: 'small' | 'medium' | 'large' // 버튼 크기 (예시)
   fontStyle?: 'light' | 'bold' // 폰트 스타일
   className?: string // 추가적인 커스텀 스타일을 위한 클래스
