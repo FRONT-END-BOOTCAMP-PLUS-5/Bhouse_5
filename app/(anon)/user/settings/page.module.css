@@ -40,11 +40,13 @@
 .notificationLabel {
   color: var(--primary-black); /* 글자색 */
   font-weight: 500;
-  text-align: left;
 }
 
 .keywordListTitle {
-  margin-bottom: 20px;
+  width: 100%;
+  margin-bottom: 0px;
   color: var(--primary-black); /* 글자색 */
   font-weight: 700;
+  text-align: left;
+  justify-self: start; /* 왼쪽 정렬 */
 }

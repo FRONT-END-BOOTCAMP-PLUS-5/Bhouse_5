@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
@@ -22,21 +22,27 @@ type UserType = 'USER' | 'OWNER'
 
 const Header: React.FC = () => {
   const [search, setSearch] = useState('')
-  const [selectedRegion, setSelectedRegion] = useState('중랑구')
+  const { isLogin, setLogout, user } = useAuthStore()
+  const [selectedRegion, setSelectedRegion] = useState('')
 
   const router = useRouter()
 
-  const { isLogin, setLogout, user } = useAuthStore()
-  const currentUserType = user?.user_role?.name
+  const currentUserType = user.user_role.name
   const profileImageUrl = user?.profile_img_url || '/images/user_empty_profile_img.png'
 
-  const handleRegionSelect = (region: string) => {
-    setSelectedRegion(region)
-    console.log(`${region} 선택됨`)
-  }
+  // user.towns 데이터가 로드되면 selectedRegion을 업데이트
+  useEffect(() => {
+    if (isLogin && user.towns && user.towns.length > 0) {
+      setSelectedRegion(user.towns[0].name)
+    } else {
+      setSelectedRegion('동네 선택')
+    }
+  }, [isLogin, user.towns])
 
-  const handleAddLocationClick = () => {
-    console.log('내 동네 추가하기 버튼 클릭')
+  const handleRegionSelect = (regionName: string) => {
+    setSelectedRegion(regionName)
+    console.log(`${regionName} 선택됨`)
+    // TODO: 선택된 동네에 따라 데이터를 필터링하는 로직 추가
   }
 
   const handleLogoutClick = async () => {
@@ -72,11 +78,11 @@ const Header: React.FC = () => {
               <AlarmDropdown
                 trigger={
                   <CircleButton
-                    svgComponent={BellIcon} // BellIcon 컴포넌트를 직접 전달
-                    svgWidth={25} // 아이콘 너비
-                    svgHeight={25} // 아이콘 높이
-                    svgFill="white" // 아이콘 색상
-                    imageAlt="알림 아이콘" // 접근성용 대체 텍스트
+                    svgComponent={BellIcon}
+                    svgWidth={25}
+                    svgHeight={25}
+                    svgFill="white"
+                    imageAlt="알림 아이콘"
                     bgColor="var(--primary-blue)"
                     size={40}
                   />
@@ -86,10 +92,10 @@ const Header: React.FC = () => {
               <ProfileDropdown
                 trigger={
                   <CircleButton
-                    imageUrl={profileImageUrl} // 이미지 URL을 직접 전달
-                    imageSize={40} // 이미지 크기
-                    imageAlt="프로필 이미지" // 접근성용 대체 텍스트
-                    bgColor="transparent" // 배경은 투명
+                    imageUrl={profileImageUrl}
+                    imageSize={40}
+                    imageAlt="프로필 이미지"
+                    bgColor="transparent"
                     size={40}
                   />
                 }
@@ -121,23 +127,24 @@ const Header: React.FC = () => {
             className={styles.searchInput}
           />
           <Dropdown label={selectedRegion} borderRadius="8" size="small">
-            {' '}
-            {/* 여기에 size="small" 추가 */}
-            {/*FIXME : 유저 정보 내 town으로 변경하기*/}
-            <li onClick={() => handleRegionSelect('중랑구')}>중랑구</li>
-            <li onClick={() => handleRegionSelect('은평구')}>은평구</li>
-            <li onClick={() => handleRegionSelect('강남구')}>강남구</li>
-            <li onClick={() => handleRegionSelect('서초구')} data-disabled="true">
-              서초구 (선택 불가)
-            </li>
+            {user.towns && user.towns.length > 0 ? (
+              user.towns.map((town, index) => (
+                <li key={index} onClick={() => handleRegionSelect(town.name)}>
+                  {town.name}
+                </li>
+              ))
+            ) : (
+              <li>등록된 동네가 없습니다.</li>
+            )}
             <Divider marginY="8px" />
+            {/* handleAddLocationClick 함수 대신 href 속성으로 변경 */}
             <li>
               <Button
-                onClick={handleAddLocationClick}
                 variant="primary"
                 size="small"
                 borderRadius="8"
                 className={styles.buttonAsListItem}
+                href="/user/towns/register"
               >
                 내 동네 추가하기
               </Button>
@@ -145,7 +152,7 @@ const Header: React.FC = () => {
           </Dropdown>
         </div>
       ) : (
-        <div className={styles.searchAndDropdown} style={{ justifyContent: 'flex-end' /* 기존 정렬 유지 */ }}>
+        <div className={styles.searchAndDropdown} style={{ justifyContent: 'flex-end' }}>
           <TextInput
             type="text"
             placeholder="지금 인기있는 보드게임"
@@ -157,7 +164,6 @@ const Header: React.FC = () => {
       )}
 
       {/* 하단 섹션: 내비게이션 버튼들 (왼쪽 정렬) */}
-      {/* FIXME(@아무나) : 현재 페이지에서 색상 변경 */}
       <nav className={styles.navigation}>
         <Button variant="ghost" size="small" borderRadius="60" className={styles.navButton}>
           홈
