@@ -1,14 +1,14 @@
 'use client'
 
 interface StoreInfoProps {
-  name: string
-  address: string
-  phone: string
-  openTime: string
-  description: string
-  imagePlaceUrl: string
-  imageMenuUrl: string
-  ownerName: string
+  name?: string
+  address?: string
+  phone?: string
+  openTime?: string
+  description?: string
+  imagePlaceUrl?: string
+  imageMenuUrl?: string
+  ownerName?: string
 }
 
 export default function StoreInfo({

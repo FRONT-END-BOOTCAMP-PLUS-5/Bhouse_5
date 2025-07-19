@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
       body.openTime,
     )
 
-    await repo.create(newStore)
+    await repo.create(newStore, decoded.userId)
     return NextResponse.json({ message: '매장 생성 완료' }, { status: 201 })
   } catch (error) {
     console.error('POST /stores error:', error)
@@ -55,7 +55,7 @@ export async function PUT(req: NextRequest) {
     }
 
     const dto: UpdateStoreDto = body
-    await repo.update(storeId, dto)
+    await repo.update(storeId, decoded.userId, decoded.roleId, createdBy, dto)
     return NextResponse.json({ message: '매장 수정 완료' })
   } catch (error: any) {
     console.error('PUT /stores error:', error)
@@ -86,7 +86,7 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: '매장 삭제 권한 없음' }, { status: 403 })
     }
 
-    await repo.delete(storeId, decoded.userId, isAdmin)
+    await repo.delete(storeId, decoded.userId, decoded.roleId)
     return NextResponse.json({ message: '매장 삭제 완료' })
   } catch (error: any) {
     console.error('DELETE /stores error:', error)

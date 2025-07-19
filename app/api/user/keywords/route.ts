@@ -1,6 +1,6 @@
 // app/api/user/keywords/route.ts
 
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { AddUserKeywordUseCase } from 'backend/application/user/keywords/usecases/AddUserKeywordUseCase'
 import { GetUserKeywordsUseCase } from 'backend/application/user/keywords/usecases/GetUserKeywordsUseCase'
 import { DeleteUserKeywordUseCase } from 'backend/application/user/keywords/usecases/DeleteUserKeywordUseCase'
@@ -10,7 +10,7 @@ import { GetUserKeywordsQueryDto } from 'backend/application/user/keywords/dtos/
 import { DeleteUserKeywordDto } from 'backend/application/user/keywords/dtos/DeleteUserKeywordDto'
 import { verifyToken } from '@be/utils/auth'
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const decoded = await verifyToken(request)
 
@@ -53,7 +53,7 @@ export async function POST(request: Request) {
   }
 }
 
-export async function DELETE(request: Request) {
+export async function DELETE(request: NextRequest) {
   try {
     // 인증된 사용자 ID를 decoded 토큰에서 가져옵니다.
     const decoded = await verifyToken(request)
@@ -94,7 +94,7 @@ export async function DELETE(request: Request) {
   }
 }
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   const decoded = await verifyToken(request)
   if (!decoded) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })

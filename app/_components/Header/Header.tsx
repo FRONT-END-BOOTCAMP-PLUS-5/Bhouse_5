@@ -18,6 +18,7 @@ import BellIcon from '@public/icons/bell.svg'
 
 import { useAuthStore } from '@store/auth.store'
 import { signoutService } from 'models/services/auth.service'
+type UserType = 'USER' | 'OWNER'
 
 const Header: React.FC = () => {
   const [search, setSearch] = useState('')
@@ -98,7 +99,7 @@ const Header: React.FC = () => {
                     size={40}
                   />
                 }
-                userType={currentUserType}
+                userType={currentUserType as UserType}
                 onLogout={handleLogoutClick}
               />
             </>
@@ -124,7 +125,6 @@ const Header: React.FC = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className={styles.searchInput}
-            size="small"
           />
           <Dropdown label={selectedRegion} borderRadius="8" size="small">
             {user.towns && user.towns.length > 0 ? (
@@ -159,7 +159,6 @@ const Header: React.FC = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className={styles.searchInput}
-            size="small"
           />
         </div>
       )}

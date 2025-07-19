@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, Suspense } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import TextInput from '@/_components/TextInput/TextInput'
@@ -15,7 +15,7 @@ import { ErrorMessage } from '@/_components/Message/Message'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 
-function SigninPage() {
+function SigninForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const callbackUrl = searchParams.get('callbackUrl')
@@ -77,6 +77,14 @@ function SigninPage() {
         </nav>
       </div>
     </div>
+  )
+}
+
+function SigninPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SigninForm />
+    </Suspense>
   )
 }
 

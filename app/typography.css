@@ -3,8 +3,9 @@
 /* NanumSquare Regular (기본) */
 @font-face {
   font-family: 'NanumSquare';
-  src: url('@fonts/NanumSquareR.otf') format('opentype'),
-       url('@fonts/NanumSquareR.ttf') format('truetype');
+  src:
+    url('/fonts/NanumSquareR.otf') format('opentype'),
+    url('/fonts/NanumSquareR.ttf') format('truetype');
   font-weight: 400; /* Regular */
   font-style: normal;
   font-display: swap; /* 폰트 로딩 전략: 텍스트가 빠르게 보이고 폰트 로딩 후 교체 */
@@ -13,8 +14,9 @@
 /* NanumSquare Light */
 @font-face {
   font-family: 'NanumSquare';
-  src: url('@fonts/NanumSquareL.otf') format('opentype'),
-       url('@fonts/NanumSquareL.ttf') format('truetype');
+  src:
+    url('/fonts/NanumSquareL.otf') format('opentype'),
+    url('/fonts/NanumSquareL.ttf') format('truetype');
   font-weight: 300; /* Light */
   font-style: normal;
   font-display: swap;
@@ -23,8 +25,9 @@
 /* NanumSquare Bold */
 @font-face {
   font-family: 'NanumSquare';
-  src: url('@fonts/NanumSquareB.otf') format('opentype'),
-       url('@fonts/NanumSquareB.ttf') format('truetype');
+  src:
+    url('/fonts/NanumSquareB.otf') format('opentype'),
+    url('/fonts/NanumSquareB.ttf') format('truetype');
   font-weight: 700; /* Bold */
   font-style: normal;
   font-display: swap;
@@ -33,8 +36,9 @@
 /* NanumSquare ExtraBold */
 @font-face {
   font-family: 'NanumSquare';
-  src: url('@fonts/NanumSquareEB.otf') format('opentype'),
-       url('@fonts/NanumSquareEB.ttf') format('truetype');
+  src:
+    url('/fonts/NanumSquareEB.otf') format('opentype'),
+    url('/fonts/NanumSquareEB.ttf') format('truetype');
   font-weight: 800; /* ExtraBold */
   font-style: normal;
   font-display: swap;
@@ -42,7 +46,7 @@
 
 @font-face {
   font-family: 'MBC1961OTFM';
-  src: url('@fonts/MBC1961OTFM.otf') format('opentype');
+  src: url('/fonts/MBC1961OTFM.otf') format('opentype');
   font-weight: 800; /* ExtraBold */
   font-style: normal;
   font-display: swap;

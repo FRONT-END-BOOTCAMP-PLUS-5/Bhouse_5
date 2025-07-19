@@ -1,46 +1,25 @@
-// app/community/posts/page.tsx
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import PostList from '@/_components/Post/PostList'
-
-interface Post {
-  postId: number
-  title: string
-  commentCount?: number
-  town: string
-  nickname: string
-  createdAt: string
-  isNotice?: boolean
-}
+import { usePostsQuery } from 'models/querys/community.query'
 
 export default function CommunityPostsPage() {
-  const [posts, setPosts] = useState<Post[]>([])
-  const [loading, setLoading] = useState(true)
+  const { data: posts = [] } = usePostsQuery()
   const [currentPage, setCurrentPage] = useState(1)
   const postsPerPage = 10
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const res = await fetch('/api/community/posts', { cache: 'no-store' })
-        const data = await res.json()
-        setPosts(data)
-      } catch (err) {
-        console.error('게시글 불러오기 실패:', err)
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchPosts()
-  }, [])
+  // 🔥 최신순으로 정렬 (createdAt 내림차순)
+  const sortedPosts = [...posts].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
 
-  if (loading) return <div>불러오는 중...</div>
+  // 현재 페이지에 해당하는 post만 추출
+  const indexOfLast = currentPage * postsPerPage
+  const indexOfFirst = indexOfLast - postsPerPage
+  const currentPosts = sortedPosts.slice(indexOfFirst, indexOfLast)
+
+  const totalPages = Math.ceil(sortedPosts.length / postsPerPage)
 
   return (
-    <div style={{ padding: '1rem' }}>
-      <h1>커뮤니티 게시판</h1>
-      <PostList posts={posts} currentPage={currentPage} postsPerPage={postsPerPage} onPageChange={setCurrentPage} />
-    </div>
+    <PostList posts={currentPosts} currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
   )
 }

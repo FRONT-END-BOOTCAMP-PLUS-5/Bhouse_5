@@ -1,7 +1,6 @@
 // app/api/user/settings/route.ts
 
-import { NextResponse } from 'next/server'
-import { supabaseClient } from 'backend/utils/supabaseClient' // 미리 정의된 클라이언트 임포트
+import { NextRequest, NextResponse } from 'next/server'
 
 import { GetUserSettingUseCase } from '@application/user/settings/usecases/GetUserSettingUseCase'
 import { UpdateUserSettingUseCase } from '@application/user/settings/usecases/UpdateUserSettingUseCase'
@@ -15,7 +14,7 @@ import { verifyToken } from '@be/utils/auth'
  * 유저 알림 설정을 조회하는 GET 요청 핸들러
  * GET /api/user/settings
  */
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   const decoded = await verifyToken(request)
 
   if (!decoded) {
@@ -65,7 +64,7 @@ export async function GET(request: Request) {
  * 유저 알림 설정을 수정하는 PATCH 요청 핸들러
  * PATCH /api/user/settings
  */
-export async function PATCH(request: Request) {
+export async function PATCH(request: NextRequest) {
   try {
     const decoded = await verifyToken(request)
 

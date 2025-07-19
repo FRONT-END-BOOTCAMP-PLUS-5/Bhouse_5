@@ -42,7 +42,7 @@ export class CreateBoardgameUseCase {
     )
 
     // 2. BoardgameRepository를 통해 보드게임 저장
-    const savedBoardgame = await this.boardgameRepository.save(newBoardgame)
+    const savedBoardgame = await (this.boardgameRepository as any).save(newBoardgame)
 
     // 3. 저장된 Boardgame 엔티티를 CreatedBoardgameDto로 변환하여 반환
     return {

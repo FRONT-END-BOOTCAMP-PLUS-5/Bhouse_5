@@ -108,7 +108,7 @@ export default function Home() {
       />
       <p className={styles.title48}>보드의 집</p>
       <p className={styles.title48}>보드의 집 title48텍스트입니다.</p>
-      <Divider thickness="2px" />
+      <Divider />
       <h1 className={styles.body16}>환영합니다! 이것은 본문 텍스트 body 16입니다.</h1>
       <Divider marginY="8px" />
       <p className={styles.header20}>이것은 본문보다 살짝 큰 header20 텍스트입니다.</p>
@@ -132,12 +132,12 @@ export default function Home() {
       </Button>
 
       {/* 새로운 secondaryBlue100 스타일 버튼 */}
-      <Button variant="secondaryBlue100" onClick={() => console.log('Secondary Blue 100 Clicked')}>
+      <Button variant="secondary" onClick={() => console.log('Secondary Blue 100 Clicked')}>
         다른 기능
       </Button>
 
       {/* 새로운 secondaryBlue400 스타일 버튼 */}
-      <Button variant="secondaryBlue400" onClick={() => console.log('Secondary Blue 400 Clicked')}>
+      <Button variant="secondary" onClick={() => console.log('Secondary Blue 400 Clicked')}>
         강조 기능
       </Button>
       <Button borderRadius="60" variant="ghost" size="small">
@@ -181,7 +181,7 @@ export default function Home() {
       </div>
 
       {/* small 크기 텍스트 입력창 */}
-      <TextInput type="text" size="small" placeholder="작은 입력" style={{ marginTop: '10px' }} />
+      <TextInput type="text" placeholder="작은 입력" style={{ marginTop: '10px' }} />
 
       {/* 드롭다운 (회색 배경, round 8) */}
       <Dropdown label={selectedRegion}>
