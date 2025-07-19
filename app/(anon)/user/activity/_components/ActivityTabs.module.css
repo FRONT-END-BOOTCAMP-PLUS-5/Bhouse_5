@@ -5,7 +5,7 @@
   background-color: #ffffff;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-  margin-top: 20px; /* UserProfile 컴포넌트와의 간격 */
+  /* margin-top: 20px; /* REMOVED: UserProfile 컴포넌트와의 간격 */
   overflow: hidden; /* 내부 요소가 넘치지 않도록 */
 }
 
@@ -29,7 +29,7 @@
 }
 
 .tabButton:hover {
-  color: #333;
+  color: var(--primary-black);
 }
 
 .tabButton.active {
