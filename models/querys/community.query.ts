@@ -18,9 +18,9 @@ export const usePostsQuery = () =>
   })
 
 // 📌 특정 게시글 상세
-export const usePostDetailQuery = (postId: number) =>
+export const usePostDetailQuery = (postId: number, p0: { enabled: boolean }) =>
   useQuery<CommunityPost>({
-    queryKey: ['community-post', postId],
+    queryKey: ['community-posts', postId],
     queryFn: () => getPostById(postId),
     enabled: !!postId, // postId가 존재할 때만 요청
   })
@@ -44,7 +44,7 @@ export const useUpdatePostMutation = () => {
   return useMutation({
     mutationFn: (payload: UpdatePostPayload) => updatePost(payload),
     onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['community-post', variables.postId] })
+      queryClient.invalidateQueries({ queryKey: ['community-posts', variables.postId] })
       queryClient.invalidateQueries({ queryKey: ['community-posts'] })
     },
   })

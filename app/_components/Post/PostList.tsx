@@ -15,16 +15,13 @@ interface Post {
 }
 
 interface PostListProps {
-  posts: Post[]
+  posts: Post[] // 🔥 현재 페이지의 post만 받음
   currentPage: number
-  postsPerPage: number
+  totalPages: number // 🔥 전체 페이지 수를 따로 받음
   onPageChange: (page: number) => void
 }
 
-export default function PostList({ posts, currentPage, postsPerPage, onPageChange }: PostListProps) {
-  const totalPages = Math.ceil(posts.length / postsPerPage)
-  const currentPosts = posts.slice((currentPage - 1) * postsPerPage, currentPage * postsPerPage)
-
+export default function PostList({ posts, currentPage, totalPages, onPageChange }: PostListProps) {
   const formatTime = (iso: string) => {
     const date = new Date(iso)
     return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
@@ -51,7 +48,7 @@ export default function PostList({ posts, currentPage, postsPerPage, onPageChang
           </tr>
         </thead>
         <tbody>
-          {currentPosts.map((post) => (
+          {posts.map((post) => (
             <tr key={post.postId} className={styles.postRow}>
               <td data-label="제목">
                 {post.isNotice && <span className={styles.noticeBadge}>공지</span>}
@@ -69,6 +66,7 @@ export default function PostList({ posts, currentPage, postsPerPage, onPageChang
         </tbody>
       </table>
 
+      {/* pagination */}
       <div className={styles.pagination}>
         <button onClick={() => onPageChange(1)} disabled={currentPage === 1}>
           {'<<'}

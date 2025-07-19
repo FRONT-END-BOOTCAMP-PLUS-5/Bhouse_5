@@ -6,12 +6,13 @@ import styles from './PostQuill.module.css'
 import 'quill/dist/quill.snow.css'
 
 interface QuillEditorProps {
-  value: string
+  title: string // 🔥 추가
+  content: string // 기존 value → content 로 명확히 변경
   onChange: (value: string) => void
   onParsed: (title: string, content: string) => void
 }
 
-export default function QuillEditor({ value, onChange, onParsed }: QuillEditorProps) {
+export default function QuillEditor({ title, content, onChange, onParsed }: QuillEditorProps) {
   const titleRef = useRef<HTMLInputElement>(null)
   const editorRef = useRef<HTMLDivElement>(null)
   const [quill, setQuill] = useState<any>(null)
@@ -85,6 +86,8 @@ export default function QuillEditor({ value, onChange, onParsed }: QuillEditorPr
         placeholder: '내용을 입력하세요',
       })
 
+      q.root.innerHTML = content
+
       q.on('text-change', () => {
         onChange(q.root.innerHTML)
       })
@@ -128,17 +131,29 @@ export default function QuillEditor({ value, onChange, onParsed }: QuillEditorPr
     }
 
     initQuill()
-  }, [onChange])
+  }, [onChange, content])
+
+  // 🔥 제목 초기화
+  useEffect(() => {
+    if (title && titleRef.current) {
+      titleRef.current.value = title
+    }
+  }, [title])
+
+  useEffect(() => {
+    if (quill && content) {
+      quill.root.innerHTML = content
+    }
+  }, [quill, content])
 
   const handlePublish = () => {
-    const title = titleRef.current?.value.trim()
-    if (!title) {
+    const titleVal = titleRef.current?.value.trim()
+    if (!titleVal) {
       alert('제목을 입력해주세요')
       return
     }
-
     const html = quill?.root.innerHTML || ''
-    onParsed(title, html)
+    onParsed(titleVal, html)
   }
 
   return (
