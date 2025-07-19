@@ -1,5 +1,6 @@
 'use client'
 
+import instance from '@utils/instance'
 import styles from './PostDetail.module.css'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
@@ -22,10 +23,8 @@ export default function PostDetailPage({ post }: { post: Post }) {
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
-        const res = await fetch('/api/auth/me', { credentials: 'include' })
-        if (!res.ok) return
-        const data = await res.json()
-        setIsAuthor(data.userId === post.user_id)
+        const res = await instance.get('/api/auth/me')
+        setIsAuthor(res.data.userId === post.user_id)
       } catch (err) {
         console.error('유저 인증 실패', err)
       }
@@ -58,8 +57,7 @@ export default function PostDetailPage({ post }: { post: Post }) {
           </div>
         )}
       </div>
-
-      <div className={styles.content}>{post.content}</div>
+      <div className={styles.content} dangerouslySetInnerHTML={{ __html: post.content }} />
     </div>
   )
 }
