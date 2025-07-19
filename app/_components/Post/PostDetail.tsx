@@ -2,6 +2,7 @@
 
 import styles from './PostDetail.module.css'
 import Image from 'next/image'
+import { useEffect, useState } from 'react'
 
 interface Post {
   id: number
@@ -16,6 +17,23 @@ interface Post {
 }
 
 export default function PostDetailPage({ post }: { post: Post }) {
+  const [isAuthor, setIsAuthor] = useState(false)
+
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const res = await fetch('/api/auth/me', { credentials: 'include' })
+        if (!res.ok) return
+        const data = await res.json()
+        setIsAuthor(data.userId === post.user_id)
+      } catch (err) {
+        console.error('유저 인증 실패', err)
+      }
+    }
+
+    fetchCurrentUser()
+  }, [post.user_id])
+
   return (
     <div className={styles.container}>
       <div className={styles.breadcrumb}>커뮤니티 &gt; 자유게시판</div>
@@ -33,10 +51,12 @@ export default function PostDetailPage({ post }: { post: Post }) {
           </div>
         </div>
 
-        <div className={styles.actions}>
-          <button className={styles.editBtn}>수정</button>
-          <button className={styles.deleteBtn}>삭제</button>
-        </div>
+        {isAuthor && (
+          <div className={styles.actions}>
+            <button className={styles.editBtn}>수정</button>
+            <button className={styles.deleteBtn}>삭제</button>
+          </div>
+        )}
       </div>
 
       <div className={styles.content}>{post.content}</div>
