@@ -1,0 +1,82 @@
+/* _components/UserProfile/UserProfile.module.css */
+.profileCard {
+  background-color: var(--secondary-blue-100);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 400px; /* 카드 최대 너비 설정 */
+  margin-top: 20px; /* 페이지 상단과의 간격 */
+  box-sizing: border-box; /* padding이 width를 초과하지 않도록 */
+}
+
+/* 프로필 이미지와 정보 컨테이너 */
+.profileContent {
+  display: flex; /* 가로로 배치 */
+  align-items: center; /* 세로 중앙 정렬 */
+  width: 100%;
+  gap: 20px; /* 이미지와 정보 사이 간격 */
+  /* min-width: 0; */ /* flex 컨테이너 내에서 자식 요소가 넘칠 때 부모가 줄어들 수 있도록 */
+  /* 필요에 따라 flex-wrap: wrap; 을 추가하여 넘칠 경우 다음 줄로 넘어가게 할 수 있습니다. */
+}
+
+/* 프로필 이미지를 감싸는 컨테이너 */
+.profileImageContainer {
+  flex-shrink: 0; /* 이미지 컨테이너 크기 고정 */
+}
+
+/* 닉네임과 활동 통계를 포함하는 오른쪽 컨테이너 */
+.profileInfo {
+  display: flex;
+  flex-direction: column; /* 세로로 배치 (닉네임 위에, 통계 아래) */
+  flex-grow: 1; /* 남은 공간 모두 차지 */
+  justify-content: center; /* 세로 중앙 정렬 (내부 요소들이) */
+  min-width: 0; /* 이 부분이 중요합니다! Flex 아이템의 최소 너비를 0으로 설정하여 내용이 넘칠 때 줄어들 수 있도록 합니다. */
+}
+
+.userName {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--primary-black);
+  margin-bottom: 12px; /* 닉네임 아래에 여백 추가 */
+  /* overflow: hidden; */ /* 텍스트가 길어질 경우 넘치는 부분을 숨김 */
+  /* text-overflow: ellipsis; */ /* 숨겨진 텍스트를 ...으로 표시 */
+  /* white-space: nowrap; */ /* 텍스트 줄바꿈 방지 - 이전에 있었으므로 유지. 너무 길면 ellipsis와 함께 사용 */
+}
+
+.activityStats {
+  display: flex;
+  /* gap: 15px; */ /* 작성글과 작성덧글 사이 간격. 튀어나가는 원인이 될 수 있음. */
+  /* gap 대신 padding과 margin으로 조절하거나, 필요시 flex-wrap 사용 */
+  justify-content: flex-start; /* 왼쪽 정렬 */
+  flex-wrap: wrap; /* 내용이 넘칠 경우 다음 줄로 자동 줄바꿈 */
+  /* gap을 사용하는 대신 margin-right로 조절하여 마지막 요소에는 여백이 없도록 할 수 있습니다. */
+}
+
+.statItem {
+  display: flex;
+  flex-direction: row; /* 숫자 옆에 라벨이 오도록 가로 배치 */
+  align-items: center;
+  gap: 5px; /* 숫자와 라벨 사이 간격 */
+  /* margin-right: 15px; */ /* 각 항목 사이에 여백을 주기. 마지막 항목은 여백 없음 */
+}
+
+/* .statItem:last-child {
+  margin-right: 0;
+} */ /* statItem에 margin-right를 사용한다면 마지막 항목은 여백이 없게 */
+
+
+.statLabel {
+  font-size: 14px;
+  color: var(--dark-gray);
+  white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+}
+
+.statValue {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--primary-black);
+  white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+}

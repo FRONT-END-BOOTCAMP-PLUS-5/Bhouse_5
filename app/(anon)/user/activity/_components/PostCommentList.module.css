@@ -1,0 +1,65 @@
+/* _components/PostCommentList/PostCommentList.module.css */
+.listContainer {
+  width: 100%;
+  overflow-x: auto; /* 테이블이 넘칠 경우 스크롤 허용 */
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse; /* 셀 경계를 합침 */
+}
+
+.table thead {
+  border-bottom: 2px solid #e0e0e0; /* 헤더 하단에 굵은 선 */
+}
+
+.table th,
+.table td {
+  padding: 12px 8px; /* 셀 내부 여백 */
+  text-align: left;
+}
+
+.table th {
+  font-size: 14px;
+  color: #666;
+  font-weight: 600;
+  white-space: nowrap; /* 헤더 텍스트 줄바꿈 방지 */
+}
+
+.table td {
+  font-size: 14px;
+  color: #333;
+  border-bottom: 1px solid #f0f0f0; /* 각 행 하단에 얇은 선 */
+}
+
+/* 컬럼 너비 조정 (필요에 따라) */
+.headerTitle,
+.cellTitle {
+  width: 60%; /* 제목 컬럼이 더 넓게 */
+  min-width: 200px; /* 너무 좁아지지 않도록 최소 너비 설정 */
+}
+
+.headerDate,
+.cellDate {
+  width: 20%;
+  white-space: nowrap;
+}
+
+.headerViews,
+.cellViews {
+  width: 10%; /* 조회수 컬럼 */
+  text-align: right; /* 조회수는 오른쪽 정렬 */
+  white-space: nowrap;
+}
+
+.noData {
+  text-align: center;
+  padding: 20px;
+  color: #999;
+  font-size: 16px;
+}
+
+/* 마지막 행에는 하단 경계선 제거 */
+.tableRow:last-child td {
+  border-bottom: none;
+}
