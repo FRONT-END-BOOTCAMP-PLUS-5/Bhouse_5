@@ -26,6 +26,7 @@ export class GetUserRepliesUseCase {
     // 2. 조회된 CommunityReply 엔티티를 UserReplyResponseDto로 변환 및 가공
     const formattedReplies: UserReplyResponseDto[] = replies.map((reply) => ({
       reply_id: reply.replyId,
+      post_id: reply.postId, // 여기에 post_id 추가
       text: reply.content,
       parent_reply_id: reply.parentReplyId,
       created_at: reply.createdAt.toISOString(), // Date 객체를 ISO 문자열로 변환
