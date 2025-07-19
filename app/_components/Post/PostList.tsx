@@ -55,7 +55,7 @@ export default function PostList({ posts, currentPage, postsPerPage, onPageChang
             <tr key={post.postId} className={styles.postRow}>
               <td data-label="제목">
                 {post.isNotice && <span className={styles.noticeBadge}>공지</span>}
-                <Link href={`/posts/${post.postId}`} className={styles.titleLink}>
+                <Link href={`/community/posts/${post.postId}`} className={styles.titleLink}>
                   {post.title} {post.commentCount ? `[${post.commentCount}]` : ''}
                 </Link>
               </td>

@@ -1,7 +1,14 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { addTown, removeTown, fetchTowns, setPrimaryTown, extractDistrictName, normalizeSidoName } from '@/_lib/town'
+import {
+  addTown,
+  removeTown,
+  fetchTowns,
+  setPrimaryTown,
+  extractDistrictName,
+  normalizeSidoName,
+} from 'models/services/town.service'
 import styles from './TownRegister.module.css'
 import Button from '@/_components/Button/Button'
 

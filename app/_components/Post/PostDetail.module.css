@@ -1,0 +1,87 @@
+.container {
+    max-width: 100%;
+    margin: 40px auto;
+    padding: 24px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    font-family: 'Pretendard', sans-serif;
+}
+
+.breadcrumb {
+    font-size: 14px;
+    color: #007aff;
+    margin-bottom: 12px;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    line-height: 1.4;
+}
+
+.metaWrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.userBlock {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.avatar {
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.userInfo {
+    display: flex;
+    flex-direction: column;
+}
+
+.username {
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.date {
+    font-size: 13px;
+    color: #888;
+    margin-top: 2px;
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+}
+
+.editBtn,
+.deleteBtn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.editBtn {
+    background-color: #007aff;
+    color: white;
+}
+
+.deleteBtn {
+    background-color: #ff3b30;
+    color: white;
+}
+
+.content {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #333;
+    white-space: pre-line;
+}
