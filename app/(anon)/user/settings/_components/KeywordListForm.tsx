@@ -66,7 +66,10 @@ const KeywordListForm: React.FC = () => {
               <li key={keywordItem.keywordId} className={styles.keywordItem}>
                 <ListingElement
                   label={keywordItem.keyword}
-                  onDelete={() => handleDeleteKeyword(keywordItem.keywordId)}
+                  onDelete={() => {
+                    alert(`${keywordItem.keyword}가 삭제되었습니다.`)
+                    handleDeleteKeyword(keywordItem.keywordId)
+                  }}
                   disabled={isDeleting}
                 />
               </li>

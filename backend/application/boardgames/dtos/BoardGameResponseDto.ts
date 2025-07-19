@@ -6,4 +6,5 @@ export interface BoardGameResponseDto {
   min_players: number
   max_players: number
   img_url: string
+  like_count: number // 새로 추가
 }
