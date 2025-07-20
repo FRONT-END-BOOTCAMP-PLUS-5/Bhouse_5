@@ -2,20 +2,19 @@
 'use client' // 클라이언트 컴포넌트로 지정
 
 import React from 'react'
+import Link from 'next/link' // Link 컴포넌트 임포트
 import Carousel from '@/_components/Carousel/Carousel'
 import BoardgameList from './_components/BoardgameList' // BoardgameList 컴포넌트 경로
 import PostList from './_components/PostList' // PostList 컴포넌트 경로
-import globalCss from '@/page.module.css' // app/page.module.css 임포트 (이름 변경)
+import globalStyles from '@/page.module.css' // app/page.module.css 임포트 (이름 변경)
 import styles from './homePage.module.css' // 새로 생성된 homePage.module.css 임포트
 import Image from 'next/image' // Image 컴포넌트를 사용하기 위해 임포트합니다.
 
 export default function TestBoardgamesPage() {
   return (
-    <main className={globalCss.page}>
+    <main className={globalStyles.page}>
       {/* app/page.module.css의 .page 스타일 적용 */}
       <div className={styles.container}>
-        {' '}
-        {/* Tailwind 클래스 대신 CSS 모듈 클래스 적용 */}
         <Carousel
           items={[
             {
@@ -58,7 +57,23 @@ export default function TestBoardgamesPage() {
           autoPlay
           interval={10000}
         />
+
+        {/* "지금 HOT한 보드게임" 섹션 헤더 */}
+        <div className={styles.sectionHeader}>
+          <h2 className={`${globalStyles.header20} ${styles.sectionTitle}`}>지금 HOT한 보드게임</h2>
+          <Link href="/boardgames" className={styles.moreButton}>
+            더보기
+          </Link>
+        </div>
         {/* <BoardgameList /> */}
+
+        {/* "커뮤니티" 섹션 헤더 */}
+        <div className={styles.sectionHeader}>
+          <h2 className={`${globalStyles.header20} ${styles.sectionTitle}`}>커뮤니티</h2>
+          <Link href="/community/posts" className={styles.moreButton}>
+            더보기
+          </Link>
+        </div>
         <PostList />
       </div>
     </main>

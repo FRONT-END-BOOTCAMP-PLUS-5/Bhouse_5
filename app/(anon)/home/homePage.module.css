@@ -5,3 +5,24 @@
   margin-right: auto;
   padding: 1rem; /* p-4 */
 }
+
+/* 섹션 헤더 스타일 */
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem; /* 섹션 간 간격 */
+  margin-bottom: 1rem;
+}
+
+.moreButton {
+  color: var(--secondary-blue-800);
+  text-decoration: none;
+  font-size: 1rem; /* 더보기 버튼 폰트 크기 */
+  font-weight: 500;
+  transition: color 0.2s ease-in-out;
+}
+
+.moreButton:hover {
+  text-decoration: underline;
+}
