@@ -25,8 +25,8 @@ const Header: React.FC = () => {
 
   const router = useRouter()
 
-  const { isLogin, nickname, setLogout, user } = useAuthStore()
-  const currentUserType = user.user_role.name
+  const { isLogin, setLogout, user } = useAuthStore()
+  const currentUserType = user?.user_role?.name
   const profileImageUrl = user?.profile_img_url || '/images/user_empty_profile_img.png'
   console.log(profileImageUrl)
   const handleRegionSelect = (region: string) => {
@@ -101,7 +101,7 @@ const Header: React.FC = () => {
               <Link className={styles.loginText} href="/auth/signin">
                 로그인
               </Link>
-              <Button variant="primary" size="small" borderRadius="8" href="/auth/signup">
+              <Button variant="primary" size="small" borderRadius="8" href="/auth/signup/usertype">
                 회원가입
               </Button>
             </>

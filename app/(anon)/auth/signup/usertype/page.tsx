@@ -8,11 +8,11 @@ import UserIcon from '@public/icons/user.svg'
 export default function UserTypePage() {
   return (
     <div className={styles.container}>
-      <Link className={`${styles.link} ${globalStyles.body16}`} href="/auth/signup">
+      <Link className={`${styles.link} ${globalStyles.body16}`} href="/auth/signup?role=3">
         <ShopIcon width={48} height={48} className={styles.icon} />
         사장님으로 가입하기
       </Link>
-      <Link className={`${styles.link} ${globalStyles.body16}`} href="/auth/signup">
+      <Link className={`${styles.link} ${globalStyles.body16}`} href="/auth/signup?role=2">
         <UserIcon width={48} height={48} className={styles.icon} />
         회원으로 가입하기
       </Link>

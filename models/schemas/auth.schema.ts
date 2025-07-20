@@ -40,10 +40,25 @@ export const signupSchema = z
       .string()
       .min(1, '휴대폰을 입력해주세요')
       .regex(/^[0-9]+$/, '숫자만 입력해주세요'),
+    roleId: z.number().optional(),
+    businessNumber: z.string().optional(),
   })
   .refine((data) => data.password === data.passwordConfirm, {
     message: '비밀번호가 일치하지 않습니다',
     path: ['passwordConfirm'], // 에러를 passwordConfirm 필드에 표시
   })
+  .refine(
+    (data) => {
+      // roleId가 3일 때만 businessNumber가 필수
+      if (data.roleId === 3) {
+        return data.businessNumber && data.businessNumber.length > 0
+      }
+      return true
+    },
+    {
+      message: '사업자등록번호를 입력해주세요',
+      path: ['businessNumber'],
+    },
+  )
 
 export type SignupSchemaType = z.infer<typeof signupSchema>
