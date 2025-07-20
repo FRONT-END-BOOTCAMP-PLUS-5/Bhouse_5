@@ -1,0 +1,62 @@
+/* _components/Post/PostList.module.css */
+.container {
+  padding: 0px;
+  padding-top: 20px;
+  border-radius: 8px;
+  background-color: #fff;
+}
+
+.loading,
+.error,
+.noPosts {
+  text-align: center;
+  padding: 20px;
+  color: #555;
+}
+
+.error {
+  color: var(--primary-alarm); /* Error color */
+}
+
+.noPosts {
+  color: #777;
+}
+
+.container ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.postItem {
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+}
+
+.postItem:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.postLink {
+  display: block;
+  text-decoration: none;
+  color: #333;
+  font-size: 16px;
+  font-weight: 500;
+  transition: color 0.2s ease-in-out;
+  overflow: hidden; /* Prevent text overflow */
+  white-space: nowrap; /* Keep text on a single line */
+  text-overflow: ellipsis; /* Add ellipsis for overflow */
+}
+
+.postLink:hover {
+  color: #0070f3; /* Link hover color */
+}
+
+.postCategory {
+  color: #888;
+  font-size: 14px;
+  margin-right: 5px;
+}

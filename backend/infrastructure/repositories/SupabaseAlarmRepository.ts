@@ -34,7 +34,7 @@ class AlarmMapper {
       data.is_read,
       new Date(data.created_at), // 문자열을 Date 객체로 변환
       data.alarm_type,
-      data.post_id, // postId 매핑
+      data.post_id ?? undefined, // postId 매핑
     )
   }
 
@@ -49,7 +49,7 @@ class AlarmMapper {
       message: alarm.message,
       is_read: alarm.isRead,
       alarm_type: alarm.alarmType,
-      post_id: alarm.postId, // postId 매핑
+      post_id: alarm.postId ?? null, // postId 매핑
       // created_at은 DB에서 기본값으로 설정되거나, 엔티티의 값을 사용 (insert 시)
       created_at: alarm.createdAt ? alarm.createdAt.toISOString() : undefined,
     }

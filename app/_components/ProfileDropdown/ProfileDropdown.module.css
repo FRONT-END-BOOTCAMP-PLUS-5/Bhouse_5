@@ -15,7 +15,7 @@
   position: absolute;
   top: calc(100% + 10px); /* 트리거 아래에 10px 간격 두고 표시 */
   right: 0; /* 오른쪽 정렬 */
-  background-color: var(--secondary-blue-100); /* 요청하신 배경색 */
+  background-color: var(--secondary-blue-100);
   border-radius: 8px; /* 기본 모서리 둥글기 */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   z-index: 1000;
@@ -32,13 +32,13 @@
   flex-direction: column;
   gap: 8px; /* 버튼들 사이의 간격 */
 }
-
 .profileDropdownList li {
-  /* 드롭다운 리스트 아이템 자체에는 패딩이나 호버 효과를 주지 않습니다.
-     호버 효과는 내부 Button 컴포넌트가 담당합니다. */
   padding: 0; /* li 자체 패딩 제거 */
   margin: 0; /* li 자체 마진 제거 */
   width: 100%; /* li가 부모 너비 전체를 차지하도록 */
+  display: flex;
+  justify-content: center; /* 수평 중앙 정렬 */
+  align-items: center;     /* 수직 중앙 정렬 */
 }
 
 /* 드롭다운 내부 버튼 공통 스타일 */

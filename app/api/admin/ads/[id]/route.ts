@@ -10,8 +10,9 @@ const getAdUseCase = new GetAdUseCase(repo)
 const updateAdUseCase = new UpdateAdUseCase(repo)
 const deleteAdUseCase = new DeleteAdUseCase(repo)
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
-  const id = parseInt(params.id)
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id: idParam } = await params
+  const id = parseInt(idParam)
   if (isNaN(id)) {
     return NextResponse.json({ message: 'Invalid ID' }, { status: 400 })
   }
@@ -38,8 +39,9 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
-  const id = parseInt(params.id)
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id: idParam } = await params
+  const id = parseInt(idParam)
   if (isNaN(id)) {
     return NextResponse.json({ message: 'Invalid ID' }, { status: 400 })
   }
@@ -59,8 +61,9 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
-  const id = parseInt(params.id)
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id: idParam } = await params
+  const id = parseInt(idParam)
   if (isNaN(id)) {
     return NextResponse.json({ message: 'Invalid ID' }, { status: 400 })
   }

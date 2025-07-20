@@ -36,7 +36,7 @@ export class GetAlarmsByUserIdAndTypeUseCase {
       }
 
       // 'reply' 타입인 경우 'message' 필드를 'title'로 변경
-      if (alarm.alarmType === AlarmType.REPLY) {
+      if (alarm.alarmType === AlarmType.TYPE2) {
         return {
           ...baseAlarm,
           title: alarm.message, // message 내용을 title로 사용

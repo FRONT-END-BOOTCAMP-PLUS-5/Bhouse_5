@@ -1,6 +1,6 @@
 // app/api/user/alarms/route.ts
 
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { supabaseClient } from 'backend/utils/supabaseClient' // 이미 정의된 클라이언트 임포트
 
 import { GetAlarmsByUserIdAndTypeUseCase } from 'backend/application/user/alarms/usecases/GetAlarmsByUserIdAndTypeUseCase'
@@ -15,7 +15,7 @@ import { verifyToken } from '@be/utils/auth'
  * 특정 사용자의 알람 목록을 조회하는 API 엔드포인트입니다.
  * GET /api/user/alarms?type={alarmType}
  */
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   // URL에서 쿼리 파라미터 추출
   const { searchParams } = new URL(request.url)
   const alarmTypeParam = searchParams.get('type') // 'type' 파라미터로 알림 타입 가져오기
@@ -71,7 +71,7 @@ export async function GET(request: Request) {
  * PATCH /api/user/alarms
  * 요청 본문: { "alarmId": 123 } 또는 { "markAll": true }
  */
-export async function PATCH(request: Request) {
+export async function PATCH(request: NextRequest) {
   // 토큰 검증
   const decoded = await verifyToken(request)
 
