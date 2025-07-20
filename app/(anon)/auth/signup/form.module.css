@@ -1,0 +1,15 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 34px 20px;
+  gap: 8px;
+}
+
+.form * {
+  font-size: 14px;
+}
+
+.marginBottom {
+  margin-bottom: 16px;
+}

@@ -15,7 +15,7 @@ import { ErrorMessage } from '@/_components/Message/Message'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 
-function SigninPage() {
+export default function SigninPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const callbackUrl = searchParams.get('callbackUrl')
@@ -28,8 +28,6 @@ function SigninPage() {
     resolver: zodResolver(loginSchema),
     mode: 'all',
   })
-
-  console.log(form.watch())
 
   const handleSubmit = async (data: LoginSchemaType) => {
     setServerError('') // 에러 초기화
@@ -79,5 +77,3 @@ function SigninPage() {
     </div>
   )
 }
-
-export default SigninPage

@@ -1,7 +1,7 @@
 .container {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 177px);
+  height: calc(100vh - 203px);
   padding: 0 20px;
   /* TODO 헤더 높이 제외 .. 스크롤 생기는거 싫음 나중에 헤더 높이 달라지면 조정해야함*/
 }
@@ -43,10 +43,4 @@
 .signupLink {
   text-align: center;
   color: var(--dark-gray);
-}
-
-@media (max-width: 600px) {
-  .container {
-    height: calc(100vh - 354.5px); /* TODO헤더 높이 제외 .. 스크롤 생기는거 싫음 나중에 헤더 높이 달라지면 조정해야함*/
-  }
 }
