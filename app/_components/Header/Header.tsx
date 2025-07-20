@@ -1,9 +1,10 @@
+// Header.tsx
 'use client'
 
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation' // usePathname 임포트
 
 import styles from './Header.module.css'
 import Button from '../Button/Button'
@@ -18,13 +19,15 @@ import BellIcon from '@public/icons/bell.svg'
 
 import { useAuthStore } from '@store/auth.store'
 import { signoutService } from 'models/services/auth.service'
+type UserType = 'USER' | 'OWNER'
 
 const Header: React.FC = () => {
   const [search, setSearch] = useState('')
   const { isLogin, setLogout, user } = useAuthStore()
-  const [selectedRegion, setSelectedRegion] = useState('')
+  const [selectedRegion, setSelectedRegion] = useState<string>('동네 선택')
 
   const router = useRouter()
+  const pathname = usePathname() // 현재 경로 가져오기
 
   const currentUserType = user.user_role.name
   const profileImageUrl = user?.profile_img_url || '/images/user_empty_profile_img.png'
@@ -32,7 +35,12 @@ const Header: React.FC = () => {
   // user.towns 데이터가 로드되면 selectedRegion을 업데이트
   useEffect(() => {
     if (isLogin && user.towns && user.towns.length > 0) {
-      setSelectedRegion(user.towns[0].name)
+      const firstTown = user.towns[0]
+      if (firstTown && firstTown.town_name) {
+        setSelectedRegion(firstTown.town_name)
+      } else {
+        setSelectedRegion('동네 선택')
+      }
     } else {
       setSelectedRegion('동네 선택')
     }
@@ -40,7 +48,6 @@ const Header: React.FC = () => {
 
   const handleRegionSelect = (regionName: string) => {
     setSelectedRegion(regionName)
-    console.log(`${regionName} 선택됨`)
     // TODO: 선택된 동네에 따라 데이터를 필터링하는 로직 추가
   }
 
@@ -98,7 +105,7 @@ const Header: React.FC = () => {
                     size={40}
                   />
                 }
-                userType={currentUserType}
+                userType={currentUserType as UserType}
                 onLogout={handleLogoutClick}
               />
             </>
@@ -124,20 +131,18 @@ const Header: React.FC = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className={styles.searchInput}
-            size="small"
           />
           <Dropdown label={selectedRegion} borderRadius="8" size="small">
             {user.towns && user.towns.length > 0 ? (
               user.towns.map((town, index) => (
-                <li key={index} onClick={() => handleRegionSelect(town.name)}>
-                  {town.name}
+                <li key={index} onClick={() => handleRegionSelect(town.town_name)}>
+                  {town.town_name || '알 수 없는 동네'}
                 </li>
               ))
             ) : (
               <li>등록된 동네가 없습니다.</li>
             )}
             <Divider marginY="8px" />
-            {/* handleAddLocationClick 함수 대신 href 속성으로 변경 */}
             <li>
               <Button
                 variant="primary"
@@ -159,23 +164,46 @@ const Header: React.FC = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className={styles.searchInput}
-            size="small"
           />
         </div>
       )}
 
       {/* 하단 섹션: 내비게이션 버튼들 (왼쪽 정렬) */}
       <nav className={styles.navigation}>
-        <Button variant="ghost" size="small" borderRadius="60" className={styles.navButton}>
+        <Button
+          variant="ghost"
+          size="small"
+          borderRadius="60"
+          className={`${styles.navButton} ${pathname === '/' ? styles.activeNavButton : ''}`}
+          href="/"
+        >
           홈
         </Button>
-        <Button variant="ghost" size="small" borderRadius="60" className={styles.navButton}>
+        <Button
+          variant="ghost"
+          size="small"
+          borderRadius="60"
+          className={`${styles.navButton} ${pathname === '/boardgames' ? styles.activeNavButton : ''}`}
+          href="/boardgames"
+        >
           보드게임
         </Button>
-        <Button variant="ghost" size="small" borderRadius="60" className={styles.navButton}>
+        <Button
+          variant="ghost"
+          size="small"
+          borderRadius="60"
+          className={`${styles.navButton} ${pathname.startsWith('/community/posts') ? styles.activeNavButton : ''}`}
+          href="/community/posts"
+        >
           커뮤니티
         </Button>
-        <Button variant="ghost" size="small" borderRadius="60" className={styles.navButton}>
+        <Button
+          variant="ghost"
+          size="small"
+          borderRadius="60"
+          className={`${styles.navButton} ${pathname === '/map' ? styles.activeNavButton : ''}`}
+          href="/map"
+        >
           지도
         </Button>
       </nav>

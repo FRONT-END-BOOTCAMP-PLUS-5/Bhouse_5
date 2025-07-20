@@ -75,6 +75,7 @@ export interface BoardgameTable {
   difficulty: number | null // real (TypeScript에서는 number)
   genre_id: number // bigint
   img_url: string | null // text
+  like_count: number // integer
   // 관계 (필요시 추가)
   creator?: UserTable // created_by와 연결된 User
   updater?: UserTable // updated_by와 연결된 User

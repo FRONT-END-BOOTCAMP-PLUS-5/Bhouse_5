@@ -1,14 +1,13 @@
 // app/api/admin/boardgames/route.ts
 
-import { NextResponse } from 'next/server'
-import { supabaseClient } from '@be/utils/supabaseClient' // 미리 정의된 클라이언트 임포트
+import { NextRequest, NextResponse } from 'next/server'
 
 import { CreateBoardgameUseCase } from '@application/admin/boardgames/usecases/CreateBoardgameUseCase'
 import { SupabaseBoardgameRepository } from '@infrastructure/repositories/SupabaseBoardgameRepository'
 import { CreateBoardgameDto } from '@application/admin/boardgames/dtos/CreateBoardgameDto'
 import { verifyToken } from '@be/utils/auth'
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   // 토큰 검증
   const decoded = await verifyToken(request)
 
@@ -70,7 +69,7 @@ export async function POST(request: Request) {
     const boardgameRepository = new SupabaseBoardgameRepository() // supabaseClient는 내부에서 사용
 
     // 3. 애플리케이션 계층의 유즈케이스 생성 및 레포지토리 주입
-    const createBoardgameUseCase = new CreateBoardgameUseCase(boardgameRepository)
+    const createBoardgameUseCase = new CreateBoardgameUseCase(boardgameRepository as any)
 
     // 4. 유즈케이스 실행
     const createdBoardgame = await createBoardgameUseCase.execute(createDto)

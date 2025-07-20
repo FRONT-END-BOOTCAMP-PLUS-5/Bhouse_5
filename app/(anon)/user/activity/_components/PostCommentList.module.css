@@ -1,0 +1,76 @@
+/* _components/PostCommentList/PostCommentList.module.css */
+.listContainer {
+  width: 100%;
+  /* overflow-x: auto; 제거 - 가로 스크롤을 방지하기 위함 */
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse; /* 셀 경계를 합침 */
+  table-layout: fixed; /* 테이블 너비를 고정하여 컬럼 너비 예측 가능하게 함 */
+}
+
+.table th,
+.table td {
+  padding: 8px 8px; /* 셀 내부 여백 */
+  text-align: left;
+  vertical-align: middle; /* 세로 중앙 정렬 */
+}
+
+.table th {
+  font-size: 14px;
+  color: #333;
+  font-weight: 600;
+  white-space: nowrap; /* 헤더 텍스트 줄바꿈 방지 */
+}
+
+.table td {
+  font-size: 14px;
+  color: #333;
+}
+
+/* 컬럼 너비 조정 */
+.headerTitle,
+.cellTitle {
+  /* 제목 컬럼은 남은 공간을 모두 차지하도록 설정 */
+  width: auto;
+  overflow: hidden; /* 내용이 넘칠 경우 숨김 */
+  text-overflow: ellipsis; /* 넘치는 텍스트에 ... 표시 */
+  white-space: nowrap; /* 텍스트를 한 줄로 유지 */
+}
+
+.headerDate,
+.cellDate {
+  width: 80px; /* 작성일 컬럼 고정 너비 */
+  white-space: nowrap;
+}
+
+.headerViews,
+.cellViews {
+  width: 10px; /* 조회수 컬럼 고정 너비 */
+  text-align: right; /* 조회수는 오른쪽 정렬 */
+  white-space: nowrap;
+}
+
+.noData {
+  text-align: center;
+  padding: 20px;
+  color: #999;
+  font-size: 16px;
+}
+
+.titleLink {
+  color: inherit; /* 부모 요소의 텍스트 색상 상속 */
+  text-decoration: none; /* 기본 밑줄 제거 */
+  display: block; /* td 전체를 링크 영역으로 만들기 위해 블록 레벨 요소로 변경 */
+  /* padding: inherit; 제거 - Link 컴포넌트 자체에 패딩을 주는 대신, td의 패딩을 사용 */
+  width: 100%; /* Link가 td의 전체 너비를 차지하도록 */
+  overflow: hidden; /* Link 내부 텍스트도 넘칠 경우 처리 */
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.titleLink:hover {
+  text-decoration: underline; /* 호버 시 밑줄 다시 표시 */
+  color: var(--primary-blue); /* 호버 시 색상 변경 */
+}

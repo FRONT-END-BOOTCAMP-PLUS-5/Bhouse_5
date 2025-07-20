@@ -1,12 +1,19 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { addTown, removeTown, fetchTowns, setPrimaryTown, extractDistrictName, normalizeSidoName } from '@/_lib/town'
+import {
+  addTown,
+  removeTown,
+  fetchTowns,
+  setPrimaryTown,
+  extractDistrictName,
+  normalizeSidoName,
+} from 'models/services/town.service'
 import styles from './TownRegister.module.css'
 import Button from '@/_components/Button/Button'
 
 interface TownInfo {
-  townName: string
+  name: string
   isPrimary: boolean
 }
 
@@ -17,8 +24,10 @@ export default function TownRegisterPage() {
   const [townList, setTownList] = useState<TownInfo[]>([])
   const [isMapReady, setIsMapReady] = useState(false)
   const [polygon, setPolygon] = useState<any>(null)
-  const [primaryMarker, setPrimaryMarker] = useState<window.kakao.maps.Marker | null>(null)
+  const [polygonList, setPolygonList] = useState<window.kakao.maps.Polygon[]>([])
+  const [primaryMarker, setPrimaryMarker] = useState<any>(null)
   const [primaryTownName, setPrimaryTownName] = useState<string | null>(null)
+  const [primaryPolygon, setPrimaryPolygon] = useState<window.kakao.maps.Polygon | null>(null)
   const [searchOptions, setSearchOptions] = useState<string[]>([])
 
   useEffect(() => {
@@ -87,12 +96,12 @@ export default function TownRegisterPage() {
       try {
         const towns = await fetchTowns()
         setTownList(towns)
-        setSearchOptions(Array.from(new Set(towns.map((t) => t.townName))))
+        setSearchOptions(Array.from(new Set(towns.map((t) => t.name))))
 
         const primary = towns.find((t) => t.isPrimary)
         if (primary) {
-          setPrimaryTownName(primary.townName)
-          await handleDrawDistrictPolygon(primary.townName, true)
+          setPrimaryTownName(primary.name)
+          await handleDrawDistrictPolygon(primary.name, true)
         }
       } catch {
         setTownList([])
@@ -104,9 +113,15 @@ export default function TownRegisterPage() {
   useEffect(() => {
     if (selectedTown) {
       const districtName = extractDistrictName(selectedTown.name)
-      if (districtName !== primaryTownName) {
-        handleDrawDistrictPolygon(districtName, false)
+
+      // ✅ 선택한 동네가 대표 동네면 파란색 지움
+      if (districtName === primaryTownName) {
+        polygonList.forEach((p) => p.setMap(null))
+        setPolygonList([])
+        return
       }
+
+      handleDrawDistrictPolygon(districtName, false)
     }
   }, [selectedTown])
 
@@ -162,24 +177,30 @@ export default function TownRegisterPage() {
       const geojson = await res.json()
 
       const clean = (str: string) => str.normalize('NFC').replace(/\s+/g, ' ').trim()
-      const features = geojson.features.filter((f) => clean(f.properties.adm_nm).startsWith(clean(districtName)))
+      const features = geojson.features.filter((f: any) => clean(f.properties.adm_nm).startsWith(clean(districtName)))
       if (!features || features.length === 0) return
-      if (!isPrimary && polygon) polygon.setMap(null)
-      if (primaryMarker && isPrimary) primaryMarker.setMap(null)
+
+      if (isPrimary) {
+        if (primaryPolygon) primaryPolygon.setMap(null)
+        if (primaryMarker) primaryMarker.setMap(null)
+      } else {
+        polygonList.forEach((p) => p.setMap(null))
+        setPolygonList([])
+      }
 
       const paths: window.kakao.maps.LatLng[][] = []
       features.forEach((feature) => {
         const coordinatesList = feature.geometry.coordinates
         if (feature.geometry.type === 'Polygon') {
-          paths.push(coordinatesList[0].map(([lng, lat]: number[]) => new window.kakao.maps.LatLng(lat, lng)))
+          paths.push(coordinatesList[0].map(([lng, lat]) => new window.kakao.maps.LatLng(lat, lng)))
         } else if (feature.geometry.type === 'MultiPolygon') {
-          coordinatesList.forEach((polygonCoords: number[][][]) => {
+          coordinatesList.forEach((polygonCoords) => {
             paths.push(polygonCoords[0].map(([lng, lat]) => new window.kakao.maps.LatLng(lat, lng)))
           })
         }
       })
 
-      const kakaoPolygon = new window.kakao.maps.Polygon({
+      const polygon = new window.kakao.maps.Polygon({
         path: paths,
         strokeWeight: 2,
         strokeColor: isPrimary ? '#ff8800' : '#007aff',
@@ -188,10 +209,12 @@ export default function TownRegisterPage() {
         fillOpacity: 0.3,
       })
 
-      kakaoPolygon.setMap(markerRef.current.getMap())
-      if (!isPrimary) setPolygon(kakaoPolygon)
+      polygon.setMap(markerRef.current.getMap())
 
       if (isPrimary) {
+        setPrimaryPolygon(polygon)
+
+        // 대표 마커 추가
         const flat = paths.flat()
         const center = flat.reduce(
           (acc, curr) => ({
@@ -217,6 +240,8 @@ export default function TownRegisterPage() {
 
         starMarker.setMap(markerRef.current.getMap())
         setPrimaryMarker(starMarker)
+      } else {
+        setPolygonList((prev) => [...prev, polygon])
       }
     } catch (err) {
       console.error('폴리곤 렌더링 실패:', err)
@@ -229,7 +254,7 @@ export default function TownRegisterPage() {
     try {
       const districtName = extractDistrictName(selectedTown.name)
       const currentTowns = await fetchTowns()
-      const isDuplicate = currentTowns.some((town) => town.townName === districtName)
+      const isDuplicate = currentTowns.some((town) => town.name === districtName)
 
       if (isDuplicate) {
         alert('이미 등록된 동네입니다.')
@@ -258,13 +283,13 @@ export default function TownRegisterPage() {
 
   const handlePrimary = async (townName: string) => {
     await setPrimaryTown(townName)
-    const updated = await fetchTowns()
-    setTownList(updated)
+    setPrimaryTownName(townName)
+    await handleDrawDistrictPolygon(townName, true)
   }
 
   return (
     <div className={styles.page}>
-      <h2 className="header48">내 동네 등록하기</h2>
+      <h2 className={styles.header48}>내 동네 등록하기</h2>
 
       {/* 🔍 검색창, 자동완성, 버튼 */}
       <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 12 }}>
@@ -359,14 +384,14 @@ export default function TownRegisterPage() {
       ) : (
         <ul>
           {townList.map((town) => (
-            <li key={town.townName} className={styles.townItem}>
+            <li key={town.name} className={styles.townItem}>
               <span className={styles.townName}>
-                {town.townName}
+                {town.name}
                 {town.isPrimary && <span className={styles.primaryTag}>(대표)</span>}
               </span>
               <div className={styles.buttonGroup}>
-                <button onClick={() => handlePrimary(town.townName)}>대표로 설정</button>
-                <button onClick={() => handleDelete(town.townName)}>삭제</button>
+                <button onClick={() => handlePrimary(town.name)}>대표로 설정</button>
+                <button onClick={() => handleDelete(town.name)}>삭제</button>
               </div>
             </li>
           ))}
