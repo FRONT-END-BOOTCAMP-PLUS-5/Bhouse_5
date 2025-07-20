@@ -165,16 +165,16 @@ const Header: React.FC = () => {
 
       {/* 하단 섹션: 내비게이션 버튼들 (왼쪽 정렬) */}
       <nav className={styles.navigation}>
-        <Button variant="ghost" size="small" borderRadius="60" className={styles.navButton}>
+        <Button variant="ghost" size="small" borderRadius="60" className={styles.navButton} href="/">
           홈
         </Button>
-        <Button variant="ghost" size="small" borderRadius="60" className={styles.navButton}>
+        <Button variant="ghost" size="small" borderRadius="60" className={styles.navButton} href="/boardgames">
           보드게임
         </Button>
-        <Button variant="ghost" size="small" borderRadius="60" className={styles.navButton}>
+        <Button variant="ghost" size="small" borderRadius="60" className={styles.navButton} href="/community/posts">
           커뮤니티
         </Button>
-        <Button variant="ghost" size="small" borderRadius="60" className={styles.navButton}>
+        <Button variant="ghost" size="small" borderRadius="60" className={styles.navButton} href="/">
           지도
         </Button>
       </nav>

@@ -40,7 +40,7 @@ export default function TestBoardgamesPage() {
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 />
               ),
-              href: '/boardgames', //FIXME : 보드게임 링크 구현후 수정
+              href: '/boardgames',
             },
             {
               content: (
