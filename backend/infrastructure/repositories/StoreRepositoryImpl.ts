@@ -21,6 +21,8 @@ export class StoreRepositoryImpl implements StoreRepository {
 
     if (error) throw new Error(error.message)
     if (!data) return []
+    console.log('요청된 boardgame_id:', boardgameId)
+    console.log('쿼리 결과:', data)
 
     return data
       .filter((entry) => Array.isArray(entry.store_places) && entry.store_places.length > 0)
