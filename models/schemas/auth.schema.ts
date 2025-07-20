@@ -10,9 +10,6 @@ export type LoginSchemaType = z.infer<typeof loginSchema>
 
 // 약관 동의 스키마 정의
 export const agreementSchema = z.object({
-  allAgreement: z.boolean().refine((val) => val === true, {
-    message: '전체 약관에 동의해주세요',
-  }),
   termsOfService: z.boolean().refine((val) => val === true, {
     message: '이용약관에 동의해주세요',
   }),

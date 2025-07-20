@@ -1,12 +1,13 @@
 'use client'
 
-import React, { useEffect, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { agreementSchema, AgreementSchemaType } from 'models/schemas/auth.schema'
 import { useForm } from 'react-hook-form'
 import styles from './agreement.module.css'
 import globalStyles from '@/page.module.css'
 import Button from '@/_components/Button/Button'
+import { useRouter } from 'next/navigation'
 
 const agreements = [
   {
@@ -70,44 +71,48 @@ const agreements = [
 ]
 
 export default function AgreementPage() {
-  const form = useForm<AgreementSchemaType>({
+  const router = useRouter()
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors, isValid },
+  } = useForm<AgreementSchemaType>({
     resolver: zodResolver(agreementSchema),
     mode: 'all',
   })
-  const { errors, isValid } = form.formState
 
   const isAllChecked = useMemo(
-    () => agreements.every((item) => form.watch(item.id as keyof AgreementSchemaType)),
-    [agreements, form.watch('termsOfService'), form.watch('privacyPolicy')],
+    () => agreements.every((item) => watch(item.id as keyof AgreementSchemaType)),
+    [agreements, watch('termsOfService'), watch('privacyPolicy')],
   )
 
   const handleSelectAll = () => {
     const newValue = !isAllChecked
     agreements.forEach((item) => {
-      form.setValue(item.id as keyof AgreementSchemaType, newValue, { shouldValidate: true })
+      setValue(item.id as keyof AgreementSchemaType, newValue, { shouldValidate: true })
     })
   }
 
-  const handleSubmit = (data: AgreementSchemaType) => {
-    console.log(data)
+  const onSubmit = (data: AgreementSchemaType) => {
+    //Todo 동의값 API 로 보내야햇엇나?아니었던듯
+    router.push('/auth/signup/form')
   }
 
   return (
-    <form onSubmit={form.handleSubmit(handleSubmit)} className={styles.form}>
+    <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
       <label className={styles.allAgreementLabel}>
         전체 동의합니다
-        <input type="checkbox" className={styles.checkbox} checked={isAllChecked} onClick={handleSelectAll} />
+        <input type="checkbox" className={styles.checkbox} checked={isAllChecked} onChange={handleSelectAll} />
       </label>
 
       {agreements.map((item) => (
         <div key={item.id} className={styles.checkboxContainer}>
           <label className={styles.label}>
             {item.title}
-            <input
-              {...form.register(item.id as keyof AgreementSchemaType)}
-              type="checkbox"
-              className={styles.checkbox}
-            />
+            <input {...register(item.id as keyof AgreementSchemaType)} type="checkbox" className={styles.checkbox} />
           </label>
           <pre className={`${styles.pre} ${globalStyles.body12}`}>{item.content}</pre>
           {errors[item.id as keyof AgreementSchemaType] && (
