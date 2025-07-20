@@ -27,6 +27,7 @@ export async function POST(request: NextRequest) {
       userId: payload.userId,
       email: payload.email, // email이 payload에 없으면 생략
       roleId: payload.roleId || '3', // 기본값 3
+      primaryTown: payload.primaryTown ?? null, // ✅ 추가
       exp: now + accessTokenMaxAge,
     }
     const accessToken = await new SignJWT(accessTokenPayload)

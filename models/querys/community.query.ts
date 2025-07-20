@@ -11,10 +11,15 @@ import {
 } from 'models/services/community.service'
 
 // 📌 전체 게시글 목록
-export const usePostsQuery = () =>
+export const usePostsQuery = (
+  categoryId: number | null,
+  townName: string | null,
+  isLoggedIn: boolean,
+  tab: { id: number; label: string }, // ← tab도 매개변수로 받도록 수정
+) =>
   useQuery<CommunityPost[]>({
-    queryKey: ['community-posts'],
-    queryFn: getAllPosts,
+    queryKey: ['community-posts', categoryId, townName, isLoggedIn, tab?.id],
+    queryFn: () => getAllPosts(categoryId, townName, isLoggedIn, tab), // ← tab 전달
   })
 
 // 📌 특정 게시글 상세

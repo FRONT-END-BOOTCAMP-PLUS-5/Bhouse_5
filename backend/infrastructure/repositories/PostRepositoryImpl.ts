@@ -110,10 +110,50 @@ export class PostRepositoryImpl implements PostRepository {
     )
   }
 
-  async getPostList(): Promise<{ data: Post[]; total: number }> {
-    const { data, error } = await supabaseClient.from('community_posts_with_comment_count').select('*')
+  async getPostList({
+    categoryId,
+    townName,
+    isLoggedIn,
+  }: {
+    categoryId: number | null
+    townName: string | null
+    isLoggedIn: boolean
+  }): Promise<{ data: Post[]; townName: string | null; total: number }> {
+    console.log('🔍 [getPostList] Called with:')
+    console.log('  categoryId:', categoryId)
+    console.log('townName: ', townName)
+    console.log('  isLoggedIn:', isLoggedIn)
 
-    if (error) throw new Error(error.message)
+    let query = supabaseClient.from('community_posts_with_comment_count').select('*')
+
+    if (!isLoggedIn) {
+      console.log('🛑 Not logged in: excluding category_id = 1 (모집)')
+      query = query.neq('category_id', 1)
+    }
+
+    if (categoryId === 1 && isLoggedIn && townName !== null) {
+      query = query.eq('town', townName)
+    }
+
+    if (categoryId !== null) {
+      console.log(`📌 Applying category filter: category_id = ${categoryId}`)
+      query = query.eq('category_id', categoryId)
+    }
+
+    const { data, error } = await query
+
+    if (error) {
+      console.error('❌ Supabase query error:', error.message)
+      throw new Error(error.message)
+    }
+
+    console.log('📦 [getPostList] Retrieved rows:', data?.length)
+    if (data) {
+      console.log(
+        '🏘️ Towns in data:',
+        data.map((item) => item.town),
+      )
+    }
 
     const posts: Post[] = data.map((item) => {
       return new Post(
@@ -128,11 +168,11 @@ export class PostRepositoryImpl implements PostRepository {
         item.profile_img_url ?? null,
         item.updated_at ? new Date(item.updated_at) : undefined,
         typeof item.category_id === 'number' ? item.category_id : undefined,
-        item.comment_count ?? 0, // 👈 View에서 불러온 commentCount 필드
+        item.comment_count ?? 0,
       )
     })
 
-    return { data: posts, total: posts.length }
+    return { data: posts, townName: townName ?? null, total: posts.length }
   }
 
   async getPostById(postId: number): Promise<Post | null> {

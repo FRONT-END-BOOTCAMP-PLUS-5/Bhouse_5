@@ -18,13 +18,14 @@ interface Post {
 }
 
 interface PostListProps {
-  posts: Post[] // 🔥 현재 페이지의 post만 받음
+  posts: Post[]
   currentPage: number
-  totalPages: number // 🔥 전체 페이지 수를 따로 받음
+  totalPages: number
   onPageChange: (page: number) => void
+  tabId?: number // ← 탭 ID를 받아서 조건 분기
 }
 
-export default function PostList({ posts, currentPage, totalPages, onPageChange }: PostListProps) {
+export default function PostList({ posts, currentPage, totalPages, onPageChange, tabId }: PostListProps) {
   const formatTime = (iso: string) => {
     const date = new Date(iso)
     return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
@@ -46,7 +47,7 @@ export default function PostList({ posts, currentPage, totalPages, onPageChange 
           <tr>
             <th className={styles.titleCol}>제목</th>
             <th>작성자</th>
-            <th>동네</th>
+            {tabId === 1 && <th>동네</th>}
             <th>작성일</th>
             <th>조회수</th>
           </tr>
@@ -74,9 +75,11 @@ export default function PostList({ posts, currentPage, totalPages, onPageChange 
                 </Link>
               </td>
               <td data-label="작성자">{post.nickname}</td>
-              <td data-label="동네">
-                <span className={styles.townBadge}>{post.town}</span>
-              </td>
+              {tabId === 1 && (
+                <td data-label="동네">
+                  <span className={styles.townBadge}>{post.town?.split(' ').pop() ?? ''}</span>
+                </td>
+              )}
               <td data-label="작성일">{formatTime(post.createdAt)}</td>
               <td data-label="조회수">{post.hits}</td>
             </tr>

@@ -28,8 +28,33 @@ export interface UpdatePostPayload {
   categoryId: number
 }
 
-export const getAllPosts = async (): Promise<CommunityPost[]> => {
-  const res = await instance.get('/api/community/posts')
+export const getAllPosts = async (
+  categoryId: number | null,
+  townName: string | null,
+  isLoggedIn: boolean,
+  tab?: { id: number; label: string }, // ← '모집'일 때만 townName, isLoggedIn 사용
+): Promise<CommunityPost[]> => {
+  const params = new URLSearchParams()
+  console.log('🚀 [getAllPosts] called with:')
+  console.log('  categoryId:', categoryId)
+  console.log('  townName:', townName) // ✅ 여기 확인!
+  console.log('  isLoggedIn:', isLoggedIn)
+  console.log('  tab:', tab)
+
+  if (categoryId !== null) params.append('categoryId', String(categoryId))
+  params.append('isLoggedIn', String(isLoggedIn))
+
+  if (tab?.id === 1 || tab?.id === '1') {
+    if (townName !== null) {
+      params.append('townName', townName)
+    }
+  }
+  const query = params.toString() ? `?${params.toString()}` : ''
+  console.log('🌐 Final API URL:', `/api/community/posts${query}`)
+
+  const res = await instance.get(`/api/community/posts${query}`)
+  // 🔥 게시글 목록 출력
+  console.log('📦 [getAllPosts] Fetched posts:', res.data)
   return res.data as CommunityPost[]
 }
 
