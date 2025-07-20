@@ -1,13 +1,13 @@
 // app/api/admin/alarms/route.ts
 
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { SendGlobalAlarmUseCase } from 'backend/application/admin/alarms/usecases/SendGlobalAlarmUseCase'
 import { SupabaseGlobalAlarmService } from 'backend/infrastructure/repositories/SupabaseGlobalAlarmService'
 import { SendGlobalAlarmDto } from 'backend/application/admin/alarms/dtos/SendGlobalAlarmDto'
 import { AlarmType } from '@domain/entities/Alarm' // AlarmType 필요 시 임포트
 import { verifyToken } from '@be/utils/auth'
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   //토큰 검증
   const decoded = await verifyToken(request)
 

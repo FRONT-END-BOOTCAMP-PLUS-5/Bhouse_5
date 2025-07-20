@@ -18,7 +18,7 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'images.unsplash.com',
       },
-    ],
+    ], // ✅ 여기에 추가
   },
 
   webpack(config) {

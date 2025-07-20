@@ -27,7 +27,8 @@ export class AddUserKeywordUseCase {
 
     return {
       keywordId: savedKeyword.keywordId,
-      keyword: savedKeyword.keyword,
+      userId: savedKeyword.userId,
+      keyword: savedKeyword.keyword || '',
       createdAt: savedKeyword.createdAt.toISOString(),
     }
   }

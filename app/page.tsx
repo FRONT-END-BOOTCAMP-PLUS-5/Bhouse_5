@@ -21,10 +21,18 @@ export default function Home() {
   const [selectedRegion, setSelectedRegion] = useState('중랑구')
   const [smallSelectedOption, setSmallSelectedOption] = React.useState('옵션 1')
   const [isNotificationsEnabled, setIsNotificationsEnabled] = useState(true)
+  const [keyword, setKeyword] = useState('')
 
   const handleSmallOptionSelect = (option: string) => {
     setSmallSelectedOption(option)
     console.log(`${option} 선택됨`)
+  }
+
+  const handleKeywordRegister = () => {
+    // 여기에 키워드 등록 로직을 구현합니다.
+    console.log(`등록할 키워드: ${keyword}`)
+    alert(`'${keyword}' 키워드가 등록되었습니다!`)
+    setKeyword('') // 등록 후 입력 필드 초기화
   }
 
   const handleRegionSelect = (region: string) => {
@@ -81,6 +89,17 @@ export default function Home() {
           size={90}
         />
       </div>
+      <h3>버튼이 포함된 TextInput (피그마 이미지처럼)</h3>
+      <TextInput
+        type="text"
+        placeholder="게시글 알림 받을 키워드 추가하기"
+        value={keyword}
+        onChange={(e) => setKeyword(e.target.value)}
+        hasButton={true} // ★ 버튼을 활성화합니다.
+        buttonLabel="등록" // ★ 버튼에 표시될 텍스트입니다.
+        onButtonClick={handleKeywordRegister} // ★ 버튼 클릭 시 실행될 함수입니다.
+      />
+      <p style={{ fontSize: '14px', color: '#666' }}>버튼이 포함된 TextInput의 현재 키워드: {keyword}</p>
       <ListingElement
         label={'엘레멘트입니다'}
         onDelete={function (): void {
@@ -89,7 +108,7 @@ export default function Home() {
       />
       <p className={styles.title48}>보드의 집</p>
       <p className={styles.title48}>보드의 집 title48텍스트입니다.</p>
-      <Divider thickness="2px" />
+      <Divider />
       <h1 className={styles.body16}>환영합니다! 이것은 본문 텍스트 body 16입니다.</h1>
       <Divider marginY="8px" />
       <p className={styles.header20}>이것은 본문보다 살짝 큰 header20 텍스트입니다.</p>
@@ -113,12 +132,12 @@ export default function Home() {
       </Button>
 
       {/* 새로운 secondaryBlue100 스타일 버튼 */}
-      <Button variant="secondaryBlue100" onClick={() => console.log('Secondary Blue 100 Clicked')}>
+      <Button variant="secondary" onClick={() => console.log('Secondary Blue 100 Clicked')}>
         다른 기능
       </Button>
 
       {/* 새로운 secondaryBlue400 스타일 버튼 */}
-      <Button variant="secondaryBlue400" onClick={() => console.log('Secondary Blue 400 Clicked')}>
+      <Button variant="secondary" onClick={() => console.log('Secondary Blue 400 Clicked')}>
         강조 기능
       </Button>
       <Button borderRadius="60" variant="ghost" size="small">
@@ -162,7 +181,7 @@ export default function Home() {
       </div>
 
       {/* small 크기 텍스트 입력창 */}
-      <TextInput type="text" size="small" placeholder="작은 입력" style={{ marginTop: '10px' }} />
+      <TextInput type="text" placeholder="작은 입력" style={{ marginTop: '10px' }} />
 
       {/* 드롭다운 (회색 배경, round 8) */}
       <Dropdown label={selectedRegion}>

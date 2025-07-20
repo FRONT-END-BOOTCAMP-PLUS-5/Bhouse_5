@@ -4,7 +4,13 @@ import { UpdateStoreDto } from '../dtos/UpdateStoreDto'
 export class UpdateStoreUseCase {
   constructor(private readonly storeRepo: StoreRepository) {}
 
-  async execute(storeId: number, updateData: UpdateStoreDto): Promise<void> {
-    await this.storeRepo.update(storeId, updateData)
+  async execute(
+    storeId: number,
+    updateData: UpdateStoreDto,
+    userId: string,
+    role: string,
+    createdBy: string,
+  ): Promise<void> {
+    await this.storeRepo.update(storeId, userId, role, createdBy, updateData)
   }
 }

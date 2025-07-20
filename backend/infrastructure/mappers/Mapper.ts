@@ -152,6 +152,7 @@ export class Mapper {
       description: store.description,
       imagePlaceUrl: store.imagePlaceUrl,
       imageMenuUrl: store.imageMenuUrl,
+      createdBy: store.createdBy,
       ownerName: store.ownerName,
       openTime: store.openTime,
     }
@@ -192,6 +193,7 @@ export class Mapper {
       description: row.description,
       imagePlaceUrl: row.image_place_url,
       imageMenuUrl: row.image_menu_url,
+      createdBy: row.created_by,
       openTime: row.open_time,
       ownerName: Array.isArray(row.users)
         ? row.users.length > 0

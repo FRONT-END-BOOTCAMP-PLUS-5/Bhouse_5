@@ -43,9 +43,9 @@ export class PostRepositoryImpl implements PostRepository {
       new Date(data.created_at),
       data.town,
       data.hits,
-      data.users?.nickname ?? null,
-      data.users?.profile_img_url ?? null,
-    )
+      (data.users as any)?.[0]?.nickname ?? null,
+      (data.users as any)?.[0]?.profile_img_url ?? null,
+    ) as any
   }
 
   async deletePost(postId: number, userId: string): Promise<void> {
@@ -101,12 +101,12 @@ export class PostRepositoryImpl implements PostRepository {
       data.title,
       data.content,
       new Date(data.created_at),
-      new Date(now),
-      data.category_id,
       data.town,
       data.hits,
-      data.users?.nickname ?? null,
-      data.users?.profile_img_url ?? null,
+      Array.isArray(data.users) && data.users[0] ? data.users[0].nickname : undefined,
+      Array.isArray(data.users) && data.users[0] ? data.users[0].profile_img_url : undefined,
+      (data as any).updated_at ? new Date((data as any).updated_at) : undefined,
+      typeof (data as any).category_id === 'number' ? (data as any).category_id : undefined,
     )
   }
 
@@ -138,12 +138,12 @@ export class PostRepositoryImpl implements PostRepository {
           item.title,
           item.content,
           new Date(item.created_at),
-          undefined, // updatedAt 생략 or 추가
-          undefined, // categoryId 생략 or 추가
           item.town,
           item.hits,
-          item.users?.nickname ?? null,
-          item.users?.profile_img_url ?? null,
+          Array.isArray(item.users) && item.users[0] ? item.users[0].nickname : undefined,
+          Array.isArray(item.users) && item.users[0] ? item.users[0].profile_img_url : undefined,
+          (item as any).updated_at ? new Date((item as any).updated_at) : undefined,
+          typeof (item as any).category_id === 'number' ? (item as any).category_id : undefined,
         ),
     )
 
@@ -180,12 +180,12 @@ export class PostRepositoryImpl implements PostRepository {
       data.title,
       data.content,
       new Date(data.created_at),
-      data.town ?? undefined,
-      data.hits ?? undefined,
-      data.users?.nickname ?? undefined,
-      data.users?.profile_img_url ?? undefined,
-      data.updated_at ? new Date(data.updated_at) : undefined,
-      data.category_id ?? undefined,
+      data.town,
+      data.hits,
+      Array.isArray(data.users) && data.users[0] ? data.users[0].nickname : undefined,
+      Array.isArray(data.users) && data.users[0] ? data.users[0].profile_img_url : undefined,
+      (data as any).updated_at ? new Date((data as any).updated_at) : undefined,
+      typeof (data as any).category_id === 'number' ? (data as any).category_id : undefined,
     )
   }
 }
