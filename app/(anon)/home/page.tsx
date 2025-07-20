@@ -3,10 +3,10 @@
 
 import React from 'react'
 import Link from 'next/link' // Link 컴포넌트 임포트
-import Carousel from './_components/Carousel/Carousel'
-import HomeBoardgameList from './_components/HomeBoardgameList/HomeBoardgameList' // BoardgameList 컴포넌트 경로
-import HomePostList from './_components/HomePostList/HomePostList' // PostList 컴포넌트 경로
-import globalStyles from './page.module.css' // app/page.module.css 임포트 (이름 변경)
+import Carousel from '@/_components/Carousel/Carousel'
+import BoardgameList from './_components/BoardgameList' // BoardgameList 컴포넌트 경로
+import PostList from './_components/PostList' // PostList 컴포넌트 경로
+import globalStyles from '@/page.module.css' // app/page.module.css 임포트 (이름 변경)
 import styles from './homePage.module.css' // 새로 생성된 homePage.module.css 임포트
 import Image from 'next/image' // Image 컴포넌트를 사용하기 위해 임포트합니다.
 
@@ -65,7 +65,7 @@ export default function TestBoardgamesPage() {
             더보기
           </Link>
         </div>
-        {/* <HomeBoardgameList /> */}
+        {/* <BoardgameList /> */}
 
         {/* "커뮤니티" 섹션 헤더 */}
         <div className={styles.sectionHeader}>
@@ -74,9 +74,8 @@ export default function TestBoardgamesPage() {
             더보기
           </Link>
         </div>
-        <HomePostList />
+        <PostList />
       </div>
-
     </main>
   )
 }
