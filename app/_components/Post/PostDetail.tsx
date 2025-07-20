@@ -64,9 +64,15 @@ export default function PostDetailPage({ postId }: PostDetailPageProps) {
 
       <div className={styles.metaWrapper}>
         <div className={styles.userBlock}>
-          <Image src="/profile-default.png" alt="작성자 프로필" width={40} height={40} className={styles.avatar} />
+          <Image
+            src={post.profileImgUrl || '/profile-default.png'}
+            alt="작성자 프로필"
+            width={40}
+            height={40}
+            className={styles.avatar}
+          />
           <div className={styles.userInfo}>
-            <span className={styles.username}>{post.username}</span>
+            <span className={styles.username}>{post.nickname}</span>
             <span className={styles.date}>
               {new Date(post.createdAt).toLocaleString()} · {post.town}
             </span>

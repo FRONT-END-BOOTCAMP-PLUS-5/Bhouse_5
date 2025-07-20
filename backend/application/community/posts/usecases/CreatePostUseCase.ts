@@ -1,25 +1,29 @@
-// backend/application/community/posts/usecases/CreatePostUseCase.ts
-import { PostRepository } from '@domain/repositories/PostRepository'
+import { PostRepository } from '@be/domain/repositories/PostRepository'
 import { PostDto } from '../dtos/PostDto'
-import { Post } from '@domain/entities/Post'
+import { UserRepository } from '@be/domain/repositories/UserRepository'
 
 export class CreatePostUseCase {
-  constructor(private readonly repo: PostRepository) {}
+  constructor(
+    private readonly postRepo: PostRepository,
+    private readonly userRepo: UserRepository,
+  ) {}
 
-  async execute(params: {
+  async execute({
+    userId,
+    title,
+    content,
+    categoryId,
+  }: {
     userId: string
     title: string
     content: string
     categoryId: number
-    town?: string
   }): Promise<PostDto> {
-    const post: Post = await this.repo.postPost(
-      params.userId,
-      params.title,
-      params.content,
-      params.categoryId,
-      params.town,
-    )
+    // ✅ 유저의 대표 동네 조회
+    const primaryTown = await this.userRepo.getPrimaryTownByUserId(userId)
+    if (!primaryTown) throw new Error('대표 동네가 설정되지 않았습니다.')
+
+    const post = await this.postRepo.postPost(userId, title, content, categoryId, primaryTown)
 
     return {
       postId: post.postId,

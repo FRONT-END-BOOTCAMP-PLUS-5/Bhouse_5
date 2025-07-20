@@ -174,6 +174,9 @@ export class PostRepositoryImpl implements PostRepository {
     if (error) throw new Error(error.message)
     if (!data) return null
 
+    // ✅ 여기에 찍어야 확인 가능
+    console.log('[DEBUG] users 조인 결과:', data.users)
+
     return new Post(
       data.post_id,
       data.user_id,
@@ -182,10 +185,10 @@ export class PostRepositoryImpl implements PostRepository {
       new Date(data.created_at),
       data.town,
       data.hits,
-      Array.isArray(data.users) && data.users[0] ? data.users[0].nickname : undefined,
-      Array.isArray(data.users) && data.users[0] ? data.users[0].profile_img_url : undefined,
-      (data as any).updated_at ? new Date((data as any).updated_at) : undefined,
-      typeof (data as any).category_id === 'number' ? (data as any).category_id : undefined,
+      data.users?.nickname ?? null,
+      data.users?.profile_img_url ?? null,
+      data.updated_at ? new Date(data.updated_at) : undefined,
+      typeof data.category_id === 'number' ? data.category_id : undefined,
     )
   }
 }

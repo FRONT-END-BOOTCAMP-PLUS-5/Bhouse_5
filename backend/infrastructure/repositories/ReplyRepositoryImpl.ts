@@ -10,10 +10,12 @@ type ReplyWithUsers = {
   content: string
   created_at: string
   parent_reply_id: number | null
-  users: {
-    nickname: string
-    profile_img_url: string | null
-  } | null
+  users:
+    | {
+        nickname: string
+        profile_img_url: string | null
+      }[]
+    | null
 }
 export class ReplyRepositoryImpl implements ReplyRepository {
   // ✅ CREATE
@@ -99,19 +101,23 @@ export class ReplyRepositoryImpl implements ReplyRepository {
       user_id,
       content,
       created_at,
-      parent_reply_id
+      parent_reply_id,
+      users (
+        nickname,
+        profile_img_url
+      )
     `,
       )
       .eq('parent_reply_id', parentReplyId)
-      .order('created_at', { ascending: true }) // 🔥 ASC 정렬
+      .order('created_at', { ascending: true })
 
     if (error) throw new Error(error.message)
 
     return (data ?? []).map(
       (r) =>
         new Reply(r.reply_id, r.post_id, r.user_id, r.content, new Date(r.created_at), r.parent_reply_id ?? null, {
-          nickname: '',
-          profileImgUrl: null,
+          nickname: r.users?.nickname || '',
+          profileImgUrl: r.users?.profile_img_url || null,
         }),
     )
   }
