@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { signupSchema, SignupSchemaType } from 'models/schemas/auth.schema'
 import { useForm } from 'react-hook-form'
@@ -13,6 +13,8 @@ import { EmailDuplicateService, SignupService } from 'models/services/auth.servi
 
 export default function SignupFormPage() {
   const searchParams = useSearchParams()
+  const router = useRouter()
+
   const roleId = parseInt(searchParams.get('role') || '2') // 기본값은 2 (일반 사용자)
   const [isEmailVerified, setIsEmailVerified] = useState(false)
 
@@ -36,20 +38,22 @@ export default function SignupFormPage() {
         username: data.username,
         email: data.email,
         password: data.password,
+        nickname: data.nickname,
         phone: data.phone,
         roleId: roleId, // 쿼리 파라미터에서 받은 role 사용
         provider: 'local', // 로컬 회원가입
         provider_id: null, // 로컬 회원가입이므로 null
       }
-
-      const response = await SignupService(signupData)
-      console.log('회원가입 성공:', response)
+      await SignupService(signupData)
+      router.push('/auth/signup/welcome')
     } catch (error: any) {
       console.error('회원가입 실패:', error)
 
       // response.data.error에서 폰 번호 중복 에러 처리
       if (error.response?.data?.error && error.response.data.error.includes('휴대폰')) {
         setError('phone', { message: '이미 등록된 휴대폰 번호입니다.' })
+      } else if (error.response?.data?.error && error.response.data.error.includes('닉네임')) {
+        setError('nickname', { message: '이미 사용 중인 닉네임입니다.' })
       } else {
         // 일반적인 에러 메시지
         console.error('알 수 없는 에러:', error.response?.data?.error || error.message)
@@ -106,6 +110,8 @@ export default function SignupFormPage() {
         className={styles.marginTop}
       />
       {errors.username && <ErrorMessage message={errors.username.message!} />}
+      <TextInput type="label" {...register('nickname')} label="닉네임" placeholder="닉네임을 입력하세요" />
+      {errors.nickname && <ErrorMessage message={errors.nickname.message!} />}
       <TextInput type="label" {...register('phone')} label="휴대폰" placeholder="휴대폰을 입력하세요" />
       {errors.phone && <ErrorMessage message={errors.phone.message!} />}
 

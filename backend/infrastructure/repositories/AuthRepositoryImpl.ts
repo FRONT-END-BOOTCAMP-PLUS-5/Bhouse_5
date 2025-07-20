@@ -26,9 +26,13 @@ export class AuthRepositoryImpl implements AuthRepository {
       .select('user_id')
 
     if (error || !data || !data[0]?.user_id) {
-      // 폰 번호 유니크 제약조건 에러만 처리
+      // 폰 번호 유니크 제약조건 에러 처리
       if (error?.message?.includes('duplicate key value') && error.message.includes('users_phone_key')) {
         throw new Error('이미 등록된 휴대폰 번호입니다.')
+      }
+      // 닉네임 유니크 제약조건 에러 처리
+      if (error?.message?.includes('duplicate key value') && error.message.includes('users_nickname_key')) {
+        throw new Error('이미 사용 중인 닉네임입니다.')
       }
       throw new Error(`회원가입 실패: ${error?.message}`)
     }

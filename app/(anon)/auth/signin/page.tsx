@@ -36,16 +36,14 @@ export default function SigninPage() {
       await signinService({ username: data.email, password: data.password })
 
       const res = await getProfileService()
+      console.log(res)
       setLogin(res)
-
-      router.replace(callbackUrl || '/')
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || '로그인에 실패했습니다.'
       setServerError(errorMessage)
       console.log(error)
     }
   }
-
   return (
     <div className={styles.container}>
       <div className={styles.formContainer}>

@@ -1,5 +1,4 @@
 import instance from '@utils/instance'
-import { SignupSchemaType } from 'models/schemas/auth.schema'
 
 const PATH = '/api/auth'
 

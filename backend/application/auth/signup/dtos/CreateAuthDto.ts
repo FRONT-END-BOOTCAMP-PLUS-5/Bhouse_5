@@ -2,7 +2,7 @@ export interface CreateAuthDto {
   username: string
   email: string
   password: string
-  nickname?: string
+  nickname: string
   phone?: string
   profile_img_url?: string
   provider?: string

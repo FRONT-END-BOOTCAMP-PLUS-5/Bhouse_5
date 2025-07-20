@@ -69,7 +69,7 @@ export class CreateAuthUsecase {
       dto.username,
       hashedPassword,
       dto.email,
-      null, // 회원가입 시에는 닉네임 없음
+      dto.nickname, // 닉네임을 필수 입력값으로 받음
       new Date(),
       new Date(), // updatedAt
       'PENDING', // isActive

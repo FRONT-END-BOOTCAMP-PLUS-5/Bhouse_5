@@ -36,6 +36,7 @@ export const signupSchema = z
       .string()
       .min(1, '성함을 입력해주세요')
       .regex(/^[a-zA-Z가-힣]+$/, '성함을 입력해주세요'),
+    nickname: z.string().min(1, '닉네임을 입력해주세요').max(20, '닉네임은 20자 이하로 입력해주세요'),
     phone: z
       .string()
       .min(1, '휴대폰을 입력해주세요')
