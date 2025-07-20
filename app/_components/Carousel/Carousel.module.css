@@ -1,36 +1,43 @@
+/* Carousel.module.css */
+
 .carouselContainer {
-    position: relative;
     overflow: hidden;
     width: 100%;
-    height: 300px;
-    border-radius: 12px;
-    touch-action: pan-y;
-    /* 모바일 터치 스크롤 충돌 방지 */
+    height: 100%;
+    /* 또는 원하는 고정 height */
+    position: relative;
 }
 
 .carouselTrack {
     display: flex;
-    height: 100%;
-    transition: transform 0.5s ease-in-out;
-    will-change: transform;
 }
 
 .carouselItemWrapper {
     flex: 0 0 100%;
-    width: 100%;
-    height: 100%;
-    position: relative;
+    /* 👈 한 슬라이드가 정확히 전체 너비 차지 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .carouselItem {
-    flex: 0 0 100%;
-    /* ✅ 정확히 한 슬라이드만 보이도록 설정 */
+    width: 100%;
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
     overflow: hidden;
 }
+
+/* ✨ 이미지가 들어오는 경우를 위한 기본 처리 */
+.carouselItem img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* or 'contain' if you want full image */
+    display: block;
+}
+
 
 .carouselItem :global(img) {
     width: 100%;
