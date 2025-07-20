@@ -111,29 +111,11 @@ export class PostRepositoryImpl implements PostRepository {
   }
 
   async getPostList(): Promise<{ data: Post[]; total: number }> {
-    const { data, count, error } = await supabaseClient.from('community_posts').select(
-      `
-          post_id,
-          user_id,
-          title,
-          content,
-          created_at,
-          town,
-          hits,
-          community_replies(count),
-          users (
-            nickname,
-            profile_img_url
-          )
-        `,
-      { count: 'exact' },
-    )
+    const { data, error } = await supabaseClient.from('community_posts_with_comment_count').select('*')
 
     if (error) throw new Error(error.message)
 
     const posts: Post[] = data.map((item) => {
-      const commentCount = (item as any).community_replies?.count ?? 0
-
       return new Post(
         item.post_id,
         item.user_id,
@@ -142,45 +124,26 @@ export class PostRepositoryImpl implements PostRepository {
         new Date(item.created_at),
         item.town,
         item.hits,
-        item.users?.nickname ?? null,
-        item.users?.profile_img_url ?? null,
-        (item as any).updated_at ? new Date((item as any).updated_at) : undefined,
-        typeof (item as any).category_id === 'number' ? (item as any).category_id : undefined,
-        commentCount, // Post entity에 필드 추가 필요
+        item.nickname ?? null,
+        item.profile_img_url ?? null,
+        item.updated_at ? new Date(item.updated_at) : undefined,
+        typeof item.category_id === 'number' ? item.category_id : undefined,
+        item.comment_count ?? 0, // 👈 View에서 불러온 commentCount 필드
       )
     })
 
-    return { data: posts, total: count ?? 0 }
+    return { data: posts, total: posts.length }
   }
 
   async getPostById(postId: number): Promise<Post | null> {
     const { data, error } = await supabaseClient
-      .from('community_posts')
-      .select(
-        `
-      post_id,
-      user_id,
-      title,
-      content,
-      created_at,
-      town,
-      hits,
-      users (
-        nickname,
-        profile_img_url
-      ),
-      community_replies(count)
-    `,
-      )
+      .from('community_post_detail_with_comment_count') // 👈 View 사용
+      .select('*')
       .eq('post_id', postId)
       .maybeSingle()
 
     if (error) throw new Error(error.message)
     if (!data) return null
-
-    const commentCount = (data as any)?.community_replies?.count ?? 0
-
-    console.log('[DEBUG] users 조인 결과:', data.users)
 
     return new Post(
       data.post_id,
@@ -190,11 +153,11 @@ export class PostRepositoryImpl implements PostRepository {
       new Date(data.created_at),
       data.town,
       data.hits,
-      data.users?.nickname ?? null,
-      data.users?.profile_img_url ?? null,
+      data.nickname ?? null,
+      data.profile_img_url ?? null,
       data.updated_at ? new Date(data.updated_at) : undefined,
       typeof data.category_id === 'number' ? data.category_id : undefined,
-      commentCount, // 🔥 댓글 수 추가
+      data.comment_count ?? 0, // ✅ 댓글 수
     )
   }
 }

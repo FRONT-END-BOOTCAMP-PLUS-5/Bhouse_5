@@ -17,9 +17,20 @@ export default function CommunityPostsPage() {
   const indexOfFirst = indexOfLast - postsPerPage
   const currentPosts = sortedPosts.slice(indexOfFirst, indexOfLast)
 
+  // CommunityPost를 PostList가 기대하는 Post 타입으로 변환
+  const transformedPosts = currentPosts.map((post) => ({
+    ...post,
+    hits: post.hits ?? 0, // hits가 undefined인 경우 0으로 설정
+  }))
+
   const totalPages = Math.ceil(sortedPosts.length / postsPerPage)
 
   return (
-    <PostList posts={currentPosts} currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+    <PostList
+      posts={transformedPosts}
+      currentPage={currentPage}
+      totalPages={totalPages}
+      onPageChange={setCurrentPage}
+    />
   )
 }
