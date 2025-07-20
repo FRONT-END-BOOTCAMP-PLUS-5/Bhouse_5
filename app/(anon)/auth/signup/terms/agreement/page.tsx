@@ -8,6 +8,7 @@ import styles from './agreement.module.css'
 import globalStyles from '@/page.module.css'
 import Button from '@/_components/Button/Button'
 import { useRouter } from 'next/navigation'
+import ErrorMessage from '../../_components/ErrorMessage'
 
 const agreements = [
   {
@@ -115,9 +116,7 @@ export default function AgreementPage() {
             <input {...register(item.id as keyof AgreementSchemaType)} type="checkbox" className={styles.checkbox} />
           </label>
           <pre className={`${styles.pre} ${globalStyles.body12}`}>{item.content}</pre>
-          {errors[item.id as keyof AgreementSchemaType] && (
-            <span className={styles.errorMessage}>{errors[item.id as keyof AgreementSchemaType]?.message}</span>
-          )}
+          <ErrorMessage message={errors[item.id as keyof AgreementSchemaType]?.message} />
         </div>
       ))}
 

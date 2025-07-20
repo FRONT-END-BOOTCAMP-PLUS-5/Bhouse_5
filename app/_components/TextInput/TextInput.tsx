@@ -25,11 +25,11 @@ const TextInput: React.FC<CommonInputProps> = ({
   label, // label prop 추가
   ...props
 }) => {
-  // inputBase 클래스, size에 따른 클래스, 외부 className을 조합
+  // inputBase 클래스, size에 따른 클래스 조합 (label이 있을 때는 className 제외)
   const inputClasses = [
     styles.inputBase,
     size === 'small' ? styles.small : '', // small prop이 있을 때 small 클래스 추가
-    className, // 외부에서 전달된 className
+    // label이 있을 때는 className을 input에 적용하지 않음
   ]
     .filter(Boolean)
     .join(' ') // 빈 문자열 제거 후 공백으로 join
@@ -46,7 +46,7 @@ const TextInput: React.FC<CommonInputProps> = ({
   // label이 있으면 label과 input을 함께 렌더링
   if (label) {
     return (
-      <div className={styles.inputContainer}>
+      <div className={`${styles.inputContainer} ${className || ''}`}>
         <label className={styles.label}>{label}</label>
         <input
           type={type}
