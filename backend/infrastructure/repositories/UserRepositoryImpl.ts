@@ -89,4 +89,17 @@ export class UserRepositoryImpl implements UserRepository {
 
     return user
   }
+
+  async getPrimaryTownByUserId(userId: string): Promise<string | null> {
+    const { data, error } = await supabaseClient
+      .from('user_towns')
+      .select('town_name')
+      .eq('user_id', userId)
+      .eq('is_primary', true)
+      .maybeSingle()
+
+    if (error) throw new Error(error.message)
+    console.log('[DEBUG] 대표 동네 조회 결과:', data)
+    return data?.town_name ?? null
+  }
 }

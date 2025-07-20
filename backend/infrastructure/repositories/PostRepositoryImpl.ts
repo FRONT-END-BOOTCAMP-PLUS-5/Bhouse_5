@@ -120,6 +120,7 @@ export class PostRepositoryImpl implements PostRepository {
           created_at,
           town,
           hits,
+          community_replies(count),
           users (
             nickname,
             profile_img_url
@@ -130,22 +131,24 @@ export class PostRepositoryImpl implements PostRepository {
 
     if (error) throw new Error(error.message)
 
-    const posts: Post[] = data.map(
-      (item) =>
-        new Post(
-          item.post_id,
-          item.user_id,
-          item.title,
-          item.content,
-          new Date(item.created_at),
-          item.town,
-          item.hits,
-          Array.isArray(item.users) && item.users[0] ? item.users[0].nickname : undefined,
-          Array.isArray(item.users) && item.users[0] ? item.users[0].profile_img_url : undefined,
-          (item as any).updated_at ? new Date((item as any).updated_at) : undefined,
-          typeof (item as any).category_id === 'number' ? (item as any).category_id : undefined,
-        ),
-    )
+    const posts: Post[] = data.map((item) => {
+      const commentCount = (item as any).community_replies?.count ?? 0
+
+      return new Post(
+        item.post_id,
+        item.user_id,
+        item.title,
+        item.content,
+        new Date(item.created_at),
+        item.town,
+        item.hits,
+        item.users?.nickname ?? null,
+        item.users?.profile_img_url ?? null,
+        (item as any).updated_at ? new Date((item as any).updated_at) : undefined,
+        typeof (item as any).category_id === 'number' ? (item as any).category_id : undefined,
+        commentCount, // Post entity에 필드 추가 필요
+      )
+    })
 
     return { data: posts, total: count ?? 0 }
   }
@@ -155,18 +158,19 @@ export class PostRepositoryImpl implements PostRepository {
       .from('community_posts')
       .select(
         `
-        post_id,
-        user_id,
-        title,
-        content,
-        created_at,
-        town,
-        hits,
-        users (
-          nickname,
-          profile_img_url
-        )
-      `,
+      post_id,
+      user_id,
+      title,
+      content,
+      created_at,
+      town,
+      hits,
+      users (
+        nickname,
+        profile_img_url
+      ),
+      community_replies(count)
+    `,
       )
       .eq('post_id', postId)
       .maybeSingle()
@@ -174,7 +178,8 @@ export class PostRepositoryImpl implements PostRepository {
     if (error) throw new Error(error.message)
     if (!data) return null
 
-    // ✅ 여기에 찍어야 확인 가능
+    const commentCount = (data as any)?.community_replies?.count ?? 0
+
     console.log('[DEBUG] users 조인 결과:', data.users)
 
     return new Post(
@@ -189,6 +194,7 @@ export class PostRepositoryImpl implements PostRepository {
       data.users?.profile_img_url ?? null,
       data.updated_at ? new Date(data.updated_at) : undefined,
       typeof data.category_id === 'number' ? data.category_id : undefined,
+      commentCount, // 🔥 댓글 수 추가
     )
   }
 }

@@ -1,10 +1,13 @@
 // components/PostList.tsx
 'use client'
 
+import instance from '@utils/instance'
 import styles from './PostList.module.css'
 import Link from 'next/link'
+import { ReactNode } from 'react'
 
 interface Post {
+  hits: ReactNode
   postId: number
   title: string
   commentCount?: number
@@ -45,6 +48,7 @@ export default function PostList({ posts, currentPage, totalPages, onPageChange 
             <th>작성자</th>
             <th>동네</th>
             <th>작성일</th>
+            <th>조회수</th>
           </tr>
         </thead>
         <tbody>
@@ -52,8 +56,21 @@ export default function PostList({ posts, currentPage, totalPages, onPageChange 
             <tr key={post.postId} className={styles.postRow}>
               <td data-label="제목">
                 {post.isNotice && <span className={styles.noticeBadge}>공지</span>}
-                <Link href={`/community/posts/${post.postId}`} className={styles.titleLink}>
-                  {post.title} {post.commentCount ? `[${post.commentCount}]` : ''}
+                <Link
+                  href={`/community/posts/${post.postId}`}
+                  className={styles.titleLink}
+                  onClick={async (e) => {
+                    e.preventDefault()
+                    try {
+                      await instance.patch(`/api/community/posts/${post.postId}/hits`)
+                    } catch (err) {
+                      console.error('조회수 증가 실패', err)
+                    } finally {
+                      window.location.href = `/community/posts/${post.postId}`
+                    }
+                  }}
+                >
+                  {post.title} {post.commentCount != null ? `[${post.commentCount}]` : ''}
                 </Link>
               </td>
               <td data-label="작성자">{post.nickname}</td>
@@ -61,6 +78,7 @@ export default function PostList({ posts, currentPage, totalPages, onPageChange 
                 <span className={styles.townBadge}>{post.town}</span>
               </td>
               <td data-label="작성일">{formatTime(post.createdAt)}</td>
+              <td data-label="조회수">{post.hits}</td>
             </tr>
           ))}
         </tbody>

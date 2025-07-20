@@ -1,6 +1,7 @@
 import instance from '@utils/instance'
 
 export interface CommunityPost {
+  profileImgUrl: string
   userId: any
   postId: number
   title: string
@@ -17,7 +18,6 @@ export interface CreatePostPayload {
   title: string
   content: string
   categoryId: number
-  town: string
 }
 
 export interface UpdatePostPayload {
@@ -26,7 +26,6 @@ export interface UpdatePostPayload {
   title: string
   content: string
   categoryId: number
-  town: string
 }
 
 export const getAllPosts = async (): Promise<CommunityPost[]> => {

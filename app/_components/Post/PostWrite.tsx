@@ -41,8 +41,7 @@ export default function PostWriteForm({ postId }: PostWriteFormProps) {
       userId,
       title,
       content,
-      categoryId: 1,
-      town: '서울시 강남구',
+      categoryId: 1, // 🔥 이 값은 정적으로 고정되어 있음
     }
 
     if (isEditMode && postId) {

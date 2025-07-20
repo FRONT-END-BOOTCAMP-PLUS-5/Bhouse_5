@@ -11,5 +11,6 @@ export class Post {
     public profileImgUrl?: string | null,
     public updatedAt?: Date,
     public categoryId?: number,
+    public commentCount?: number,
   ) {}
 }
