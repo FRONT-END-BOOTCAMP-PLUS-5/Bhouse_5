@@ -83,7 +83,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ trigger, userType, on
                 variant="secondaryWhite"
                 fontStyle="light"
                 className={styles.dropdownButton}
-                href="/like" //FIXME : 찜 목록 페이지 링크 추후 재확인
+                href="user/like"
                 onClick={() => setIsOpen(false)} // 버튼 클릭 시 드롭다운 닫기
               >
                 찜 목록 보기
