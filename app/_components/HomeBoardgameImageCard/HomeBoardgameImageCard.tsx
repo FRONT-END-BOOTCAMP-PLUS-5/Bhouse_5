@@ -1,14 +1,14 @@
 // _components/BoardgameImageCard/BoardgameImageCard.tsx
 import React from 'react'
 import Image from 'next/image'
-import styles from './BoardgameImageCard.module.css' // 이 파일도 새로 생성합니다.
+import styles from './HomeBoardgameImageCard.module.css' // 이 파일도 새로 생성합니다.
 
-interface BoardgameImageCardProps {
+interface HomeBoardgameImageCardProps {
   imageUrl: string
   alt: string
 }
 
-const BoardgameImageCard: React.FC<BoardgameImageCardProps> = ({ imageUrl, alt }) => {
+const BoardgameImageCard: React.FC<HomeBoardgameImageCardProps> = ({ imageUrl, alt }) => {
   return (
     <div className={styles.imageCardContainer}>
       <Image

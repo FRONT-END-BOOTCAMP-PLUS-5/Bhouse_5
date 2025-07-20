@@ -3,7 +3,7 @@
 
 import React from 'react'
 import styles from './BoardgameList.module.css'
-import BoardgameImageCard from './BoardgameImageCard'
+import HomeBoardgameImageCard from '../HomeBoardgameImageCard/HomeBoardgameImageCard'
 import { useGetBoardgameList } from 'models/querys/boardgame.query' // BoardgameSearch.tsx에 맞춰 'querys'로 import 경로 일치
 
 // API 응답에 like_count가 포함된다는 사용자님의 최신 정보를 반영합니다.
@@ -16,7 +16,7 @@ interface BoardgameItem {
   like_count: number // 사용자님 확인에 따라 like_count 필드를 다시 포함합니다.
 }
 
-export default function BoardgameList() {
+export default function HomeBoardgameList() {
   // useGetBoardgameList 훅을 사용하여 보드게임 데이터 가져오기
   // data를 fetchedData로 받고, 로딩/에러 상태와 함께 가져옵니다.
   const { data: fetchedData, isLoading, isError, error } = useGetBoardgameList('')
@@ -69,7 +69,7 @@ export default function BoardgameList() {
 
       <div className={styles.listGrid}>
         {top6Boardgames.map((game) => (
-          <BoardgameImageCard key={game.id} imageUrl={game.img_url} alt={game.name} />
+          <HomeBoardgameImageCard key={game.id} imageUrl={game.img_url} alt={game.name} />
         ))}
       </div>
     </div>

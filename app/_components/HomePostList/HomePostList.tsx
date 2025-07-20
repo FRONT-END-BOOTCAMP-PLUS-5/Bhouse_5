@@ -1,9 +1,9 @@
 // _components/Post/PostList.tsx
 import Link from 'next/link'
 import { usePostsQuery } from 'models/querys/community.query'
-import styles from './PostList.module.css' // CSS 모듈 임포트
+import styles from './HomePostList.module.css' // CSS 모듈 임포트
 
-export default function PostList() {
+export default function HomePostList() {
   const { data: posts = [], isLoading, isError } = usePostsQuery()
 
   if (isLoading) {
