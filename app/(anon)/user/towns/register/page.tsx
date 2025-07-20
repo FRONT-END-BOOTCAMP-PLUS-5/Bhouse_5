@@ -196,7 +196,6 @@ export default function TownRegisterPage() {
       const districtName = extractDistrictName(selectedTown.name)
       const currentTowns = await fetchTowns()
       const isDuplicate = currentTowns.some((town) => town.name === districtName)
-      const isDuplicate = currentTowns.some((town) => town.name === districtName)
 
       if (isDuplicate) {
         alert('이미 등록된 동네입니다.')
@@ -240,7 +239,6 @@ export default function TownRegisterPage() {
 
   return (
     <div className={styles.page}>
-      <h2 className={styles.header48}>내 동네 등록하기</h2>
       <h2 className={styles.header48}>내 동네 등록하기</h2>
 
       <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 12 }}>
