@@ -1,3 +1,4 @@
+// Header.tsx
 'use client'
 
 import React, { useState, useEffect } from 'react'
@@ -23,7 +24,8 @@ type UserType = 'USER' | 'OWNER'
 const Header: React.FC = () => {
   const [search, setSearch] = useState('')
   const { isLogin, setLogout, user } = useAuthStore()
-  const [selectedRegion, setSelectedRegion] = useState('')
+  // selectedRegion 초기값을 '동네 선택'으로 설정하여 빈칸 방지
+  const [selectedRegion, setSelectedRegion] = useState<string>('동네 선택')
 
   const router = useRouter()
 
@@ -32,16 +34,28 @@ const Header: React.FC = () => {
 
   // user.towns 데이터가 로드되면 selectedRegion을 업데이트
   useEffect(() => {
+    // console.log("Header useEffect 실행됨. isLogin:", isLogin, "user.towns:", user.towns) // 디버깅 로그 제거
     if (isLogin && user.towns && user.towns.length > 0) {
-      setSelectedRegion(user.towns[0].name)
+      const firstTown = user.towns[0]
+      // firstTown.name 대신 firstTown.town_name 사용
+      if (firstTown && firstTown.town_name) {
+        // 첫 번째 동네 객체와 그 town_name 속성이 존재하는지 확인
+        setSelectedRegion(firstTown.town_name)
+        // console.log("selectedRegion을 다음으로 설정:", firstTown.town_name) // 디버깅 로그 제거
+      } else {
+        // 첫 번째 동네의 town_name이 없거나 유효하지 않을 경우
+        setSelectedRegion('동네 선택')
+        // console.log("첫 번째 동네 이름이 유효하지 않아 '동네 선택'으로 설정") // 디버깅 로그 제거
+      }
     } else {
       setSelectedRegion('동네 선택')
+      // console.log("로그인 상태가 아니거나 동네가 없어 '동네 선택'으로 설정") // 디버깅 로그 제거
     }
-  }, [isLogin, user.towns])
+  }, [isLogin, user.towns]) // user.towns 배열의 참조가 변경될 때마다 실행
 
   const handleRegionSelect = (regionName: string) => {
     setSelectedRegion(regionName)
-    console.log(`${regionName} 선택됨`)
+    // console.log(`${regionName} 선택됨`) // 디버깅 로그 제거
     // TODO: 선택된 동네에 따라 데이터를 필터링하는 로직 추가
   }
 
@@ -129,8 +143,10 @@ const Header: React.FC = () => {
           <Dropdown label={selectedRegion} borderRadius="8" size="small">
             {user.towns && user.towns.length > 0 ? (
               user.towns.map((town, index) => (
-                <li key={index} onClick={() => handleRegionSelect(town.name)}>
-                  {town.name}
+                // 동네 이름이 유효한지 확인하고, 없으면 '알 수 없는 동네'로 표시
+                // town.name 대신 town.town_name 사용
+                <li key={index} onClick={() => handleRegionSelect(town.town_name)}>
+                  {town.town_name || '알 수 없는 동네'}
                 </li>
               ))
             ) : (
