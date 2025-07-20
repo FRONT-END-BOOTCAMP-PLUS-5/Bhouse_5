@@ -37,7 +37,7 @@ export default function PlaceDetailClient({ storeId }: Props) {
       />
 
       <Divider />
-      <BoardgameList />
+      <BoardgameList storeId={storeId.toString()} />
       <Divider />
     </div>
   )

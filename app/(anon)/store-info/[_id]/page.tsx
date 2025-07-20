@@ -1,3 +1,5 @@
+'use client'
+
 import { use } from 'react'
 import PlaceDetailClient from './PlaceDetailClient'
 
@@ -10,5 +12,9 @@ export default function PlaceInfoPage({ params }: { params: Promise<{ _id: strin
     throw new Error(`Invalid store id: ${_id}`)
   }
 
-  return <PlaceDetailClient storeId={storeId} />
+  return (
+    <div>
+      <PlaceDetailClient storeId={storeId} />
+    </div>
+  )
 }

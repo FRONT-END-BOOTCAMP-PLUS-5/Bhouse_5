@@ -1,0 +1,39 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 16px;
+  background-color: #f8f8f8;
+  border-radius: 12px;
+}
+
+.rank {
+  width: 24px;
+  font-weight: bold;
+}
+
+.thumbnail {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.title {
+  flex: 1;
+}
+
+.likes {
+  margin-right: 8px;
+}
+
+.heart {
+  font-size: 18px;
+}

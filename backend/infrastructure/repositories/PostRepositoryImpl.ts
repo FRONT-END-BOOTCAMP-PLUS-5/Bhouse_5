@@ -107,6 +107,10 @@ export class PostRepositoryImpl implements PostRepository {
       Array.isArray(data.users) && data.users[0] ? data.users[0].profile_img_url : undefined,
       (data as any).updated_at ? new Date((data as any).updated_at) : undefined,
       typeof (data as any).category_id === 'number' ? (data as any).category_id : undefined,
+      Array.isArray(data.users) && data.users[0] ? data.users[0].nickname : undefined,
+      Array.isArray(data.users) && data.users[0] ? data.users[0].profile_img_url : undefined,
+      (data as any).updated_at ? new Date((data as any).updated_at) : undefined,
+      typeof (data as any).category_id === 'number' ? (data as any).category_id : undefined,
     )
   }
 

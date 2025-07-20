@@ -57,7 +57,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ trigger, userType, on
                 variant="secondaryWhite"
                 fontStyle="light"
                 className={styles.dropdownButton}
-                href="/" // FIXME: 마이페이지 경로로 변경
+                href="/my"
                 onClick={() => setIsOpen(false)} // 버튼 클릭 시 드롭다운 닫기
               >
                 마이페이지
@@ -70,7 +70,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ trigger, userType, on
                   variant="secondaryWhite"
                   fontStyle="light"
                   className={styles.dropdownButton}
-                  href="/" // FIXME: 업장 관리 페이지 경로로 변경 (OWNER 전용)
+                  href="/store"
                   onClick={() => setIsOpen(false)} // 버튼 클릭 시 드롭다운 닫기
                 >
                   업장 관리
@@ -83,7 +83,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ trigger, userType, on
                 variant="secondaryWhite"
                 fontStyle="light"
                 className={styles.dropdownButton}
-                href="/" // FIXME: 찜 목록 보기 페이지 경로로 변경
+                href="user/like"
                 onClick={() => setIsOpen(false)} // 버튼 클릭 시 드롭다운 닫기
               >
                 찜 목록 보기
@@ -95,7 +95,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ trigger, userType, on
                 variant="secondaryWhite"
                 fontStyle="light"
                 className={styles.dropdownButton}
-                href="/" // FIXME: 내 활동 보기 페이지 경로로 변경
+                href="/user/activity"
                 onClick={() => setIsOpen(false)} // 버튼 클릭 시 드롭다운 닫기
               >
                 내 활동 보기

@@ -18,7 +18,7 @@ interface Post {
 }
 
 interface PostListProps {
-  posts: Post[]
+  posts: Post[] // 🔥 현재 페이지의 post만 받음
   currentPage: number
   totalPages: number
   onPageChange: (page: number) => void

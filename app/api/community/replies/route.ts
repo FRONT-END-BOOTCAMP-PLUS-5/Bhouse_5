@@ -24,7 +24,13 @@ export async function POST(req: NextRequest) {
   if (!postId || !userId || !content) {
     return NextResponse.json({ error: '필수 항목 누락' }, { status: 400 })
   }
+  if (!postId || !userId || !content) {
+    return NextResponse.json({ error: '필수 항목 누락' }, { status: 400 })
+  }
 
+  const useCase = new CreateReplyUseCase(repo)
+  const reply = await useCase.execute(postId, userId, content, parentReplyId)
+  return NextResponse.json(reply, { status: 201 })
   const useCase = new CreateReplyUseCase(repo)
   const reply = await useCase.execute(postId, userId, content, parentReplyId)
   return NextResponse.json(reply, { status: 201 })
