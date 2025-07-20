@@ -46,8 +46,6 @@ const InquiryForm: React.FC = () => {
 
   return (
     <form className={styles.inquiryForm} onSubmit={handleSubmit}>
-      <h2 className={styles.formTitle}>문의 넣기</h2>
-
       {/* 사용자 이메일 입력란 */}
       <div className={styles.inputGroup}>
         <label htmlFor="email" className={styles.label}>
