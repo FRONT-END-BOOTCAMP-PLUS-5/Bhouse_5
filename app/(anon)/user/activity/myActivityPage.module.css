@@ -1,0 +1,41 @@
+/* app/my-activity/myActivityPage.module.css */
+
+.contentContainer {
+  display: flex;
+  flex-direction: column; /* flex-col */
+  justify-content: center; /* justify-center */
+  align-items: flex-start; /* items-start */
+  gap: 1rem; /* gap-4 (16px) */
+  width: 100%; /* w-full */
+  max-width: 1280px; /* max-w-screen-xl */
+  margin-left: auto; /* mx-auto */
+  margin-right: auto; /* mx-auto */
+}
+
+@media (min-width: 768px) { /* md breakpoint */
+  .contentContainer {
+    flex-direction: row; /* md:flex-row */
+  }
+}
+
+.profileWrapper {
+  width: 100%; /* w-full */
+  flex-shrink: 0; /* flex-shrink-0 */
+}
+
+@media (min-width: 768px) { /* md breakpoint */
+  .profileWrapper {
+    width: auto; /* md:w-auto */
+  }
+}
+
+.tabsWrapper {
+  width: 100%; /* w-full */
+  flex-grow: 1; /* flex-grow */
+}
+
+@media (min-width: 768px) { /* md breakpoint */
+  .tabsWrapper {
+    width: auto; /* md:w-auto */
+  }
+}

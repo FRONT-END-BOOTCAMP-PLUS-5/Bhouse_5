@@ -60,7 +60,7 @@
   flex-direction: row; /* 숫자 옆에 라벨이 오도록 가로 배치 */
   align-items: center;
   gap: 5px; /* 숫자와 라벨 사이 간격 */
-  /* margin-right: 15px; */ /* 각 항목 사이에 여백을 주기. 마지막 항목은 여백 없음 */
+  margin-right: 15px; /* 항목 사이 여백 */
 }
 
 /* .statItem:last-child {

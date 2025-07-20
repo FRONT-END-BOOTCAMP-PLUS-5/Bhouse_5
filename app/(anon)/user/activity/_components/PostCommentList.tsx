@@ -3,12 +3,14 @@
 
 import React from 'react'
 import styles from './PostCommentList.module.css'
+import Link from 'next/link' // next/link 임포트
 
 interface ListItem {
-  id: number
+  id: number // 게시글 ID 또는 댓글 ID
   title: string
   date: string
   views: number
+  link_id?: number // 댓글의 경우 부모 post_id, 게시글의 경우 id와 동일 (옵셔널)
 }
 
 interface PostCommentListProps {
@@ -29,13 +31,24 @@ const PostCommentList: React.FC<PostCommentListProps> = ({ data, type }) => {
         </thead>
         <tbody>
           {data.length > 0 ? (
-            data.map((item) => (
-              <tr key={item.id} className={styles.tableRow}>
-                <td className={styles.cellTitle}>{item.title}</td>
-                <td className={styles.cellDate}>{item.date}</td>
-                <td className={styles.cellViews}>{item.views}</td>
-              </tr>
-            ))
+            data.map((item) => {
+              // 게시글이면 item.id, 댓글이면 item.link_id (부모 post_id) 사용
+              const targetId = item.link_id || item.id
+              const href = `/community/posts/${targetId}`
+
+              return (
+                <tr key={item.id} className={styles.tableRow}>
+                  <td className={styles.cellTitle}>
+                    {/* Link 컴포넌트를 사용하여 클릭 가능하게 만듬 */}
+                    <Link href={href} className={styles.titleLink}>
+                      {item.title}
+                    </Link>
+                  </td>
+                  <td className={styles.cellDate}>{item.date}</td>
+                  <td className={styles.cellViews}>{item.views}</td>
+                </tr>
+              )
+            })
           ) : (
             <tr>
               <td colSpan={3} className={styles.noData}>
