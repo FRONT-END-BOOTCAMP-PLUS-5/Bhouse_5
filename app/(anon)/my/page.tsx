@@ -4,7 +4,6 @@ import { signoutService } from 'models/services/auth.service'
 import styles from './My.module.css'
 import { useAuthStore } from 'store/auth.store'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect } from 'react'
 import { ErrorMessage } from '@/_components/Message/Message'
 import LocalErrorMessage from './_components/ErrorMessage'
 import { useForm } from 'react-hook-form'
@@ -13,13 +12,16 @@ import TextInput from '@/_components/TextInput/TextInput'
 import Button from '@/_components/Button/Button'
 import Image from 'next/image'
 import { profileSchema, ProfileSchemaType } from 'models/schemas/user.schema'
-import { updateProfileService } from 'models/services/profile.service'
+import { useUpdateUserProfile } from 'models/querys/profile.query'
 
 function My() {
-  const { setLogout, user } = useAuthStore()
-  const searchParams = useSearchParams()
   const router = useRouter()
+  const searchParams = useSearchParams()
 
+  const { setLogout, user } = useAuthStore()
+  const { mutateAsync: updateProfile } = useUpdateUserProfile()
+
+  // TODO: 프로필 이미지 업로드 기능 추가
   const profileImageUrl = user?.profile_img_url || '/images/user_empty_profile_img.png'
 
   const {
@@ -44,10 +46,14 @@ function My() {
 
   const onSubmit = async (data: ProfileSchemaType) => {
     try {
-      await updateProfileService({
+      const updateData: any = {
         nickname: data.nickname,
         profileImgUrl: data.profileImgUrl || '',
-      })
+      }
+      if (data.password && data.password.trim()) {
+        updateData.password = data.password
+      }
+      await updateProfile(updateData)
       alert('프로필 업데이트 성공')
     } catch (error) {
       console.error('프로필 업데이트 실패:', error)
@@ -64,18 +70,29 @@ function My() {
         <div className={styles.profileImageSection}>
           <div className={styles.profileImage}>
             <Image src={profileImageUrl} alt="프로필 이미지" width={120} height={120} />
-            <button type="button" className={styles.imageUploadBtn}>
+            {/* <button type="button" className={styles.imageUploadBtn}>
               +
-            </button>
+            </button> */}
           </div>
         </div>
 
         <TextInput type="label" {...register('nickname')} label="닉네임" defaultValue={user?.nickname || ''} />
         {errors.nickname && <LocalErrorMessage message={errors.nickname.message!} />}
 
-        <Button type="button" variant="primary" href="/user/towns/register">
-          내 동네 등록하기
-        </Button>
+        <TextInput type="label" {...register('password')} label="새 비밀번호" />
+        {errors.password && <LocalErrorMessage message={errors.password.message!} />}
+        <TextInput type="label" {...register('passwordConfirm')} label="새 비밀번호 확인" />
+        {errors.passwordConfirm && <LocalErrorMessage message={errors.passwordConfirm.message!} />}
+
+        {user.user_role?.role_id === 2 ? (
+          <Button type="button" variant="primary" href="/user/towns/register">
+            내 동네 등록하기
+          </Button>
+        ) : (
+          <Button type="button" variant="primary" href="/store-info">
+            매장 목록 관리하기
+          </Button>
+        )}
 
         <div className={styles.buttonGroup}>
           <Button type="button" variant="primary" onClick={handleSignout} className={styles.signoutButton}>

@@ -57,7 +57,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ trigger, userType, on
                 variant="secondaryWhite"
                 fontStyle="fontLight"
                 className={styles.dropdownButton}
-                href="/" // FIXME: 마이페이지 경로로 변경
+                href="/my" // FIXME: 마이페이지 경로로 변경
                 onClick={() => setIsOpen(false)} // 버튼 클릭 시 드롭다운 닫기
               >
                 마이페이지

@@ -1,0 +1,18 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 243px);
+  gap: 20px;
+  padding: 20px;
+}
+
+.form * {
+  font-size: 14px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  text-align: center;
+}

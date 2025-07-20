@@ -15,7 +15,7 @@ export const getProfileService = async () => {
   return res.data.data
 }
 
-export const updateProfileService = async (data: { nickname: string; profileImgUrl: string }) => {
+export const updateProfileService = async (data: { nickname: string; profileImgUrl: string; password?: string }) => {
   const res = await instance.patch<ApiResponse<UserProfileResponseDto>>(PATH, data)
 
   return res.data.data

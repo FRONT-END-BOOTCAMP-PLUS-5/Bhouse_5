@@ -63,3 +63,13 @@ export const signupSchema = z
   )
 
 export type SignupSchemaType = z.infer<typeof signupSchema>
+
+export const findEmailSchema = z.object({
+  username: z.string().min(1, '이름을 입력해주세요'),
+  phone: z
+    .string()
+    .min(1, '휴대폰을 입력해주세요')
+    .regex(/^[0-9]+$/, '숫자만 입력해주세요'),
+})
+
+export type FindEmailSchemaType = z.infer<typeof findEmailSchema>

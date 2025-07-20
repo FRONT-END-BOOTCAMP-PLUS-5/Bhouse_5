@@ -37,3 +37,12 @@ export const signinService = async (data: { username: string; password: string }
 export const signoutService = async () => {
   await instance.delete(`${PATH}/signout`)
 }
+
+export const findEmailService = async (data: { username: string; phone: string }) => {
+  try {
+    const response = await instance.post(`${PATH}/email-find`, data)
+    return (response.data as { email: string }).email
+  } catch (error: any) {
+    throw error.response.data.error
+  }
+}
