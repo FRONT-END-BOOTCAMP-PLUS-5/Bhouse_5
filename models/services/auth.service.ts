@@ -46,3 +46,21 @@ export const findEmailService = async (data: { username: string; phone: string }
     throw error.response.data.error
   }
 }
+
+export const findPasswordService = async (data: { username: string; email: string; phone: string }) => {
+  try {
+    const response = await instance.post(`${PATH}/password-find`, data)
+    return response.data
+  } catch (error: any) {
+    throw error.response.data.error
+  }
+}
+
+export const passwordResetService = async (data: { userId: string; newPassword: string }) => {
+  try {
+    const response = await instance.patch(`${PATH}/password-reset`, data)
+    return response.data
+  } catch (error: any) {
+    throw error.response.data.error
+  }
+}
