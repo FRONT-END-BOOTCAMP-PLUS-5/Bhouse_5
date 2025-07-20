@@ -1,3 +1,5 @@
+// domain/entities/Reply.ts
+
 export class Reply {
   constructor(
     public replyId: number,
@@ -5,6 +7,10 @@ export class Reply {
     public userId: string,
     public content: string,
     public createdAt: Date,
-    public parentReplyId: number | null = null,
+    public parentReplyId: number | null,
+    public users: {
+      nickname: string
+      profileImgUrl: string | null
+    },
   ) {}
 }

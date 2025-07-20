@@ -1,6 +1,7 @@
 import instance from '@utils/instance'
 
 export interface CommunityPost {
+  userId: any
   postId: number
   title: string
   content: string

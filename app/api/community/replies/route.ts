@@ -1,7 +1,7 @@
+import { CreateReplyUseCase } from '@be/application/community/replies/usecases/CreateReplyUseCase'
+import { GetRepliesByPostIdUseCase } from '@be/application/community/replies/usecases/GetRepliesByPostIdUseCase'
+import { ReplyRepositoryImpl } from '@be/infrastructure/repositories/ReplyRepositoryImpl'
 import { NextRequest, NextResponse } from 'next/server'
-import { CreateReplyUseCase } from '@be/application/usecases/CreateReplyUseCase'
-import { GetRepliesByPostIdUseCase } from '@be/application/usecases/GetRepliesByPostIdUseCase'
-import { ReplyRepositoryImpl } from '@be/infrastructure/db/ReplyRepositoryImpl'
 
 const repo = new ReplyRepositoryImpl()
 

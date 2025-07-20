@@ -1,0 +1,56 @@
+.replyList {
+    margin-top: 1rem;
+    padding-left: 0;
+    list-style: none;
+}
+
+.replyItem {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.replyContent {
+    margin-bottom: 0.5rem;
+}
+
+.nickname {
+    font-weight: bold;
+    font-size: 14px;
+    margin-right: 6px;
+}
+
+.text {
+    margin: 4px 0 0 0;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.childReply {
+    margin-left: 1.5rem;
+    padding: 8px 12px;
+    background-color: #f9f9f9;
+    border-left: 3px solid #ddd;
+    border-radius: 4px;
+    margin-top: 0.5rem;
+}
+
+.replyFormWrapper {
+    margin-top: 0.75rem;
+    margin-left: 1.5rem;
+}
+
+.replyToggleBtn {
+    font-size: 14px;
+    background: none;
+    border: none;
+    color: #007aff;
+    cursor: pointer;
+    margin-left: 4px;
+    margin-top: 0.25rem;
+    padding: 0;
+}
+
+.replyToggleBtn:hover {
+    text-decoration: underline;
+}
