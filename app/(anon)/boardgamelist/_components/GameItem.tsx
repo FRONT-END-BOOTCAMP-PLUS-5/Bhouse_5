@@ -1,4 +1,5 @@
 'use client'
+
 import { useRouter } from 'next/navigation'
 import styles from './GameItem.module.css'
 
@@ -20,12 +21,19 @@ export default function GameItem({ game, rank }: GameItemProps) {
 
   return (
     <div className={styles.container} onClick={handleClick}>
-      <span>{game.id}</span>
-      <img src={game.img_url} alt={game.title} width={80} height={80} style={{ borderRadius: '8px' }} />
-      <div>
-        <div>{game.name}</div>
-        <div style={{ fontSize: '12px', color: '#777' }}>보유 매장:</div>
+      <div className={styles.rank}>{rank}</div>
+      <img src={game.img_url} alt={game.title} className={styles.thumbnail} />
+      <div className={styles.info}>
+        <div className={styles.title}>{game.name}</div>
+        <div className={styles.store}>
+          카페공룡
+          <br />
+          동규카페
+          <br />
+          동동카페
+        </div>
       </div>
+      <div className={styles.heart}>❤️</div>
     </div>
   )
 }

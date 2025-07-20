@@ -1,53 +1,47 @@
-.container{
+.container {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 12px;
-}
-
-.list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 8px 0;
-}
-
-.item {
-  display: flex;
-  align-items: center;
-  border-bottom: 1px solid #ddd;
-  padding: 8px 0;
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
 }
 
 .rank {
   width: 24px;
-  text-align: center;
   font-weight: bold;
+  font-size: 16px;
+  text-align: center;
+  margin-right: 12px;
 }
 
 .thumbnail {
-  width: 60px;
-  height: 60px;
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
   object-fit: cover;
-  border-radius: 6px;
-  margin: 0 12px;
+  margin-right: 12px;
 }
 
 .info {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .title {
   font-weight: 600;
+  font-size: 15px;
 }
 
-.stores {
+.store {
   font-size: 12px;
-  color: #555;
-  margin-top: 4px;
+  color: #777;
+  line-height: 1.4;
+  white-space: pre-line;
 }
 
 .heart {
   font-size: 18px;
-  margin-left: 12px;
+  margin-left: 8px;
 }

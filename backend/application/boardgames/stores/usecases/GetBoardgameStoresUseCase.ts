@@ -8,7 +8,7 @@ export class GetBoardgameStoresUseCase {
   async execute(boardgameId: number): Promise<BoardgameStoreDto[]> {
     console.log('boardgameId', boardgameId)
     const stores = await this.repo.getStoresByBoardgameId(boardgameId)
-    console.log(stores)
+    console.log('stores:', stores)
     stores.map((store) => {
       console.log('store', store)
     })
