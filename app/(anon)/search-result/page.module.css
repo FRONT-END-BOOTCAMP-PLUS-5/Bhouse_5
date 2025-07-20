@@ -1,0 +1,63 @@
+.container {
+  padding: 20px;
+}
+
+.section {
+  margin-top: 32px;
+}
+
+.card {
+  border-bottom: 1px solid #ddd;
+  padding: 12px 0;
+}
+
+.title {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.preview {
+  color: #555;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.games {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.gameCard {
+  width: 100px;
+  text-align: center;
+}
+
+.thumbnail {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.gameTitle {
+  margin-top: 8px;
+  font-size: 14px;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.moreBtn {
+  background: none;
+  border: none;
+  color: #0070f3;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 4px;
+}
