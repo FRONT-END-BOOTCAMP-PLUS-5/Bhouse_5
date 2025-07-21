@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { PostRepositoryImpl } from '@infrastructure/repositories/PostRepositoryImpl'
+import { UserRepositoryImpl } from '@be/infrastructure/repositories/UserRepositoryImpl'
 
 import { CreatePostUseCase } from '@be/application/community/posts/usecases/CreatePostUseCase'
 import { DeletePostUseCase } from '@be/application/community/posts/usecases/DeletePostUseCase'
@@ -9,7 +10,7 @@ import { supabaseClient } from '@bUtils/supabaseClient'
 
 //게시글 작성 API
 export async function POST(req: NextRequest) {
-  const usecase = new CreatePostUseCase(new PostRepositoryImpl())
+  const usecase = new CreatePostUseCase(new PostRepositoryImpl(), new UserRepositoryImpl())
   try {
     const body = await req.json()
     console.log('[CreatePostRoute] Request body:', body)
@@ -51,16 +52,22 @@ export async function POST(req: NextRequest) {
 
 // app/api/community/posts/route.ts
 
-export async function GET() {
-  const usecase = new GetPostListUseCase(new PostRepositoryImpl())
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url)
+  const categoryId = searchParams.get('categoryId')
+  const townName = searchParams.get('townName')
+  const isLoggedIn = searchParams.get('isLoggedIn') === 'true'
 
-  try {
-    const posts = await usecase.execute()
-    return NextResponse.json(posts)
-  } catch (err) {
-    console.error('[GetPostListRoute Error]', err)
-    return NextResponse.json({ message: '서버 오류' }, { status: 500 })
-  }
+  const postRepo = new PostRepositoryImpl()
+  const usecase = new GetPostListUseCase(postRepo)
+
+  const result = await usecase.execute({
+    categoryId: categoryId ? Number(categoryId) : null,
+    townName: isLoggedIn ? townName : null,
+    isLoggedIn,
+  })
+
+  return NextResponse.json(result)
 }
 
 // 게시글 삭제 API

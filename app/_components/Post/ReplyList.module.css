@@ -1,0 +1,155 @@
+.replyList {
+    margin-top: 1rem;
+    padding-left: 0;
+    list-style: none;
+}
+
+.replyItem {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.replyContent {
+    margin-bottom: 0.5rem;
+}
+
+.nickname {
+    font-weight: bold;
+    font-size: 14px;
+    margin-right: 6px;
+}
+
+.text {
+    margin: 4px 0 0 0;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.childReply {
+    margin-left: 1.5rem;
+    padding: 8px 12px;
+    background-color: #f9f9f9;
+    border-left: 3px solid #ddd;
+    border-radius: 4px;
+    margin-top: 0.5rem;
+}
+
+.replyFormWrapper {
+    margin-top: 0.75rem;
+    margin-left: 1.5rem;
+}
+
+.replyToggleBtn {
+    font-size: 14px;
+    background: none;
+    border: none;
+    color: #007aff;
+    cursor: pointer;
+    margin-left: 4px;
+    margin-top: 0.25rem;
+    padding: 0;
+}
+
+.replyToggleBtn:hover {
+    text-decoration: underline;
+}
+
+.replyItem {
+    margin-bottom: 1rem;
+}
+
+.childReply {
+    margin-left: 1rem;
+}
+
+.replyContent {
+    background: #f9f9f9;
+    padding: 0.75rem;
+    border-radius: 4px;
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.editBtn,
+.deleteBtn {
+    font-size: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #777;
+}
+
+.editBtn:hover,
+.deleteBtn:hover {
+    text-decoration: underline;
+}
+
+.replyToggleBtn {
+    margin-top: 4px;
+    font-size: 13px;
+    background: none;
+    border: none;
+    color: #007bff;
+    cursor: pointer;
+}
+
+.replyFormWrapper {
+    margin-top: 0.5rem;
+}
+
+.editWrapper {
+    margin-top: 8px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+}
+
+.editTextarea {
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 8px;
+    font-size: 14px;
+    resize: vertical;
+}
+
+.editActions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+    justify-content: flex-end;
+}
+
+.saveButton {
+    background-color: #0070f3;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.saveButton:hover {
+    background-color: #0059c1;
+}
+
+.cancelButton {
+    background-color: #e0e0e0;
+    color: #333;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.cancelButton:hover {
+    background-color: #ccc;
+}

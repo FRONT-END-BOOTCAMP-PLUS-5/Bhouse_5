@@ -76,7 +76,6 @@ export default function TestBoardgamesPage() {
         </div>
         <HomePostList />
       </div>
-
     </main>
   )
 }

@@ -9,4 +9,5 @@ export interface UserRepository {
 
   // 닉네임 중복 체크 메서드
   checkNicknameExists(nickname: string, excludeUserId?: string): Promise<boolean>
+  getPrimaryTownByUserId(userId: string): Promise<string | null>
 }

@@ -14,6 +14,10 @@ export class GetRepliesByPostIdUseCase {
       content: reply.content,
       createdAt: reply.createdAt.toISOString(),
       parentReplyId: reply.parentReplyId,
+      users: {
+        nickname: reply.users.nickname,
+        profileImgUrl: reply.users.profileImgUrl,
+      },
     }))
   }
 }
