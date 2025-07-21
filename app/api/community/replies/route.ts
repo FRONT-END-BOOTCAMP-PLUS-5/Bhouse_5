@@ -31,7 +31,4 @@ export async function POST(req: NextRequest) {
   const useCase = new CreateReplyUseCase(repo)
   const reply = await useCase.execute(postId, userId, content, parentReplyId)
   return NextResponse.json(reply, { status: 201 })
-  const useCase = new CreateReplyUseCase(repo)
-  const reply = await useCase.execute(postId, userId, content, parentReplyId)
-  return NextResponse.json(reply, { status: 201 })
 }

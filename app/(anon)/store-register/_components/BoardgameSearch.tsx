@@ -15,9 +15,12 @@ interface Boardgame {
 
 interface BoardgameSearchProps {
   onSelect?: (game: string) => void
+  className?: string
+  onSelectGame?: (id: number) => void
+  placeholder?: string
 }
 
-const BoardgameSearch: React.FC<BoardgameSearchProps> = ({ onSelect }) => {
+const BoardgameSearch: React.FC<BoardgameSearchProps> = ({ onSelect, className, placeholder, onSelectGame }) => {
   const [inputValue, setInputValue] = useState('')
   const [showDropdown, setShowDropdown] = useState(false)
   const [searchResults, setSearchResults] = useState<string[]>([])
@@ -75,13 +78,17 @@ const BoardgameSearch: React.FC<BoardgameSearchProps> = ({ onSelect }) => {
     setInputValue(game)
     setShowDropdown(false)
     onSelect?.(game)
+    const found = boardgames.find((g: Boardgame) => g.name === game)
+    if (found) {
+      onSelectGame?.(found.id) // ✅ 부모 컴포넌트에게 ID 전달
+    }
   }
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} ${className ?? ''}`}>
       <TextInput
         type="text"
-        placeholder="찾을 보드게임을 입력하세요"
+        placeholder={placeholder ?? '보드게임을 입력하세요'}
         value={inputValue}
         onChange={(e) => {
           setInputValue(e.target.value)

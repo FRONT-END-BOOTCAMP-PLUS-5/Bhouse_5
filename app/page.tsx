@@ -12,7 +12,7 @@ import Image from 'next/image' // Image 컴포넌트를 사용하기 위해 임�
 
 export default function TestBoardgamesPage() {
   return (
-    <main className={globalStyles.page}>
+    <main className={`${globalStyles.page} ${styles.page}`}>
       {/* app/page.module.css의 .page 스타일 적용 */}
       <div className={styles.container}>
         <Carousel
@@ -65,7 +65,7 @@ export default function TestBoardgamesPage() {
             더보기
           </Link>
         </div>
-        {/* <HomeBoardgameList /> */}
+        <HomeBoardgameList />
 
         {/* "커뮤니티" 섹션 헤더 */}
         <div className={styles.sectionHeader}>

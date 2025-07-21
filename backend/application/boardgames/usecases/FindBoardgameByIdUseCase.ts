@@ -19,6 +19,7 @@ export class FindBoardgameByIdUseCase {
     return {
       name: boardgame.name ?? '',
       description: boardgame.description ?? '',
+      img_url: boardgame.imgUrl ?? '',
       genre_id: boardgame.genreId ?? 0,
       min_players: boardgame.minPlayers ?? 0,
       max_players: boardgame.maxPlayers ?? 0,

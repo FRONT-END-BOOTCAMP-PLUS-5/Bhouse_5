@@ -4,7 +4,16 @@ import { usePostsQuery } from 'models/querys/community.query'
 import styles from './HomePostList.module.css' // CSS 모듈 임포트
 
 export default function HomePostList() {
-  const { data: posts = [], isLoading, isError } = usePostsQuery()
+  const selectedCategoryId = null // 또는 실제 categoryId 값
+  const userTown = '' // 실제 유저 동네 값
+  const isLoggedIn = false // 실제 로그인 여부
+  const selectedTab = { id: 0, label: '전체' } // 실제 탭 값
+
+  const {
+    data: posts = [],
+    isLoading,
+    isError,
+  } = usePostsQuery(selectedCategoryId, isLoggedIn ? userTown : null, isLoggedIn, selectedTab)
 
   if (isLoading) {
     return <div className={styles.loading}>게시글을 불러오는 중입니다...</div>
