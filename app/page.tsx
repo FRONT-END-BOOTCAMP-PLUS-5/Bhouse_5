@@ -65,7 +65,7 @@ export default function TestBoardgamesPage() {
             더보기
           </Link>
         </div>
-        {/* <HomeBoardgameList /> */}
+        <HomeBoardgameList />
 
         {/* "커뮤니티" 섹션 헤더 */}
         <div className={styles.sectionHeader}>
