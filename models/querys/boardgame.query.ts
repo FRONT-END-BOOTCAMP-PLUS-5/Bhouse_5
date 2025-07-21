@@ -3,6 +3,7 @@ import {
   getBoardgameDetailService,
   getBoardgamesByStoreId,
   getBoardgamesService,
+  getStoresByBoardgameId,
 } from 'models/services/boardgame.service'
 
 // useQuery => GET
@@ -31,5 +32,14 @@ export const useGetBoardgameDetail = (id: number) => {
     queryKey: ['boardgameDetail', id],
     queryFn: () => getBoardgameDetailService(id),
     enabled: !!id, // id가 있어야 요청 실행됨
+  })
+}
+
+export const useGetStoresByBoardgameId = (boardgameId: number) => {
+  console.log('useGetStore boardgameId', boardgameId)
+  return useQuery({
+    queryKey: ['stores-by-boardgame', boardgameId],
+    queryFn: () => getStoresByBoardgameId(boardgameId),
+    enabled: !!boardgameId, // boardgameId 있을 때만 호출
   })
 }
