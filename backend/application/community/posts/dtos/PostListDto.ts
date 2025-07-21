@@ -8,4 +8,5 @@ export interface PostListDto {
   hits?: number
   nickname?: string | null
   profileImgUrl?: string | null
+  commentCount: number
 }

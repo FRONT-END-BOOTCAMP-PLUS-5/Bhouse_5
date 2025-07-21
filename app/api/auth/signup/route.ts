@@ -14,8 +14,14 @@ export async function POST(req: NextRequest) {
     // UseCase 실행
     const result = await createAuthUsecase.execute(body)
 
+    // UseCase에서 에러를 반환한 경우
+    if (result.status !== 201) {
+      return NextResponse.json(result, { status: result.status })
+    }
+
     return NextResponse.json(result, { status: result.status })
   } catch (error) {
+    console.error('Signup API Error:', error)
     return NextResponse.json(
       {
         message: '서버 오류',

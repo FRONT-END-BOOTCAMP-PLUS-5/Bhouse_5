@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { GetPostByIdUseCase } from '@application/community/posts/usecases/GetPostByIdUseCase'
 import { PostRepositoryImpl } from '@infrastructure/repositories/PostRepositoryImpl'
+import { UserRepositoryImpl } from '@be/infrastructure/repositories/UserRepositoryImpl'
 import { UpdatePostUseCase } from '@be/application/community/posts/usecases/UpdatePostUseCase'
 
 export async function GET(req: NextRequest, context: { params: Promise<{ post_id?: string }> }) {
@@ -42,16 +43,15 @@ export async function PATCH(req: NextRequest, context: { params: Promise<{ post_
     }
 
     const body = await req.json()
-    const { userId, title, content, categoryId, town } = body
+    const { userId, title, content, categoryId } = body
 
-    const usecase = new UpdatePostUseCase(new PostRepositoryImpl())
+    const usecase = new UpdatePostUseCase(new PostRepositoryImpl(), new UserRepositoryImpl())
     const updated = await usecase.execute({
       postId,
       userId,
       title,
       content,
       categoryId,
-      town,
     })
 
     return NextResponse.json(updated, { status: 200 })

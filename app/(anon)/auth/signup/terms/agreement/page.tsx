@@ -1,44 +1,23 @@
 'use client'
 
-import React from 'react'
+import React, { useMemo } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { agreementSchema, AgreementSchemaType } from 'models/schemas/auth.schema'
 import { useForm } from 'react-hook-form'
 import styles from './agreement.module.css'
 import globalStyles from '@/page.module.css'
-import { usePathname } from 'next/navigation'
 import Button from '@/_components/Button/Button'
+import { useRouter } from 'next/navigation'
+import ErrorMessage from '../../_components/ErrorMessage'
 
-export default function AgreementPage() {
-  const pathname = usePathname()
+const agreements = [
+  {
+    id: 'termsOfService',
+    title: '보드의집 이용약관 [필수]',
+    content: `여러분을 환영합니다.
 
-  console.log(pathname)
-  const form = useForm<AgreementSchemaType>({
-    resolver: zodResolver(agreementSchema),
-    mode: 'all',
-  })
-  console.log(form.watch())
-  const handleSubmit = (data: AgreementSchemaType) => {
-    console.log(data)
-  }
-
-  return (
-    <form onSubmit={form.handleSubmit(handleSubmit)} className={styles.form}>
-      <label className={styles.allAgreementLabel}>
-        전체 동의합니다
-        <input {...form.register('allAgreement')} type="checkbox" className={styles.checkbox} />
-      </label>
-
-      <div className={styles.checkboxContainer}>
-        <label className={styles.label}>
-          보드의집 이용약관 [필수]
-          <input {...form.register('termsOfService')} type="checkbox" className={styles.checkbox} />
-        </label>
-        <pre className={`${styles.pre} ${globalStyles.body12}`}>
-          {`여러분을 환영합니다.
-
-보드게임을 사랑하는 사람들을 위한 커뮤니티 플랫폼 보드의집(이하 ‘서비스’)을 이용해 주셔서 감사합니다.
-본 약관은 서비스를 제공하는 보드의집 운영팀과 이를 이용하는 회원(이하 ‘회원’) 간의 권리, 의무 및 책임사항, 기타 필요한 사항을 규정함을 목적으로 합니다.
+보드게임을 사랑하는 사람들을 위한 커뮤니티 플랫폼 보드의집(이하 '서비스')을 이용해 주셔서 감사합니다.
+본 약관은 서비스를 제공하는 보드의집 운영팀과 이를 이용하는 회원(이하 '회원') 간의 권리, 의무 및 책임사항, 기타 필요한 사항을 규정함을 목적으로 합니다.
 
 제1조 (약관의 효력 및 변경)
 본 약관은 서비스에 게시하거나 기타의 방법으로 회원에게 공지함으로써 효력을 발생합니다.
@@ -61,18 +40,12 @@ export default function AgreementPage() {
 서비스의 안정적 운영을 위하여 일시적으로 서비스를 중단할 수 있습니다.
 
 제5조 (게시물의 권리와 책임)
-회원이 작성한 게시물의 저작권은 해당 회원에게 있으며, 보드의집은 서비스 운영 및 홍보를 위해 게시물을 사용할 수 있는 비독점적 사용권을 가집니다.
-          `}
-        </pre>
-      </div>
-
-      <div className={styles.checkboxContainer}>
-        <label className={styles.label}>
-          개인정보 수집 및 이용 동의서 [필수]
-          <input {...form.register('termsOfService')} type="checkbox" className={styles.checkbox} />
-        </label>
-        <pre className={`${styles.pre} ${globalStyles.body12}`}>
-          {`보드의집은 「개인정보 보호법」 등 관련 법령에 따라 귀하의 개인정보를 보호하며, 아래와 같은 항목에 대해 개인정보를 수집·이용합니다.
+회원이 작성한 게시물의 저작권은 해당 회원에게 있으며, 보드의집은 서비스 운영 및 홍보를 위해 게시물을 사용할 수 있는 비독점적 사용권을 가집니다.`,
+  },
+  {
+    id: 'privacyPolicy',
+    title: '개인정보 수집 및 이용 동의서 [필수]',
+    content: `보드의집은 「개인정보 보호법」 등 관련 법령에 따라 귀하의 개인정보를 보호하며, 아래와 같은 항목에 대해 개인정보를 수집·이용합니다.
 
 1. 수집하는 개인정보 항목
 필수항목: 이름, 이메일, 휴대전화번호, 닉네임, 비밀번호
@@ -94,12 +67,60 @@ export default function AgreementPage() {
 단, 관련 법령에 따라 일정 기간 보관이 필요한 경우 해당 기간 동안 보관
 
 4. 동의 거부 권리 안내
-귀하는 개인정보 수집·이용에 대한 동의를 거부할 권리가 있으며, 거부 시 회원 가입 및 일부 서비스 이용에 제한이 있을 수 있습니다.
-          `}
-        </pre>
-      </div>
+귀하는 개인정보 수집·이용에 대한 동의를 거부할 권리가 있으며, 거부 시 회원 가입 및 일부 서비스 이용에 제한이 있을 수 있습니다.`,
+  },
+]
 
-      <Button type="submit" variant="gray" size="medium">
+export default function AgreementPage() {
+  const router = useRouter()
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors, isValid },
+  } = useForm<AgreementSchemaType>({
+    resolver: zodResolver(agreementSchema),
+    mode: 'all',
+  })
+
+  const isAllChecked = useMemo(
+    () => agreements.every((item) => watch(item.id as keyof AgreementSchemaType)),
+    [agreements, watch('termsOfService'), watch('privacyPolicy')],
+  )
+
+  const handleSelectAll = () => {
+    const newValue = !isAllChecked
+    agreements.forEach((item) => {
+      setValue(item.id as keyof AgreementSchemaType, newValue, { shouldValidate: true })
+    })
+  }
+
+  const onSubmit = (data: AgreementSchemaType) => {
+    //Todo 동의값 API 로 보내야햇엇나?아니었던듯
+    router.push('/auth/signup/form')
+  }
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+      <label className={styles.allAgreementLabel}>
+        전체 동의합니다
+        <input type="checkbox" className={styles.checkbox} checked={isAllChecked} onChange={handleSelectAll} />
+      </label>
+
+      {agreements.map((item) => (
+        <div key={item.id} className={styles.checkboxContainer}>
+          <label className={styles.label}>
+            {item.title}
+            <input {...register(item.id as keyof AgreementSchemaType)} type="checkbox" className={styles.checkbox} />
+          </label>
+          <pre className={`${styles.pre} ${globalStyles.body12}`}>{item.content}</pre>
+          <ErrorMessage message={errors[item.id as keyof AgreementSchemaType]?.message} />
+        </div>
+      ))}
+
+      <Button type="submit" variant={isValid ? 'primary' : 'gray'} size="medium">
         다음
       </Button>
     </form>

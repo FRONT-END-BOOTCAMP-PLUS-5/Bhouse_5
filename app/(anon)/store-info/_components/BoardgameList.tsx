@@ -1,38 +1,69 @@
+// ✅ 수정된 BoardgameList.tsx
 'use client'
 
-import Image from 'next/image'
-import styles from './BoardgameList.module.css'
+import { useEffect, useState } from 'react'
+import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import BoardgameCard from '@/_components/BoardgameCard/BoardgameCard'
+import styles from './BoardgameList.module.css'
+import { getBoardgamesByStoreId } from 'models/services/boardgame.service'
 
-const games = [
-  {
-    id: 1,
-    title: '헉, 내가 잊어진 천사족의 여왕?',
-    imgUrl: '/images/arknova.jpg', // public 디렉토리에 이미지 있어야 함
-  },
-  {
-    id: 2,
-    title: '헉, 내가 잊어진 천사족의 여왕?',
-    imgUrl: '/images/arknova.jpg',
-  },
-  {
-    id: 3,
-    title: '헉, 내가 잊어진 천사족의 여왕?',
-    imgUrl: '/images/arknova.jpg',
-  },
-]
+interface Boardgame {
+  id: number
+  title: string
+  imgUrl: string
+}
 
-export default function BoardgameList() {
+interface BoardgameListProps {
+  storeId?: string // ✅ 선택적 prop로 받되 fallback 사용
+}
+
+export default function BoardgameList({ storeId }: BoardgameListProps) {
+  const [games, setGames] = useState<Boardgame[]>([])
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const params = useParams()
+
+  // ✅ storeId 우선순위: props → query string
+  const resolvedStoreId = storeId ?? searchParams.get('storeId')
+
+  useEffect(() => {
+    const fetchGames = async () => {
+      if (!resolvedStoreId) {
+        console.warn('storeId가 없습니다.')
+        return
+      }
+
+      try {
+        const res = await getBoardgamesByStoreId(resolvedStoreId)
+        if (res.success) {
+          setGames(res.data)
+        } else {
+          console.error('API 실패 응답:', res)
+        }
+      } catch (e) {
+        console.error('보드게임 데이터를 불러오는 데 실패했어요', e)
+      }
+    }
+
+    fetchGames()
+  }, [resolvedStoreId])
+
+  const top3 = games.slice(0, 3)
+
+  const handleMoreClick = () => {
+    const id = params?.id ?? resolvedStoreId
+    router.push(`/store-info-gamelist?storeId=${id}`)
+  }
+
   return (
     <div>
-      <div>
-        {games.map((game: { imgUrl: any; title: any }, index: any) => (
-          <BoardgameCard key={index} imageUrl={game.imgUrl} title={game.title} width={40} height={40} />
+      <div className={styles.cardList}>
+        {top3.map((game, index) => (
+          <BoardgameCard key={index} imageUrl={game.imgUrl} title={game.title} width={60} height={60} />
         ))}
       </div>
-      <div style={{ textAlign: 'right', fontSize: '13px', color: '#007bff', marginTop: '8px', paddingRight: '12px' }}>
-        더보기
-      </div>
+
+      {games.length > 3 && <div onClick={handleMoreClick}>더보기</div>}
     </div>
   )
 }

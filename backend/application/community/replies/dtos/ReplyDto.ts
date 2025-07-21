@@ -5,4 +5,8 @@ export interface ReplyDto {
   content: string
   createdAt: string
   parentReplyId: number | null
+  users: {
+    nickname: string
+    profileImgUrl: string | null
+  }
 }

@@ -1,0 +1,127 @@
+/* Wrapper: 전체 편집기 컨테이너 */
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+    width: 100%;
+    border-radius: 12px;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* 제목 입력 필드 */
+.titleInput {
+    font-size: 1rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    width: 100%;
+}
+
+/* 에디터 영역 */
+.editorArea {
+    min-height: 400px;
+    max-height: 600px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 0.5rem;
+    overflow-y: auto;
+}
+
+/* 발행 버튼 */
+.publishButton {
+    align-self: flex-end;
+    padding: 0.6rem 1.5rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.publishButton:hover {
+    background-color: #0056b3;
+}
+
+/* Quill 기본 설정 */
+.ql-container {
+    min-height: 300px;
+}
+
+.ql-editor {
+    min-height: 200px;
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+/* 이미지 최대 너비 설정 */
+.ql-container img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* 이미지 리사이즈 핸들 스타일 (quill-resize-image 대응) */
+.ql-editor .ql-image-resize {
+    position: relative;
+    display: inline-block;
+    user-select: none;
+}
+
+.ql-image-resize .ql-resize-handle {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: white;
+    border: 1px solid gray;
+    z-index: 9;
+}
+
+/* quill-resize-image 배경 제거 */
+.ql-editor .resize-container,
+.ql-editor .ql-image-resize,
+.ql-editor .ql-image-resize-container,
+#editor-resizer {
+    background-color: transparent !important;
+    filter: none !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* 리사이저 핸들 색상 통일 */
+.ql-resize-handle {
+    width: 10px;
+    height: 10px;
+    background-color: white;
+    border: 2px solid #007bff;
+    /* 파란색 점 강조 */
+    border-radius: 50%;
+    /* 동그란 점으로 */
+    position: absolute;
+    z-index: 11;
+}
+
+/* 📱 모바일 대응 */
+@media (max-width: 768px) {
+    .wrapper {
+        padding: 0.75rem;
+    }
+
+    .titleInput {
+        font-size: 0.95rem;
+        padding: 0.65rem 0.9rem;
+    }
+
+    .editorArea {
+        min-height: 250px;
+        max-height: 500px;
+    }
+
+    .publishButton {
+        width: 100%;
+        text-align: center;
+        padding: 0.7rem 1.2rem;
+    }
+}

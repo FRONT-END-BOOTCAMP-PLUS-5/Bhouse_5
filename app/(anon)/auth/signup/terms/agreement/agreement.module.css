@@ -73,3 +73,15 @@
   white-space: pre-wrap;
   overflow-y: auto;
 }
+
+.errorMessage {
+  color: #ff4444;
+  font-size: 12px;
+  margin-top: 4px;
+  max-width: 530px;
+}
+
+.checkboxContainer {
+  display: flex;
+  flex-direction: column;
+}

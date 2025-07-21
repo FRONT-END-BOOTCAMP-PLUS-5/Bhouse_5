@@ -12,7 +12,8 @@
 
   /* 가로 길이 고정 (예: 250px), 필요시 100% 등으로 조절 가능 */
   /* 가로 길이 비율에 맞춰 늘어나게 하려면 */
-  /* width: 100%; */ 
+  /* width: 100%; */
+  /* width: 100%; */
   /* max-width를 사용하여 특정 크기 이상 커지지 않게 할 수 있음 */
   /* max-width: 400px; */
 
@@ -49,3 +50,10 @@
 /* overflow: hidden; */ /* 단일 라인 input에서 텍스트가 넘치면 숨김 */
 /* white-space: nowrap; */ /* 텍스트를 한 줄에 강제 */
 /* text-overflow: ellipsis; */ /* 텍스트가 넘치면 ...으로 표시 */
+
+/* label과 input을 함께 렌더링하는 컨테이너 */
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}

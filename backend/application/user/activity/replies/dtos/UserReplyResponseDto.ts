@@ -5,6 +5,7 @@
  */
 export interface UserReplyResponseDto {
   reply_id: number
+  post_id: number // 추가된 post_id 필드
   text: string // content에 해당
   parent_reply_id: number | null
   created_at: string // ISO 8601 문자열

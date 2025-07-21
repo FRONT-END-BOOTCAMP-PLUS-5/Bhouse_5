@@ -15,7 +15,7 @@ import { ErrorMessage } from '@/_components/Message/Message'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 
-function SigninForm() {
+export default function SigninPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const callbackUrl = searchParams.get('callbackUrl')
@@ -29,8 +29,6 @@ function SigninForm() {
     mode: 'all',
   })
 
-  console.log(form.watch())
-
   const handleSubmit = async (data: LoginSchemaType) => {
     setServerError('') // 에러 초기화
 
@@ -38,16 +36,14 @@ function SigninForm() {
       await signinService({ username: data.email, password: data.password })
 
       const res = await getProfileService()
+      console.log(res)
       setLogin(res)
-
-      router.replace(callbackUrl || '/')
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || '로그인에 실패했습니다.'
       setServerError(errorMessage)
       console.log(error)
     }
   }
-
   return (
     <div className={styles.container}>
       <div className={styles.formContainer}>
@@ -79,13 +75,3 @@ function SigninForm() {
     </div>
   )
 }
-
-function SigninPage() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <SigninForm />
-    </Suspense>
-  )
-}
-
-export default SigninPage

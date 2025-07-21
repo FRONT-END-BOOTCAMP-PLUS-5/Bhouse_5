@@ -1,0 +1,54 @@
+/* BoardgameList.module.css */
+.container {
+  padding: 16px;
+}
+
+.allGamesText {
+  color: var(--primary-blue);
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 14px; /* '더보기' 텍스트 크기 */
+}
+
+.listGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3개의 열을 균등하게 분배 */
+  grid-template-rows: repeat(2, auto); /* 2개의 행을 자동으로 높이 조절 */
+  gap: 16px; /* 아이템 간의 간격 */
+  justify-items: center; /* 그리드 아이템들을 셀의 중앙에 정렬 */
+  align-items: center; /* 그리드 아이템들을 세로 셀의 중앙에 정렬 */
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.thumbnail {
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.more {
+  margin-top: 16px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.more span {
+  color: var(--secondary-blue-800);
+  font-weight: 500;
+  cursor: pointer;
+}

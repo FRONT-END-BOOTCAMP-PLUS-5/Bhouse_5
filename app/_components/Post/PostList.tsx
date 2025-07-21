@@ -1,10 +1,13 @@
 // components/PostList.tsx
 'use client'
 
+import instance from '@utils/instance'
 import styles from './PostList.module.css'
 import Link from 'next/link'
+import { ReactNode } from 'react'
 
 interface Post {
+  hits: ReactNode
   postId: number
   title: string
   commentCount?: number
@@ -15,16 +18,14 @@ interface Post {
 }
 
 interface PostListProps {
-  posts: Post[]
+  posts: Post[] // 🔥 현재 페이지의 post만 받음
   currentPage: number
-  postsPerPage: number
+  totalPages: number
   onPageChange: (page: number) => void
+  tabId?: number // ← 탭 ID를 받아서 조건 분기
 }
 
-export default function PostList({ posts, currentPage, postsPerPage, onPageChange }: PostListProps) {
-  const totalPages = Math.ceil(posts.length / postsPerPage)
-  const currentPosts = posts.slice((currentPage - 1) * postsPerPage, currentPage * postsPerPage)
-
+export default function PostList({ posts, currentPage, totalPages, onPageChange, tabId }: PostListProps) {
   const formatTime = (iso: string) => {
     const date = new Date(iso)
     return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
@@ -46,29 +47,47 @@ export default function PostList({ posts, currentPage, postsPerPage, onPageChang
           <tr>
             <th className={styles.titleCol}>제목</th>
             <th>작성자</th>
-            <th>동네</th>
+            {tabId === 1 && <th>동네</th>}
             <th>작성일</th>
+            <th>조회수</th>
           </tr>
         </thead>
         <tbody>
-          {currentPosts.map((post) => (
+          {posts.map((post) => (
             <tr key={post.postId} className={styles.postRow}>
               <td data-label="제목">
                 {post.isNotice && <span className={styles.noticeBadge}>공지</span>}
-                <Link href={`/posts/${post.postId}`} className={styles.titleLink}>
-                  {post.title} {post.commentCount ? `[${post.commentCount}]` : ''}
+                <Link
+                  href={`/community/posts/${post.postId}`}
+                  className={styles.titleLink}
+                  onClick={async (e) => {
+                    e.preventDefault()
+                    try {
+                      await instance.patch(`/api/community/posts/${post.postId}/hits`)
+                    } catch (err) {
+                      console.error('조회수 증가 실패', err)
+                    } finally {
+                      window.location.href = `/community/posts/${post.postId}`
+                    }
+                  }}
+                >
+                  {post.title} {post.commentCount != null ? `[${post.commentCount}]` : ''}
                 </Link>
               </td>
               <td data-label="작성자">{post.nickname}</td>
-              <td data-label="동네">
-                <span className={styles.townBadge}>{post.town}</span>
-              </td>
+              {tabId === 1 && (
+                <td data-label="동네">
+                  <span className={styles.townBadge}>{post.town?.split(' ').pop() ?? ''}</span>
+                </td>
+              )}
               <td data-label="작성일">{formatTime(post.createdAt)}</td>
+              <td data-label="조회수">{post.hits}</td>
             </tr>
           ))}
         </tbody>
       </table>
 
+      {/* pagination */}
       <div className={styles.pagination}>
         <button onClick={() => onPageChange(1)} disabled={currentPage === 1}>
           {'<<'}

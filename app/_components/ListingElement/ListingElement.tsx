@@ -1,3 +1,4 @@
+// ListingElement.tsx
 'use client'
 
 import React from 'react'
@@ -7,22 +8,24 @@ import TrashIcon from '@public/icons/trash.svg'
 
 interface ListingElementProps {
   label: string
-  onDelete: () => void
+  onDelete: () => void // onDelete 함수를 받습니다.
+  disabled?: boolean // 새로 추가: 버튼 비활성화 상태를 위한 prop
 }
 
-const ListingElement: React.FC<ListingElementProps> = ({ label, onDelete }) => {
+const ListingElement: React.FC<ListingElementProps> = ({ label, onDelete, disabled }) => {
   return (
     <div className={styles.boardgameItem}>
       <div className={styles.boardgameLabel}>{label}</div>
       <CircleButton
-        svgComponent={TrashIcon} // BellIcon 컴포넌트를 직접 전달
-        svgWidth={20} // 아이콘 너비
-        svgHeight={20} // 아이콘 높이
-        svgFill="black" // 아이콘 색상
-        imageAlt="삭제 아이콘" // 접근성용 대체 텍스트
+        svgComponent={TrashIcon}
+        svgWidth={20}
+        svgHeight={20}
+        svgFill="black"
+        imageAlt="삭제 아이콘"
         bgColor="var(--secondary-blue-200)"
         size={40}
-        onClick={() => alert('파일 아이콘 클릭')} // onClick 메시지를 더 구체적으로 변경했습니다.
+        onClick={onDelete} // ⭐ 이 부분을 수정했습니다. 이제 onDelete prop이 호출됩니다.
+        disabled={disabled} // ⭐ 새로 추가: disabled prop을 CircleButton에 전달합니다.
       />
     </div>
   )

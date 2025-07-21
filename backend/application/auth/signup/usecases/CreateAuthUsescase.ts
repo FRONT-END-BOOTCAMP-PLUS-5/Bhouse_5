@@ -55,7 +55,7 @@ export class CreateAuthUsecase {
   private async checkDuplicateUser(dto: CreateAuthDto): Promise<CreateAuthResponseDto | null> {
     const existingUser = await this.authRepository.findUser(dto.email, dto.username)
     if (existingUser) {
-      return { message: '이미 존재하는 이메일 또는 아이디입니다.', status: 409 }
+      return { message: '이미 존재하는 이메일입니다.', status: 409 }
     }
     return null
   }
@@ -69,7 +69,7 @@ export class CreateAuthUsecase {
       dto.username,
       hashedPassword,
       dto.email,
-      dto.nickname || '',
+      dto.nickname, // 닉네임을 필수 입력값으로 받음
       new Date(),
       new Date(), // updatedAt
       'PENDING', // isActive
