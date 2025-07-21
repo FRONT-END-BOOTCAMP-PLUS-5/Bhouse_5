@@ -60,9 +60,7 @@ export default function Carousel({ items, autoPlay = true, interval = 3000 }: Ca
       <div
         className={styles.carouselTrack}
         style={{
-          width: `${items.length * 100}%`,
           transform: `translateX(-${currentIndex * 100}%)`,
-          transition: 'transform 0.5s ease-in-out',
         }}
       >
         {items.map((item, index) => (

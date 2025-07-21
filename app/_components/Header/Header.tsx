@@ -1,9 +1,10 @@
+// Header.tsx
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation' // usePathname 임포트
 
 import styles from './Header.module.css'
 import Button from '../Button/Button'
@@ -18,24 +19,36 @@ import BellIcon from '@public/icons/bell.svg'
 
 import { useAuthStore } from '@store/auth.store'
 import { signoutService } from 'models/services/auth.service'
+type UserType = 'USER' | 'OWNER'
 
 const Header: React.FC = () => {
   const [search, setSearch] = useState('')
-  const [selectedRegion, setSelectedRegion] = useState('중랑구')
+  const { isLogin, setLogout, user } = useAuthStore()
+  const [selectedRegion, setSelectedRegion] = useState<string>('동네 선택')
 
   const router = useRouter()
+  const pathname = usePathname() // 현재 경로 가져오기
 
-  const { isLogin, setLogout, user } = useAuthStore()
-  const currentUserType = user?.user_role?.name
+  const currentUserType = user.user_role.name
   const profileImageUrl = user?.profile_img_url || '/images/user_empty_profile_img.png'
-  console.log(profileImageUrl)
-  const handleRegionSelect = (region: string) => {
-    setSelectedRegion(region)
-    console.log(`${region} 선택됨`)
-  }
 
-  const handleAddLocationClick = () => {
-    console.log('내 동네 추가하기 버튼 클릭')
+  // user.towns 데이터가 로드되면 selectedRegion을 업데이트
+  useEffect(() => {
+    if (isLogin && user.towns && user.towns.length > 0) {
+      const firstTown = user.towns[0]
+      if (firstTown && firstTown.town_name) {
+        setSelectedRegion(firstTown.town_name)
+      } else {
+        setSelectedRegion('동네 선택')
+      }
+    } else {
+      setSelectedRegion('동네 선택')
+    }
+  }, [isLogin, user.towns])
+
+  const handleRegionSelect = (regionName: string) => {
+    setSelectedRegion(regionName)
+    // TODO: 선택된 동네에 따라 데이터를 필터링하는 로직 추가
   }
 
   const handleLogoutClick = async () => {
@@ -71,11 +84,11 @@ const Header: React.FC = () => {
               <AlarmDropdown
                 trigger={
                   <CircleButton
-                    svgComponent={BellIcon} // BellIcon 컴포넌트를 직접 전달
-                    svgWidth={25} // 아이콘 너비
-                    svgHeight={25} // 아이콘 높이
-                    svgFill="white" // 아이콘 색상
-                    imageAlt="알림 아이콘" // 접근성용 대체 텍스트
+                    svgComponent={BellIcon}
+                    svgWidth={25}
+                    svgHeight={25}
+                    svgFill="white"
+                    imageAlt="알림 아이콘"
                     bgColor="var(--primary-blue)"
                     size={40}
                   />
@@ -85,14 +98,14 @@ const Header: React.FC = () => {
               <ProfileDropdown
                 trigger={
                   <CircleButton
-                    imageUrl={profileImageUrl} // 이미지 URL을 직접 전달
-                    imageSize={40} // 이미지 크기
-                    imageAlt="프로필 이미지" // 접근성용 대체 텍스트
-                    bgColor="transparent" // 배경은 투명
+                    imageUrl={profileImageUrl}
+                    imageSize={40}
+                    imageAlt="프로필 이미지"
+                    bgColor="transparent"
                     size={40}
                   />
                 }
-                userType={currentUserType}
+                userType={currentUserType as UserType}
                 onLogout={handleLogoutClick}
               />
             </>
@@ -118,26 +131,25 @@ const Header: React.FC = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className={styles.searchInput}
-            size="small"
           />
           <Dropdown label={selectedRegion} borderRadius="8" size="small">
-            {' '}
-            {/* 여기에 size="small" 추가 */}
-            {/*FIXME : 유저 정보 내 town으로 변경하기*/}
-            <li onClick={() => handleRegionSelect('중랑구')}>중랑구</li>
-            <li onClick={() => handleRegionSelect('은평구')}>은평구</li>
-            <li onClick={() => handleRegionSelect('강남구')}>강남구</li>
-            <li onClick={() => handleRegionSelect('서초구')} data-disabled="true">
-              서초구 (선택 불가)
-            </li>
+            {user.towns && user.towns.length > 0 ? (
+              user.towns.map((town, index) => (
+                <li key={index} onClick={() => handleRegionSelect(town.town_name)}>
+                  {town.town_name || '알 수 없는 동네'}
+                </li>
+              ))
+            ) : (
+              <li>등록된 동네가 없습니다.</li>
+            )}
             <Divider marginY="8px" />
             <li>
               <Button
-                onClick={handleAddLocationClick}
                 variant="primary"
                 size="small"
                 borderRadius="8"
                 className={styles.buttonAsListItem}
+                href="/user/towns/register"
               >
                 내 동네 추가하기
               </Button>
@@ -145,31 +157,53 @@ const Header: React.FC = () => {
           </Dropdown>
         </div>
       ) : (
-        <div className={styles.searchAndDropdown} style={{ justifyContent: 'flex-end' /* 기존 정렬 유지 */ }}>
+        <div className={styles.searchAndDropdown} style={{ justifyContent: 'flex-end' }}>
           <TextInput
             type="text"
             placeholder="지금 인기있는 보드게임"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className={styles.searchInput}
-            size="small"
           />
         </div>
       )}
 
       {/* 하단 섹션: 내비게이션 버튼들 (왼쪽 정렬) */}
-      {/* FIXME(@아무나) : 현재 페이지에서 색상 변경 */}
       <nav className={styles.navigation}>
-        <Button variant="ghost" size="small" borderRadius="60" className={styles.navButton}>
+        <Button
+          variant="ghost"
+          size="small"
+          borderRadius="60"
+          className={`${styles.navButton} ${pathname === '/' ? styles.activeNavButton : ''}`}
+          href="/"
+        >
           홈
         </Button>
-        <Button variant="ghost" size="small" borderRadius="60" className={styles.navButton}>
+        <Button
+          variant="ghost"
+          size="small"
+          borderRadius="60"
+          className={`${styles.navButton} ${pathname === '/boardgames' ? styles.activeNavButton : ''}`}
+          href="/boardgames"
+        >
           보드게임
         </Button>
-        <Button variant="ghost" size="small" borderRadius="60" className={styles.navButton}>
+        <Button
+          variant="ghost"
+          size="small"
+          borderRadius="60"
+          className={`${styles.navButton} ${pathname.startsWith('/community/posts') ? styles.activeNavButton : ''}`}
+          href="/community/posts"
+        >
           커뮤니티
         </Button>
-        <Button variant="ghost" size="small" borderRadius="60" className={styles.navButton}>
+        <Button
+          variant="ghost"
+          size="small"
+          borderRadius="60"
+          className={`${styles.navButton} ${pathname === '/map' ? styles.activeNavButton : ''}`}
+          href="/map"
+        >
           지도
         </Button>
       </nav>

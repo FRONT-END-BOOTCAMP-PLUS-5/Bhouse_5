@@ -3,16 +3,15 @@ import { CreateSSOAuthDto } from '../dtos/CreateSSOAuthDto'
 import { User } from '@be/domain/entities/User'
 import { UserRole } from '@be/domain/entities/UserRole'
 import { Role } from '@be/domain/entities/Role'
-import jwt from 'jsonwebtoken'
 import { cookies } from 'next/headers'
 import { SigninAuthResponseDto } from '../../signin/dtos/SigninAuthResponseDto'
+import { SignJWT } from 'jose'
 
 export class CreateSSOAuthUsecase {
   constructor(private readonly authRepo: AuthRepository) {}
 
   async execute(dto: CreateSSOAuthDto): Promise<SigninAuthResponseDto> {
     try {
-      // 1. 기존 사용자 조회
       const existingUser = await this.authRepo.findByProvider(dto.provider, dto.providerId)
 
       if (existingUser) {
@@ -22,27 +21,25 @@ export class CreateSSOAuthUsecase {
         }
       }
 
-      // 1. 회원 생성
       const newUser = new User(
-        '', // userId (자동 생성)
+        '',
         dto.username,
-        '', // 비밀번호 없음 (SSO)
+        '',
         dto.email,
         dto.nickname || dto.username,
-        new Date(), // createdAt
-        new Date(), // updatedAt
+        new Date(),
+        new Date(),
         'APPROVED',
-        dto.profileImgUrl || null, // image
+        dto.profileImgUrl || null,
         [],
         undefined,
         dto.provider,
         dto.providerId,
-        new UserRole(new Role(2, 'USER')), // USER role
+        new UserRole(new Role(2, 'USER')),
       )
 
       await this.authRepo.signup(newUser, 2)
 
-      // 2. Token 발급 및 쿠키 저장
       const savedUser = await this.authRepo.findByProvider(dto.provider, dto.providerId)
       if (!savedUser) {
         return {
@@ -52,37 +49,52 @@ export class CreateSSOAuthUsecase {
         }
       }
 
+      const jwtSecret = process.env.ACCESS_TOKEN_SECRET
+      const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET
+
+      if (!jwtSecret || !refreshTokenSecret) {
+        return {
+          message: 'JWT 시크릿이 설정되지 않았습니다.',
+          status: 500,
+          error: 'JWT_SECRET_NOT_SET',
+        }
+      }
+
       const now = Math.floor(Date.now() / 1000)
-      const accessTokenMaxAge = 60 * 60
-      const refreshTokenMaxAge = 2 * 24 * 60 * 60
+      const accessTokenMaxAge = 60 * 60 // 1시간
+      const refreshTokenMaxAge = 2 * 24 * 60 * 60 // 2일
 
-      const jwtSecret = process.env.ACCESS_TOKEN_SECRET!
-      const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET!
+      const encoder = new TextEncoder()
+      const accessSecret = encoder.encode(jwtSecret)
+      const refreshSecret = encoder.encode(refreshTokenSecret)
 
-      const accessTokenPayload = {
+      const accessToken = await new SignJWT({
         userId: savedUser.id,
         email: savedUser.email,
         roleId: savedUser.userRole?.roles.role_id.toString(),
-        exp: now + accessTokenMaxAge,
-      }
+      })
+        .setProtectedHeader({ alg: 'HS256' })
+        .setIssuedAt()
+        .setExpirationTime(`${accessTokenMaxAge}s`)
+        .sign(accessSecret)
 
-      const refreshTokenPayload = {
+      const refreshToken = await new SignJWT({
         userId: savedUser.id,
         type: 'refresh',
-        iat: now,
-        exp: now + refreshTokenMaxAge,
-      }
-
-      const accessToken = jwt.sign(accessTokenPayload, jwtSecret)
-      const refreshToken = jwt.sign(refreshTokenPayload, refreshTokenSecret)
+      })
+        .setProtectedHeader({ alg: 'HS256' })
+        .setIssuedAt()
+        .setExpirationTime(`${refreshTokenMaxAge}s`)
+        .sign(refreshSecret)
 
       const cookieStore = cookies()
-      ;(await cookieStore).set('accessToken', accessToken, {
+      cookieStore.set('accessToken', accessToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         maxAge: accessTokenMaxAge,
       })
-      ;(await cookieStore).set('refreshToken', refreshToken, {
+
+      cookieStore.set('refreshToken', refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         maxAge: refreshTokenMaxAge,

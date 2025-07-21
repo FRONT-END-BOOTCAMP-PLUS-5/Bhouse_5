@@ -23,6 +23,7 @@ export class Boardgame {
     public createdAt: Date = new Date(),
     public updatedAt: Date = new Date(),
     public updatedBy: string, // user_id에 해당 (UUID)
+    public likeCount: number,
     // 관계
     public creator?: User, // N:1 관계
     public updater?: User, // N:1 관계

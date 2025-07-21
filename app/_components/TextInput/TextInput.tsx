@@ -1,7 +1,9 @@
+// TextInput.tsx
 'use client'
 
 import React, { InputHTMLAttributes, TextareaHTMLAttributes } from 'react'
 import styles from './TextInput.module.css'
+import Button from '../Button/Button' // Button 컴포넌트 임포트
 
 // Input과 Textarea 모두를 위한 공통 props
 // (채영) 라벨타입 추가함. 라벨이 있으면 label과 input을 함께 렌더링. 예시) 회원가입폼에서 사용
@@ -10,7 +12,7 @@ type CommonInputProps = {
   placeholder?: string
   className?: string // 외부에서 추가 스타일을 위한 클래스
   /**
-   * TextInput의 크기를 정의합니다. 'small' 또는 기본 크기 (undefined)를 가집니다.
+   * TextInput의 크기를 정의합니다. 'small', 'medium' 또는 기본 크기 (undefined)를 가집니다.
    */
   size?: 'small' // size prop 추가
   label?: string // label 텍스트를 위한 prop 추가

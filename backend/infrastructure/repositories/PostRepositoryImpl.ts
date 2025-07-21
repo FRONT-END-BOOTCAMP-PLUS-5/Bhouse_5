@@ -43,9 +43,9 @@ export class PostRepositoryImpl implements PostRepository {
       new Date(data.created_at),
       data.town,
       data.hits,
-      data.users?.nickname ?? null,
-      data.users?.profile_img_url ?? null,
-    )
+      (data.users as any)?.[0]?.nickname ?? null,
+      (data.users as any)?.[0]?.profile_img_url ?? null,
+    ) as any
   }
 
   async deletePost(postId: number, userId: string): Promise<void> {
@@ -101,73 +101,88 @@ export class PostRepositoryImpl implements PostRepository {
       data.title,
       data.content,
       new Date(data.created_at),
-      new Date(now),
-      data.category_id,
       data.town,
       data.hits,
-      data.users?.nickname ?? null,
-      data.users?.profile_img_url ?? null,
+      Array.isArray(data.users) && data.users[0] ? data.users[0].nickname : undefined,
+      Array.isArray(data.users) && data.users[0] ? data.users[0].profile_img_url : undefined,
+      (data as any).updated_at ? new Date((data as any).updated_at) : undefined,
+      typeof (data as any).category_id === 'number' ? (data as any).category_id : undefined,
+      Array.isArray(data.users) && data.users[0] ? data.users[0].nickname : undefined,
+      Array.isArray(data.users) && data.users[0] ? data.users[0].profile_img_url : undefined,
+      (data as any).updated_at ? new Date((data as any).updated_at) : undefined,
+      typeof (data as any).category_id === 'number' ? (data as any).category_id : undefined,
     )
   }
 
-  async getPostList(): Promise<{ data: Post[]; total: number }> {
-    const { data, count, error } = await supabaseClient.from('community_posts').select(
-      `
-          post_id,
-          user_id,
-          title,
-          content,
-          created_at,
-          town,
-          hits,
-          users (
-            nickname,
-            profile_img_url
-          )
-        `,
-      { count: 'exact' },
-    )
+  async getPostList({
+    categoryId,
+    townName,
+    isLoggedIn,
+  }: {
+    categoryId: number | null
+    townName: string | null
+    isLoggedIn: boolean
+  }): Promise<{ data: Post[]; townName: string | null; total: number }> {
+    console.log('🔍 [getPostList] Called with:')
+    console.log('  categoryId:', categoryId)
+    console.log('townName: ', townName)
+    console.log('  isLoggedIn:', isLoggedIn)
 
-    if (error) throw new Error(error.message)
+    let query = supabaseClient.from('community_posts_with_comment_count').select('*')
 
-    const posts: Post[] = data.map(
-      (item) =>
-        new Post(
-          item.post_id,
-          item.user_id,
-          item.title,
-          item.content,
-          new Date(item.created_at),
-          undefined, // updatedAt 생략 or 추가
-          undefined, // categoryId 생략 or 추가
-          item.town,
-          item.hits,
-          item.users?.nickname ?? null,
-          item.users?.profile_img_url ?? null,
-        ),
-    )
+    if (!isLoggedIn) {
+      console.log('🛑 Not logged in: excluding category_id = 1 (모집)')
+      query = query.neq('category_id', 1)
+    }
 
-    return { data: posts, total: count ?? 0 }
+    if (categoryId === 1 && isLoggedIn && townName !== null) {
+      query = query.eq('town', townName)
+    }
+
+    if (categoryId !== null) {
+      console.log(`📌 Applying category filter: category_id = ${categoryId}`)
+      query = query.eq('category_id', categoryId)
+    }
+
+    const { data, error } = await query
+
+    if (error) {
+      console.error('❌ Supabase query error:', error.message)
+      throw new Error(error.message)
+    }
+
+    console.log('📦 [getPostList] Retrieved rows:', data?.length)
+    if (data) {
+      console.log(
+        '🏘️ Towns in data:',
+        data.map((item) => item.town),
+      )
+    }
+
+    const posts: Post[] = data.map((item) => {
+      return new Post(
+        item.post_id,
+        item.user_id,
+        item.title,
+        item.content,
+        new Date(item.created_at),
+        item.town,
+        item.hits,
+        item.nickname ?? null,
+        item.profile_img_url ?? null,
+        item.updated_at ? new Date(item.updated_at) : undefined,
+        typeof item.category_id === 'number' ? item.category_id : undefined,
+        item.comment_count ?? 0,
+      )
+    })
+
+    return { data: posts, townName: townName ?? null, total: posts.length }
   }
 
   async getPostById(postId: number): Promise<Post | null> {
     const { data, error } = await supabaseClient
-      .from('community_posts')
-      .select(
-        `
-        post_id,
-        user_id,
-        title,
-        content,
-        created_at,
-        town,
-        hits,
-        users (
-          nickname,
-          profile_img_url
-        )
-      `,
-      )
+      .from('community_post_detail_with_comment_count') // 👈 View 사용
+      .select('*')
       .eq('post_id', postId)
       .maybeSingle()
 
@@ -180,12 +195,13 @@ export class PostRepositoryImpl implements PostRepository {
       data.title,
       data.content,
       new Date(data.created_at),
+      data.town,
+      data.hits,
+      data.nickname ?? null,
+      data.profile_img_url ?? null,
       data.updated_at ? new Date(data.updated_at) : undefined,
-      data.category_id ?? undefined,
-      data.town ?? undefined,
-      data.hits ?? undefined,
-      data.users?.nickname ?? undefined,
-      data.users?.profile_img_url ?? undefined,
+      typeof data.category_id === 'number' ? data.category_id : undefined,
+      data.comment_count ?? 0, // ✅ 댓글 수
     )
   }
 }

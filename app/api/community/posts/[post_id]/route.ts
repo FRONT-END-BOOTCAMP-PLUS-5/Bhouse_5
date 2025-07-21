@@ -2,11 +2,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { GetPostByIdUseCase } from '@application/community/posts/usecases/GetPostByIdUseCase'
 import { PostRepositoryImpl } from '@infrastructure/repositories/PostRepositoryImpl'
+import { UserRepositoryImpl } from '@be/infrastructure/repositories/UserRepositoryImpl'
 import { UpdatePostUseCase } from '@be/application/community/posts/usecases/UpdatePostUseCase'
 
-export async function GET(req: NextRequest, context: { params: { post_id?: string } }) {
+export async function GET(req: NextRequest, context: { params: Promise<{ post_id?: string }> }) {
   try {
-    const postIdParam = context.params?.post_id
+    const { post_id: postIdParam } = await context.params
     if (!postIdParam) {
       return NextResponse.json({ message: 'Missing post ID' }, { status: 400 })
     }
@@ -33,24 +34,24 @@ export async function GET(req: NextRequest, context: { params: { post_id?: strin
   }
 }
 
-export async function PATCH(req: Request, context: { params: { post_id: string } }) {
+export async function PATCH(req: NextRequest, context: { params: Promise<{ post_id: string }> }) {
   try {
-    const postId = Number(context.params.post_id)
+    const { post_id: postIdParam } = await context.params
+    const postId = Number(postIdParam)
     if (isNaN(postId)) {
       return NextResponse.json({ message: 'Invalid post ID' }, { status: 400 })
     }
 
     const body = await req.json()
-    const { userId, title, content, categoryId, town } = body
+    const { userId, title, content, categoryId } = body
 
-    const usecase = new UpdatePostUseCase(new PostRepositoryImpl())
+    const usecase = new UpdatePostUseCase(new PostRepositoryImpl(), new UserRepositoryImpl())
     const updated = await usecase.execute({
       postId,
       userId,
       title,
       content,
       categoryId,
-      town,
     })
 
     return NextResponse.json(updated, { status: 200 })
