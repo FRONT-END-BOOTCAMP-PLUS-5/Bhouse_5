@@ -6,14 +6,13 @@ import styles from './BoardgameList.module.css'
 import HomeBoardgameImageCard from '../HomeBoardgameImageCard/HomeBoardgameImageCard'
 import { useGetBoardgameList } from 'models/querys/boardgame.query' // BoardgameSearch.tsx에 맞춰 'querys'로 import 경로 일치
 
-// API 응답에 like_count가 포함된다는 사용자님의 최신 정보를 반영합니다.
 interface BoardgameItem {
   id: number
   name: string
   min_players: number
   max_players: number
   img_url: string
-  like_count: number // 사용자님 확인에 따라 like_count 필드를 다시 포함합니다.
+  like_count: number
 }
 
 export default function HomeBoardgameList() {
