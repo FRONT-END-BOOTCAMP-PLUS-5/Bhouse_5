@@ -2,18 +2,17 @@
 'use client'
 
 import React from 'react'
-import styles from './BoardgameList.module.css'
+import styles from './HomeBoardgameList.module.css'
 import HomeBoardgameImageCard from '../HomeBoardgameImageCard/HomeBoardgameImageCard'
 import { useGetBoardgameList } from 'models/querys/boardgame.query' // BoardgameSearch.tsx에 맞춰 'querys'로 import 경로 일치
 
-// API 응답에 like_count가 포함된다는 사용자님의 최신 정보를 반영합니다.
 interface BoardgameItem {
   id: number
   name: string
   min_players: number
   max_players: number
   img_url: string
-  like_count: number // 사용자님 확인에 따라 like_count 필드를 다시 포함합니다.
+  like_count: number
 }
 
 export default function HomeBoardgameList() {
@@ -62,11 +61,6 @@ export default function HomeBoardgameList() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <h2 className={styles.titleText}>지금 HOT한 보드게임</h2>
-        <span className={styles.allGamesText}>더보기</span>
-      </div>
-
       <div className={styles.listGrid}>
         {top6Boardgames.map((game) => (
           <HomeBoardgameImageCard key={game.id} imageUrl={game.img_url} alt={game.name} />
