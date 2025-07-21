@@ -116,3 +116,8 @@
   color: var(--primary-black);
   /* 필요에 따라 다른 스타일 추가: 예) border, box-shadow 등 */
 }
+
+.boardgameSearch {
+  max-width: 400px;
+  margin: 0 auto;
+}

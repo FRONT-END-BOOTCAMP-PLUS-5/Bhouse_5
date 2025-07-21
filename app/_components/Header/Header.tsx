@@ -19,6 +19,7 @@ import BellIcon from '@public/icons/bell.svg'
 
 import { useAuthStore } from '@store/auth.store'
 import { signoutService } from 'models/services/auth.service'
+import BoardgameSearch from '@/(anon)/store-register/_components/BoardgameSearch'
 type UserType = 'USER' | 'OWNER'
 
 const Header: React.FC = () => {
@@ -32,6 +33,12 @@ const Header: React.FC = () => {
   const currentUserType = user.user_role.name
   const profileImageUrl = user?.profile_img_url || '/images/user_empty_profile_img.png'
 
+  const [selectedGames, setSelectedGames] = useState<string[]>([])
+  const handleSelectGame = (game: string) => {
+    if (!selectedGames.includes(game)) {
+      setSelectedGames((prev) => [...prev, game])
+    }
+  }
   // user.towns 데이터가 로드되면 selectedRegion을 업데이트
   useEffect(() => {
     if (isLogin && user.towns && user.towns.length > 0) {
@@ -125,12 +132,11 @@ const Header: React.FC = () => {
       {/* 검색 입력 및 드롭다운 (새로운 행) */}
       {isLogin ? (
         <div className={styles.searchAndDropdown}>
-          <TextInput
-            type="text"
+          <BoardgameSearch
+            onSelect={handleSelectGame}
+            className="boardgameSearch"
             placeholder="지금 인기있는 보드게임"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className={styles.searchInput}
+            onSelectGame={(id) => router.push(`/boardgame-detail/${id}`)}
           />
           <Dropdown label={selectedRegion} borderRadius="8" size="small">
             {user.towns && user.towns.length > 0 ? (
@@ -158,12 +164,11 @@ const Header: React.FC = () => {
         </div>
       ) : (
         <div className={styles.searchAndDropdown} style={{ justifyContent: 'flex-end' }}>
-          <TextInput
-            type="text"
+          <BoardgameSearch
+            onSelect={handleSelectGame}
+            className="boardgameSearch"
             placeholder="지금 인기있는 보드게임"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className={styles.searchInput}
+            onSelectGame={(id) => router.push(`/boardgame-detail/${id}`)}
           />
         </div>
       )}

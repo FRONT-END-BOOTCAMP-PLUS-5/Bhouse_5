@@ -6,7 +6,7 @@ export interface StoreSearchParams {
 
 export class Store {
   constructor(
-    public readonly storeId: number | undefined, // optional
+    public readonly storeId: number | null, // optional
     public readonly name: string,
     public address: string,
     public phone: string,

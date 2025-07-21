@@ -2,8 +2,9 @@
 
 import React from 'react'
 import styles from './HomeBoardgameList.module.css'
-import HomeBoardgameImageCard from '../HomeBoardgameImageCard/HomeBoardgameImageCard' // HomeBoardgameImageCard로 이름 변경
-import { useGetBoardgameList } from 'models/querys/boardgame.query'
+
+import HomeBoardgameImageCard from '../HomeBoardgameImageCard/HomeBoardgameImageCard'
+import { useGetBoardgameList } from 'models/querys/boardgame.query' // BoardgameSearch.tsx에 맞춰 'querys'로 import 경로 일치
 
 interface BoardgameItem {
   id: number

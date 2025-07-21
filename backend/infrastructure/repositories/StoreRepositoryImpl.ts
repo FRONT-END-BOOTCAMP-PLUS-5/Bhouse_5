@@ -21,13 +21,15 @@ export class StoreRepositoryImpl implements StoreRepository {
 
     if (error) throw new Error(error.message)
     if (!data) return []
+    console.log('요청된 boardgame_id:', boardgameId)
+    console.log('쿼리 결과:', data)
 
     return data
-      .filter((entry) => Array.isArray(entry.store_places) && entry.store_places.length > 0)
+      .filter((entry) => entry.store_places) // null 또는 undefined가 아닌 것만
       .map((entry) => ({
         storeId: String(entry.store_id),
-        storeName: entry.store_places[0].name,
-        address: entry.store_places[0].address,
+        storeName: entry.store_places.name,
+        address: entry.store_places.address,
       }))
   }
 
