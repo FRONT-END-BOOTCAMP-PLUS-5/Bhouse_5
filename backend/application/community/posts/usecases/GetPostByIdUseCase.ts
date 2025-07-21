@@ -20,6 +20,7 @@ export class GetPostByIdUseCase {
       hits: post.hits ?? 0,
       nickname: post.nickname ?? null,
       profileImgUrl: post.profileImgUrl ?? null,
+      commentCount: post.commentCount ?? 0,
     }
   }
 }

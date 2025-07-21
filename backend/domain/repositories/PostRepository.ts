@@ -20,7 +20,11 @@ export interface PostRepository {
 
   deletePost(postId: number, userId: string): Promise<void>
 
-  getPostList(): Promise<{ data: Post[]; total: number }>
+  getPostList(params: {
+    categoryId: number | null
+    townName: string | null
+    isLoggedIn: boolean
+  }): Promise<{ data: Post[]; townName: string | null; total: number }>
 
   getPostById(postId: number): Promise<Post | null>
 

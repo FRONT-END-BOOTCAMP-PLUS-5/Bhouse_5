@@ -1,16 +1,11 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import {
-  addTown,
-  removeTown,
-  fetchTowns,
-  setPrimaryTown,
-  extractDistrictName,
-  normalizeSidoName,
-} from 'models/services/town.service'
+import { addTown, removeTown, fetchTowns, setPrimaryTown, extractDistrictName } from 'models/services/town.service'
 import styles from './TownRegister.module.css'
 import Button from '@/_components/Button/Button'
+import TownList from './_components/TownList'
+import { usePolygonManager } from './_components/PolygonManager'
 
 interface TownInfo {
   name: string
@@ -24,11 +19,20 @@ export default function TownRegisterPage() {
   const [townList, setTownList] = useState<TownInfo[]>([])
   const [isMapReady, setIsMapReady] = useState(false)
   const [polygon, setPolygon] = useState<any>(null)
-  const [polygonList, setPolygonList] = useState<window.kakao.maps.Polygon[]>([])
+  const [polygonList, setPolygonList] = useState<any[]>([])
   const [primaryMarker, setPrimaryMarker] = useState<any>(null)
   const [primaryTownName, setPrimaryTownName] = useState<string | null>(null)
-  const [primaryPolygon, setPrimaryPolygon] = useState<window.kakao.maps.Polygon | null>(null)
-  const [searchOptions, setSearchOptions] = useState<string[]>([])
+  const [primaryPolygon, setPrimaryPolygon] = useState<any>(null)
+
+  const { handleDrawDistrictPolygon } = usePolygonManager({
+    markerRef,
+    polygonList,
+    setPolygonList,
+    primaryPolygon,
+    setPrimaryPolygon,
+    primaryMarker,
+    setPrimaryMarker,
+  })
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -43,87 +47,104 @@ export default function TownRegisterPage() {
   useEffect(() => {
     if (!isMapReady || !mapRef.current) return
 
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords
-        const map = new window.kakao.maps.Map(mapRef.current, {
-          center: new window.kakao.maps.LatLng(latitude, longitude),
-          level: 3,
-        })
+    const initializeMap = async () => {
+      try {
+        // First, try to get the primary town
+        const towns = await fetchTowns()
+        setTownList(towns) // 여기서 한 번만 설정
+        const primaryTown = towns.find((town) => town.isPrimary)
 
-        const marker = new window.kakao.maps.Marker({
-          position: map.getCenter(),
-          draggable: true,
-        })
+        if (primaryTown) {
+          setPrimaryTownName(primaryTown.name)
+          // If there's a primary town, center map on it
+          const geocoder = new window.kakao.maps.services.Geocoder()
+          geocoder.addressSearch(primaryTown.name, function (result: any, status: any) {
+            if (status === window.kakao.maps.services.Status.OK) {
+              const coords = new window.kakao.maps.LatLng(result[0].y, result[0].x)
+              createMapWithCenter(coords)
+              // 지도 생성 후 대표 동네 폴리곤 그리기
+              setTimeout(() => {
+                handleDrawDistrictPolygon(primaryTown.name, true)
+              }, 500)
+            } else {
+              // If geocoding fails, fall back to user location
+              initializeWithUserLocation()
+            }
+          })
+        } else {
+          // No primary town, use user location
+          initializeWithUserLocation()
+        }
+      } catch {
+        // If fetching towns fails, fall back to user location
+        initializeWithUserLocation()
+      }
+    }
 
-        marker.setMap(map)
-        markerRef.current = marker
+    const createMapWithCenter = (center: any) => {
+      const map = new window.kakao.maps.Map(mapRef.current, {
+        center: center,
+        level: 3,
+      })
 
+      const marker = new window.kakao.maps.Marker({
+        position: center,
+        draggable: true,
+      })
+
+      marker.setMap(map)
+      markerRef.current = marker
+
+      getAddressFromCoords(marker.getPosition())
+
+      window.kakao.maps.event.addListener(marker, 'dragend', () => {
         getAddressFromCoords(marker.getPosition())
+      })
 
-        window.kakao.maps.event.addListener(marker, 'dragend', () => {
-          getAddressFromCoords(marker.getPosition())
-        })
+      window.kakao.maps.event.addListener(map, 'click', (mouseEvent: any) => {
+        const latlng = mouseEvent.latLng
+        marker.setPosition(latlng)
+        getAddressFromCoords(latlng)
+      })
+    }
 
-        window.kakao.maps.event.addListener(map, 'click', (mouseEvent: any) => {
-          const latlng = mouseEvent.latLng
-          marker.setPosition(latlng)
-          getAddressFromCoords(latlng)
-        })
-      },
-      () => {
-        const fallback = new window.kakao.maps.LatLng(37.5665, 126.978)
-        const map = new window.kakao.maps.Map(mapRef.current, {
-          center: fallback,
-          level: 3,
-        })
+    const initializeWithUserLocation = () => {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords
+          const coords = new window.kakao.maps.LatLng(latitude, longitude)
+          createMapWithCenter(coords)
+        },
+        () => {
+          // Fallback to Seoul if geolocation fails
+          const fallback = new window.kakao.maps.LatLng(37.5665, 126.978)
+          createMapWithCenter(fallback)
+        },
+      )
+    }
 
-        const marker = new window.kakao.maps.Marker({
-          position: fallback,
-          draggable: true,
-        })
-
-        marker.setMap(map)
-        markerRef.current = marker
-
-        getAddressFromCoords(fallback)
-      },
-    )
+    initializeMap()
   }, [isMapReady])
 
   useEffect(() => {
-    const initTowns = async () => {
-      try {
-        const towns = await fetchTowns()
-        setTownList(towns)
-        setSearchOptions(Array.from(new Set(towns.map((t) => t.name))))
+    if (!selectedTown) return () => {} // Return empty cleanup function
 
-        const primary = towns.find((t) => t.isPrimary)
-        if (primary) {
-          setPrimaryTownName(primary.name)
-          await handleDrawDistrictPolygon(primary.name, true)
-        }
-      } catch {
-        setTownList([])
-      }
+    const districtName = extractDistrictName(selectedTown.name)
+
+    // ✅ 선택한 동네가 대표 동네면 일반 폴리곤만 지움 (대표 동네는 유지)
+    if (districtName === primaryTownName) {
+      // 일반 폴리곤만 제거하고 대표 동네 폴리곤은 유지
+      polygonList.forEach((p) => p.setMap(null))
+      return () => {} // Return empty cleanup function for consistency
     }
-    initTowns()
-  }, [])
 
-  useEffect(() => {
-    if (selectedTown) {
-      const districtName = extractDistrictName(selectedTown.name)
-
-      // ✅ 선택한 동네가 대표 동네면 파란색 지움
-      if (districtName === primaryTownName) {
-        polygonList.forEach((p) => p.setMap(null))
-        setPolygonList([])
-        return
-      }
-
+    // setTimeout으로 폴리곤 그리기를 지연시켜 중복 호출 방지
+    const timer = setTimeout(() => {
       handleDrawDistrictPolygon(districtName, false)
-    }
-  }, [selectedTown])
+    }, 100)
+
+    return () => clearTimeout(timer)
+  }, [selectedTown, primaryTownName])
 
   const getAddressFromCoords = (latlng: any) => {
     const geocoder = new window.kakao.maps.services.Geocoder()
@@ -168,86 +189,6 @@ export default function TownRegisterPage() {
     }).open()
   }
 
-  const handleDrawDistrictPolygon = async (districtName: string, isPrimary = false) => {
-    try {
-      const sido = districtName.split(' ')[0]
-      const fullSido = normalizeSidoName(sido)
-      const geoJsonUrl = `/geojson/hangjeongdong_${fullSido}.geojson`
-      const res = await fetch(geoJsonUrl)
-      const geojson = await res.json()
-
-      const clean = (str: string) => str.normalize('NFC').replace(/\s+/g, ' ').trim()
-      const features = geojson.features.filter((f: any) => clean(f.properties.adm_nm).startsWith(clean(districtName)))
-      if (!features || features.length === 0) return
-
-      if (isPrimary) {
-        if (primaryPolygon) primaryPolygon.setMap(null)
-        if (primaryMarker) primaryMarker.setMap(null)
-      } else {
-        polygonList.forEach((p) => p.setMap(null))
-        setPolygonList([])
-      }
-
-      const paths: window.kakao.maps.LatLng[][] = []
-      features.forEach((feature) => {
-        const coordinatesList = feature.geometry.coordinates
-        if (feature.geometry.type === 'Polygon') {
-          paths.push(coordinatesList[0].map(([lng, lat]) => new window.kakao.maps.LatLng(lat, lng)))
-        } else if (feature.geometry.type === 'MultiPolygon') {
-          coordinatesList.forEach((polygonCoords) => {
-            paths.push(polygonCoords[0].map(([lng, lat]) => new window.kakao.maps.LatLng(lat, lng)))
-          })
-        }
-      })
-
-      const polygon = new window.kakao.maps.Polygon({
-        path: paths,
-        strokeWeight: 2,
-        strokeColor: isPrimary ? '#ff8800' : '#007aff',
-        strokeOpacity: 0.8,
-        fillColor: isPrimary ? '#ffd699' : '#a3c8ff',
-        fillOpacity: 0.3,
-      })
-
-      polygon.setMap(markerRef.current.getMap())
-
-      if (isPrimary) {
-        setPrimaryPolygon(polygon)
-
-        // 대표 마커 추가
-        const flat = paths.flat()
-        const center = flat.reduce(
-          (acc, curr) => ({
-            lat: acc.lat + curr.getLat(),
-            lng: acc.lng + curr.getLng(),
-          }),
-          { lat: 0, lng: 0 },
-        )
-
-        const avg = new window.kakao.maps.LatLng(center.lat / flat.length, center.lng / flat.length)
-
-        const image = new window.kakao.maps.MarkerImage(
-          '/icons/primary_marker.svg',
-          new window.kakao.maps.Size(32, 32),
-          { offset: new window.kakao.maps.Point(16, 16) },
-        )
-
-        const starMarker = new window.kakao.maps.Marker({
-          position: avg,
-          image,
-          title: '대표 동네',
-        })
-
-        starMarker.setMap(markerRef.current.getMap())
-        setPrimaryMarker(starMarker)
-      } else {
-        setPolygonList((prev) => [...prev, polygon])
-      }
-    } catch (err) {
-      console.error('폴리곤 렌더링 실패:', err)
-    }
-  }
-
   const handleRegister = async () => {
     if (!selectedTown) return
 
@@ -282,74 +223,29 @@ export default function TownRegisterPage() {
   }
 
   const handlePrimary = async (townName: string) => {
-    await setPrimaryTown(townName)
-    setPrimaryTownName(townName)
-    await handleDrawDistrictPolygon(townName, true)
+    try {
+      await setPrimaryTown(townName) // 서버 요청
+      const updatedList = townList.map((town) => ({
+        ...town,
+        isPrimary: town.name === townName,
+      }))
+      setTownList(updatedList) // 즉시 로컬 상태 반영
+      setPrimaryTownName(townName) // 대표 동네 이름 업데이트
+      await handleDrawDistrictPolygon(townName, true) // 대표 동네 폴리곤 그리기
+    } catch (e) {
+      console.error('대표 설정 실패', e)
+    }
   }
 
   return (
     <div className={styles.page}>
       <h2 className={styles.header48}>내 동네 등록하기</h2>
 
-      {/* 🔍 검색창, 자동완성, 버튼 */}
       <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 12 }}>
-        {/* <input
-          type="text"
-          list="townSuggestions"
-          placeholder="동네 이름 검색 (예: 서울 강남구)"
-          onChange={(e) => {
-            const value = e.target.value.trim()
-            if (value) localStorage.setItem('lastSearchTown', value)
-          }}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              const query = (e.target as HTMLInputElement).value.trim()
-              if (!query) return
-
-              const geocoder = new window.kakao.maps.services.Geocoder()
-              geocoder.addressSearch(query, function (result: any, status: any) {
-                if (status === window.kakao.maps.services.Status.OK) {
-                  const coords = new window.kakao.maps.LatLng(result[0].y, result[0].x)
-                  const map = markerRef.current.getMap()
-
-                  map.setCenter(coords)
-                  markerRef.current.setPosition(coords)
-
-                  setSelectedTown({
-                    name: query,
-                    lat: coords.getLat(),
-                    lng: coords.getLng(),
-                  })
-                } else {
-                  alert('해당 동네를 찾을 수 없습니다.')
-                }
-              })
-            }
-          }}
-          style={{
-            width: '100%',
-            maxWidth: 300,
-            padding: '8px 12px',
-            borderRadius: 6,
-            border: '1px solid #ccc',
-            fontSize: 14,
-          }}
-        />
-        <datalist id="townSuggestions">
-          {searchOptions.map((town) => (
-            <option key={town} value={town} />
-          ))}
-        </datalist> */}
         <Button onClick={openAddressSearch} disabled={townList.length >= 3}>
           + 주소 검색
         </Button>
       </div>
-
-      {/* {typeof window !== 'undefined' && localStorage.getItem('lastSearchTown') && (
-        <div style={{ fontSize: 13, marginBottom: 8, color: '#888' }}>
-          최근 검색어: <strong>{localStorage.getItem('lastSearchTown')}</strong>
-        </div>
-      )} */}
 
       <div
         ref={mapRef}
@@ -378,25 +274,7 @@ export default function TownRegisterPage() {
         </div>
       )}
 
-      <h3>📌 등록된 내 동네</h3>
-      {townList.length === 0 ? (
-        <p>아직 등록된 동네가 없습니다.</p>
-      ) : (
-        <ul>
-          {townList.map((town) => (
-            <li key={town.name} className={styles.townItem}>
-              <span className={styles.townName}>
-                {town.name}
-                {town.isPrimary && <span className={styles.primaryTag}>(대표)</span>}
-              </span>
-              <div className={styles.buttonGroup}>
-                <button onClick={() => handlePrimary(town.name)}>대표로 설정</button>
-                <button onClick={() => handleDelete(town.name)}>삭제</button>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
+      <TownList townList={townList} onSetPrimary={handlePrimary} onDelete={handleDelete} />
     </div>
   )
 }

@@ -1,4 +1,4 @@
-export interface ReplyDto {
+export interface Reply {
   replyId: number
   postId: number
   userId: string

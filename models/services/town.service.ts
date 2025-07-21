@@ -32,7 +32,12 @@ export const fetchTowns = async (): Promise<{ name: string; isPrimary: boolean }
       return []
     }
 
-    return await res.json()
+    const towns = await res.json()
+    // Map townName to name for frontend compatibility
+    return towns.map((town: any) => ({
+      name: town.townName,
+      isPrimary: town.isPrimary,
+    }))
   } catch (e) {
     console.error('동네 목록 요청 중 에러 발생:', e)
     return []

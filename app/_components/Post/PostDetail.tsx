@@ -6,6 +6,8 @@ import styles from './PostDetail.module.css'
 import Image from 'next/image'
 import { useDeletePostMutation, usePostDetailQuery } from 'models/querys/community.query'
 import instance from '@utils/instance'
+import ReplyForm from './Replyform'
+import ReplyList from './ReplyList'
 
 interface PostDetailPageProps {
   postId: number
@@ -16,12 +18,15 @@ export default function PostDetailPage({ postId }: PostDetailPageProps) {
   const { data: post, isLoading } = usePostDetailQuery(postId, { enabled: !!postId })
   const [isAuthor, setIsAuthor] = useState(false)
   const { mutate: deletePost } = useDeletePostMutation()
+  const [userId, setUserId] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const res = await instance.get('/api/auth/me')
-        if (post) setIsAuthor(res.data.userId === post.userId)
+        const uid = res.data.userId
+        setUserId(uid) // ✅ 추가
+        if (post) setIsAuthor(uid === post.userId)
       } catch (err) {
         console.error('유저 인증 실패', err)
       }
@@ -59,9 +64,15 @@ export default function PostDetailPage({ postId }: PostDetailPageProps) {
 
       <div className={styles.metaWrapper}>
         <div className={styles.userBlock}>
-          <Image src="/profile-default.png" alt="작성자 프로필" width={40} height={40} className={styles.avatar} />
+          <Image
+            src={post.profileImgUrl || '/profile-default.png'}
+            alt="작성자 프로필"
+            width={40}
+            height={40}
+            className={styles.avatar}
+          />
           <div className={styles.userInfo}>
-            <span className={styles.username}>{post.username}</span>
+            <span className={styles.username}>{post.nickname}</span>
             <span className={styles.date}>
               {new Date(post.createdAt).toLocaleString()} · {post.town}
             </span>
@@ -81,6 +92,19 @@ export default function PostDetailPage({ postId }: PostDetailPageProps) {
       </div>
 
       <div className={styles.content} dangerouslySetInnerHTML={{ __html: post.content }} />
+
+      {/* 댓글 작성 */}
+      <div className={styles.replySection}>
+        <h2>댓글</h2>
+        {!userId ? (
+          <p>
+            댓글을 작성하려면 <a href="/login">로그인</a>이 필요합니다.
+          </p>
+        ) : (
+          <ReplyForm postId={postId} userId={userId} />
+        )}
+        <ReplyList postId={postId} userId={userId || ''} />
+      </div>
     </div>
   )
 }
