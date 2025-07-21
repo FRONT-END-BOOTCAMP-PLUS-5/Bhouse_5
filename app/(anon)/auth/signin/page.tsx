@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, Suspense } from 'react'
+import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import TextInput from '@/_components/TextInput/TextInput'
@@ -13,12 +13,10 @@ import globalStyles from '@/page.module.css'
 import Button from '@/_components/Button/Button'
 import { ErrorMessage } from '@/_components/Message/Message'
 import Link from 'next/link'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 
 export default function SigninPage() {
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const callbackUrl = searchParams.get('callbackUrl')
 
   const { setLogin } = useAuthStore()
 
@@ -34,10 +32,9 @@ export default function SigninPage() {
 
     try {
       await signinService({ username: data.email, password: data.password })
-
       const res = await getProfileService()
-      console.log(res)
       setLogin(res)
+      router.push('/')
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || '로그인에 실패했습니다.'
       setServerError(errorMessage)
@@ -61,10 +58,10 @@ export default function SigninPage() {
         </form>
 
         <nav className={styles.LinkContainer}>
-          <Link href="/auth/find-id" className={`${styles.forgotLink} ${globalStyles.body12}`}>
+          <Link href="/auth/email-find" className={`${styles.forgotLink} ${globalStyles.body12}`}>
             Forgot Id?
           </Link>
-          <Link href="/auth/find-password" className={`${styles.forgotLink} ${globalStyles.body12}`}>
+          <Link href="/auth/password-find" className={`${styles.forgotLink} ${globalStyles.body12}`}>
             Forgot Password?
           </Link>
           <Link href="/auth/signup" className={`${styles.signupLink} ${globalStyles.body12}`}>
