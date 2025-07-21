@@ -10,13 +10,14 @@ const repo = new StoreRepositoryImpl()
 export async function POST(req: NextRequest) {
   try {
     const decoded = verifyToken(req)
+    console.log(decoded)
     if (!decoded || decoded.roleId !== '3') {
       return NextResponse.json({ error: '권한이 없습니다.' }, { status: 401 })
     }
 
     const body = await req.json()
     const newStore = new Store(
-      0,
+      null,
       body.name,
       body.address,
       body.phone,
